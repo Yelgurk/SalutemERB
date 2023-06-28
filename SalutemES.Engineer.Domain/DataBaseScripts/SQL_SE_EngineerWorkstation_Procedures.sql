@@ -82,6 +82,6 @@ Create Procedure [dbo].ChangeFilePath
 As Begin
 	Update	Component_File
 	Set		Component_File.localFilePath = @NewPath
-	Where	Component_File.id = @id
+	Where	Component_File.id = (Select cast(@id as int))
 End
 Go
