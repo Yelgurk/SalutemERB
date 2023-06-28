@@ -10,9 +10,13 @@ public static class Extensions
 {
     public static T? Cast<T>(this object obj) where T : class => obj as T;
 
-    public static T Do<T>(this T obj, Action<T> action)
+    public static T? Do<T>(this T obj, Predicate<T> action) => action(obj) ? obj : default(T?);
+
+    public static T? Handler<T>(this T obj, Predicate<T> mainAction, Action<T>? errorAction = null) => mainAction(obj) ? obj : ErrorActionHandler<T>(errorAction, obj);
+
+    private static T? ErrorActionHandler<T>(Action<T>? errorAction, T obj)
     {
-        action(obj);
-        return obj;
+        errorAction?.Invoke(obj);
+        return default(T?);
     }
 }

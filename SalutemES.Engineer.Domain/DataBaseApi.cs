@@ -41,9 +41,9 @@ public sealed partial class DataBaseApi
         Connection = null;
     }
 
-    public static DataBaseApi? ConnectionAvailable() => SetConnection(ServerName, DataBaseName);
+    public static DataBaseApiOr<SQLUnavailable> ConnectionAvailable() => SetConnection(ServerName, DataBaseName);
 
-    public static DataBaseApi? SetConnection(string ServerName, string DataBaseName)
+    public static DataBaseApiOr<SQLUnavailable> SetConnection(string ServerName, string DataBaseName)
     {
         DataBaseApi.ServerName = ServerName;
         DataBaseApi.DataBaseName = DataBaseName;
@@ -54,12 +54,12 @@ public sealed partial class DataBaseApi
         catch { Success = false; }
         finally { SQLCloseConnection(); }
 
-        return Success ? new DataBaseApi() : null;
+        return Success ? new DataBaseApi() : new SQLUnavailable();
     }
 
-    public static DataBaseApi? CommandPrepeared() => Command is null ? null : new DataBaseApi();
+    public static DataBaseApiOr<SQLCommandNotReady> CommandPrepeared() => Command is null ? new SQLCommandNotReady() : new DataBaseApi();
 
-    public DataBaseApi? PrepareCommand(DataBaseRequest Request, params string[] Args)
+    public DataBaseApiOr<SQLCommandNotReady> PrepareCommand(DataBaseRequest Request, params string[] Args)
     {
         Command?.Dispose();
 
@@ -68,10 +68,10 @@ public sealed partial class DataBaseApi
         try { Command = new SqlCommand(Request.Command(Args), Connection!); }
         catch { Command = null; }
 
-        return Command is null ? null : new DataBaseApi();
+        return Command is null ? new SQLCommandNotReady() : new DataBaseApi();
     }
 
-    private static DataBaseApi? ResponseIntoString()
+    private static DataBaseApiOr<SQLExecError> ResponseIntoString()
     {
         try
         {
@@ -86,10 +86,10 @@ public sealed partial class DataBaseApi
         catch { ResponseString = null; }
         finally { SQLCloseConnection(); }
 
-        return ResponseString is null ? null : new DataBaseApi();
+        return ResponseString is null ? new SQLExecError() : new DataBaseApi();
     }
 
-    private static DataBaseApi? ResponseIntoArray()
+    private static DataBaseApiOr<SQLExecError> ResponseIntoArray()
     {
         try
         {
@@ -109,16 +109,16 @@ public sealed partial class DataBaseApi
         catch { ResponseArray = null; }
         finally { SQLCloseConnection(); }
 
-        return ResponseArray is null ? null : new DataBaseApi();
+        return ResponseArray is null ? new SQLExecError() : new DataBaseApi();
     }
 
-    public DataBaseApi? ExecuteCommand<T>()
+    public DataBaseApiOr<SQLExecError> ExecuteCommand<T>()
     {
         return typeof(T) switch
         {
             Type arr when arr == typeof(List<string[]>) => ResponseIntoArray(),
             Type str when str == typeof(string) => ResponseIntoString(),
-            _ => null
+            _ => new SQLExecError()
         };
     }
 
