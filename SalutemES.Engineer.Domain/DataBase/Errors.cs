@@ -1,7 +1,7 @@
 ﻿using OneOf;
 using System.Security.Authentication;
 
-namespace SalutemES.Engineer.Domain;
+namespace SalutemES.Engineer.Domain.DataBase;
 
 [GenerateOneOf]
 public sealed partial class DataBaseApiOr<T> : OneOfBase<DataBaseApi, T>
@@ -9,7 +9,7 @@ public sealed partial class DataBaseApiOr<T> : OneOfBase<DataBaseApi, T>
     public bool IsSuccess => this.IsT0;
     public bool IsError => this.IsT1;
 
-    public DataBaseApi DataBase => this.AsT0;
+    public DataBaseApi Api => this.AsT0;
     public T Exception => this.AsT1;
 }
 

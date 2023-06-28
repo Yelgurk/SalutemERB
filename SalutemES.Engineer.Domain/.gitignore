@@ -3,7 +3,7 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
-DataBaseScripts/SQL_SE_EngineerWorkstation_TestInserts.sql
+DataBase/Scripts/SQL_SE_EngineerWorkstation_TestInserts.sql
 
 # User-specific files
 *.rsuser

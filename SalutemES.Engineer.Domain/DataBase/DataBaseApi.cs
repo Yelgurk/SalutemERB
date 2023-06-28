@@ -8,37 +8,47 @@ using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SalutemES.Engineer.Domain;
+namespace SalutemES.Engineer.Domain.DataBase;
 
 public sealed partial class DataBaseApi
 {
-    private static SqlConnection? Connection { get; set; } = null;
-    private static SqlCommand? Command { get; set; } = null;
-    private static SqlDataReader? Reader { get; set; } = null;
+    private static SqlConnection? Connection { get; set; }
+    private static SqlCommand? Command { get; set; }
+    private static SqlDataReader? Reader { get; set; }
 
-    public static List<string[]>? ResponseArray { get; private set; } = null;
-    public static string? ResponseString { get; private set; } = null;
+    public static List<string[]>? ResponseArray { get; private set; }
+    public static string? ResponseString { get; private set; }
 
-    private static string ServerName = string.Empty;
-    private static string DataBaseName = string.Empty;
+    private static string ServerName { get; set; } = string.Empty;
+    private static string DataBaseName { get; set; } = string.Empty;
+
+    private static SqlException? SQLConnectionException { get; set; }
 
     private static void SQLOpenConnection()
     {
-        if (Connection is not null)
-            SQLCloseConnection();
+        try
+        {
+            if (Connection is not null)
+                SQLCloseConnection();
 
-        Connection = new SqlConnection($@"
+            Connection = new SqlConnection($@"
                 Data Source = {ServerName};
                 Initial Catalog = {DataBaseName};
                 Integrated Security = True;");
-        Connection.Open();
+            Connection.Open();
+        }
+        catch (SqlException e) { SQLConnectionException = e; }
     }
 
     private static void SQLCloseConnection()
     {
-        Connection?.Close();
-        Connection?.Dispose();
-        Connection = null;
+        try
+        {
+            Connection?.Close();
+            Connection?.Dispose();
+            Connection = null;
+        }
+        catch (SqlException e) { SQLConnectionException = e; }
     }
 
     public static DataBaseApiOr<SQLUnavailable> ConnectionAvailable() => SetConnection(ServerName, DataBaseName);
@@ -48,13 +58,11 @@ public sealed partial class DataBaseApi
         DataBaseApi.ServerName = ServerName;
         DataBaseApi.DataBaseName = DataBaseName;
 
-        bool Success = true;
+        SQLConnectionException = null;
+        SQLOpenConnection();
+        SQLCloseConnection();
 
-        try { SQLOpenConnection(); }
-        catch { Success = false; }
-        finally { SQLCloseConnection(); }
-
-        return Success ? new DataBaseApi() : new SQLUnavailable();
+        return SQLConnectionException is null ? new DataBaseApi() : new SQLUnavailable();
     }
 
     public static DataBaseApiOr<SQLCommandNotReady> CommandPrepeared() => Command is null ? new SQLCommandNotReady() : new DataBaseApi();

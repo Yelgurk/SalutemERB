@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SalutemES.Engineer.Domain;
+namespace SalutemES.Engineer.Domain.DataBase;
 
 public record DataBaseRequest
 {
@@ -20,7 +20,7 @@ public record DataBaseRequest
 
 public static class DataBaseRequests
 {
-    public static DataBaseRequest GetFullExportTable => new("Exec [dbo].GetFullExportTable");
+    public static DataBaseRequest GetFullExportTable => new("Exec [dbo].GetExportTable");
     public static DataBaseRequest GetProductsListByComponent => new("Exec [dbo].GetProductsListByComponent '{0}';");
     public static DataBaseRequest GetProductsListByFamily => new("Exec [dbo].GetProductsListByFamily '{0}';");
     public static DataBaseRequest GetComponentsListByProduct => new("Exec [dbo].GetComponentsListByProduct '{0}';");

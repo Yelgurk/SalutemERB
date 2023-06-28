@@ -1,11 +1,30 @@
 Use DB_SE_EngineerWS;
 Go
 
-Create Procedure [dbo].GetFullExportTable
+Create Procedure [dbo].GetExportTable
 	@ProductsList export_product readonly
 As Begin
-	/* формирование таблицы совсеми данными на внесение в excel */
-	Select 'await';
+	Select  Component.name,
+		Component.code,
+		sum(Structure.count * TT.count) as 'count',
+		Component.grade,
+		Component.thickness,
+		Replace(Component.folds, 0, '') as 'folds',
+		Component.weightKG,
+		sum(Component.weightKG * Structure.count * TT.count) as 'totalKG',
+		Component.note,
+		Component.material
+	From Component
+	Inner Join Structure on Structure.component = Component.name
+	Inner Join @ProductsList as TT on TT.product = Structure.product
+	Group by	Component.name,
+			Component.code,
+			Component.grade,
+			Component.thickness,
+			Component.folds,
+			Component.weightKG,
+			Component.note,
+			Component.material;
 End
 Go
 
