@@ -14,11 +14,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\VS 2022 Projects\\SalutemES\\Domain\\SalutemES.Engineer.Domain.csproj",
+      "projectUniqueName": "D:\\VS 2022 Projects\\SalutemES\\SalutemES.Engineer.Domain\\SalutemES.Engineer.Domain.csproj",
       "projectName": "SalutemES.Engineer.Domain",
-      "projectPath": "D:\\VS 2022 Projects\\SalutemES\\Domain\\SalutemES.Engineer.Domain.csproj",
+      "projectPath": "D:\\VS 2022 Projects\\SalutemES\\SalutemES.Engineer.Domain\\SalutemES.Engineer.Domain.csproj",
       "packagesPath": "C:\\Users\\Xell\\.nuget\\packages\\",
-      "outputPath": "D:\\VS 2022 Projects\\SalutemES\\Domain\\obj\\",
+      "outputPath": "D:\\VS 2022 Projects\\SalutemES\\SalutemES.Engineer.Domain\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

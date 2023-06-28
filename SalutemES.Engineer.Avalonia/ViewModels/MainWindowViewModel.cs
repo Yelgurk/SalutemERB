@@ -1,5 +1,6 @@
 ﻿using Avalonia;
-using SalutemES.Engineer.Domain;
+using SalutemES.Engineer.Infrastructure;
+using SalutemES.Engineer.Infrastructure.DataBase;
 using System.Collections.Generic;
 using System.Diagnostics;
 
@@ -11,7 +12,7 @@ namespace SalutemES.Engineer.Avalonia.ViewModels
 
         public void CallSQL()
         {
-            
+
         }
     }
 }

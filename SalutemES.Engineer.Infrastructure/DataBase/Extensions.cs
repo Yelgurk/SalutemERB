@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SalutemES.Engineer.Domain.DataBase;
+namespace SalutemES.Engineer.Infrastructure.DataBase;
 
 public static class Extensions
 {

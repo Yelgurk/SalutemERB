@@ -1,7 +1,7 @@
 ﻿using OneOf;
 using System.Security.Authentication;
 
-namespace SalutemES.Engineer.Domain.DataBase;
+namespace SalutemES.Engineer.Infrastructure.DataBase;
 
 [GenerateOneOf]
 public sealed partial class DataBaseApiOr<T> : OneOfBase<DataBaseApi, T>

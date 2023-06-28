@@ -26,7 +26,7 @@
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.0" />
   </ItemGroup>
 
-  <ItemGroup>
-	<ProjectReference Include="..\SalutemES.Engineer.Domain\SalutemES.Engineer.Domain.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\SalutemES.Engineer.Infrastructure\SalutemES.Engineer.Infrastructure.csproj" />
+	</ItemGroup>
 </Project>

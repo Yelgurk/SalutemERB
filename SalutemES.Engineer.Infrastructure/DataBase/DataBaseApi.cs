@@ -8,7 +8,7 @@ using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SalutemES.Engineer.Domain.DataBase;
+namespace SalutemES.Engineer.Infrastructure.DataBase;
 
 public sealed partial class DataBaseApi
 {
