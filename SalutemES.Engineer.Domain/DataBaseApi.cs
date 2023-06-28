@@ -57,7 +57,9 @@ public sealed partial class DataBaseApi
         return Success ? new DataBaseApi() : null;
     }
 
-    public DataBaseApi PrepareCommand(DataBaseRequest Request, params string[] Args)
+    public static DataBaseApi? CommandPrepeared() => Command is null ? null : new DataBaseApi();
+
+    public DataBaseApi? PrepareCommand(DataBaseRequest Request, params string[] Args)
     {
         Command?.Dispose();
 
@@ -66,10 +68,8 @@ public sealed partial class DataBaseApi
         try { Command = new SqlCommand(Request.Command(Args), Connection!); }
         catch { Command = null; }
 
-        return new DataBaseApi();
+        return Command is null ? null : new DataBaseApi();
     }
-
-    public DataBaseApi? CommandPrepeared() => Command is null ? null : new DataBaseApi();
 
     private static DataBaseApi? ResponseIntoString()
     {
@@ -83,10 +83,8 @@ public sealed partial class DataBaseApi
                 for (int i = 0; i < Reader.FieldCount; i++)
                     ResponseString += Convert.ToString(Reader.GetValue(i));
         }
-        catch
-        { ResponseString = null; }
-        finally
-        { SQLCloseConnection(); }
+        catch { ResponseString = null; }
+        finally { SQLCloseConnection(); }
 
         return ResponseString is null ? null : new DataBaseApi();
     }
@@ -108,23 +106,29 @@ public sealed partial class DataBaseApi
                     ResponseArray.Add(Cortage);
                 }
         }
-        catch
-        { ResponseArray = null; }
-        finally
-        { SQLCloseConnection(); }
+        catch { ResponseArray = null; }
+        finally { SQLCloseConnection(); }
 
         return ResponseArray is null ? null : new DataBaseApi();
     }
 
-    public DataBaseApi? ExecuteCommand(DataBaseResponseType Type)
+    public DataBaseApi? ExecuteCommand<T>()
     {
-        Debug.WriteLine(Command!.CommandText);
-
-        return Type switch
+        return typeof(T) switch
         {
-            DataBaseResponseType.String => ResponseIntoString(),
-            DataBaseResponseType.ListArray => ResponseIntoArray(),
+            Type arr when arr == typeof(List<string[]>) => ResponseIntoArray(),
+            Type str when str == typeof(string) => ResponseIntoString(),
             _ => null
+        };
+    }
+
+    public T? DataBaseResponse<T>()
+    {
+        return typeof(T) switch
+        {
+            Type arr when arr == typeof(List<string[]>) => (T)Convert.ChangeType(ResponseArray, typeof(T))!,
+            Type str when str == typeof(string) => (T)Convert.ChangeType(ResponseString, typeof(T))!,
+            _ => default(T)
         };
     }
 }
