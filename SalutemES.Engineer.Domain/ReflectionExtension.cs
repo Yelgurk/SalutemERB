@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Reflection;
 
 namespace SalutemES.Engineer.Domain;
 
 [AttributeUsage(AttributeTargets.Property)]
 public class SkipReflection : Attribute { }
 
-public class ReflectionExtensions
+public class ReflectionExtension
 {
     private PropertyInfo[]? _currentProperties { get; set; } = null;
 
@@ -24,6 +19,14 @@ public class ReflectionExtensions
         _currentProperties is null
         ? _currentProperties = IgnoreSkipPropertyInfos(ObservableClass.GetType())
         : _currentProperties;
+
+    protected void FillModel<T>(string[] InputData, T Model)
+    {
+        if (InputData.Length == IgnoreSkipProperties(Model!).Length)
+            for (int i = 0; i < IgnoreSkipProperties(Model!).Length; i++)
+                IgnoreSkipProperties(Model!)[i]
+                .SetValue(Model!, InputData[i]);
+    }
 
     public override string ToString() =>
         IgnoreSkipProperties(this)

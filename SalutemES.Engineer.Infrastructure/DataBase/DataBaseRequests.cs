@@ -20,6 +20,7 @@ public record DataBaseRequest
 
 public static class DataBaseRequests
 {
+    public static DataBaseRequest GetFamilies => new("Select * From [dbo].VFamilyList;");
     public static DataBaseRequest GetFullExportTable => new("Exec [dbo].GetExportTable");
     public static DataBaseRequest GetProductsListByComponent => new("Exec [dbo].GetProductsListByComponent '{0}';");
     public static DataBaseRequest GetProductsListByFamily => new("Exec [dbo].GetProductsListByFamily '{0}';");

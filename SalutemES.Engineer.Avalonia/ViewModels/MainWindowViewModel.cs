@@ -13,19 +13,68 @@ namespace SalutemES.Engineer.Avalonia.ViewModels
 
         public void CallSQL()
         {
-            List<string[]> Response = new List<string[]>()
-            {
-                new string[] { "Обечайка", "01.00.002", "4", "aisi", "1.5", "", "19.5", "80", "плёнка", "собств" },
-                new string[] { "Крышка", "01.00.005", "6", "aisi", "1.5", "1", "13.1", "70", "", "собств" },
-                new string[] { "Шайба", "01.00.009", "8", "aisi", "3.0", "", "9.4", "64", "гравировка", "собств" }
-            };
+            List<FamilyModel> FamilyModelCollection = new List<FamilyModel>();
+            List<ProductModel> ProductModelByFamilyCollection = new List<ProductModel>();
+            List<ProductModel> ProductModelByComponentCollection = new List<ProductModel>();
+            List<ComponentModel> ComponentModelCollection = new List<ComponentModel>();
+            List<ComponentFileModel> ComponentFileModelCollection = new List<ComponentFileModel>();
+            List<ExportExcelModel> ExportExcelModelCollection = new List<ExportExcelModel>();
+            
 
-            List<ExportExcelModel> ExportList = new List<ExportExcelModel>();
-            foreach (string[] cortage in Response)
-                ExportList.Add(new ExportExcelModel(cortage));
+            foreach (string[] cortage in
+                DataBaseApi.SetConnection("DESKTOP-J7PGA2A", "DB_SE_EngineerWS")
+                .Api.PrepareCommand(DataBaseRequests.GetFamilies)
+                .Api.ExecuteCommand<List<string[]>>()
+                .Api.DataBaseResponse<List<string[]>>()!)
+                FamilyModelCollection.Add(new FamilyModel(cortage));
 
-            foreach (ExportExcelModel export in ExportList)
-                Debug.WriteLine(export);
+            foreach (string[] cortage in
+                DataBaseApi.ConnectionAvailable()
+                .Api.PrepareCommand(DataBaseRequests.GetProductsListByFamily, "Пастеризаторы")
+                .Api.ExecuteCommand<List<string[]>>()
+                .Api.DataBaseResponse<List<string[]>>()!)
+                ProductModelByFamilyCollection.Add(new ProductModel(cortage));
+
+            foreach (string[] cortage in
+                DataBaseApi.ConnectionAvailable()
+                .Api.PrepareCommand(DataBaseRequests.GetProductsListByComponent, "Крышка панели с пультом")
+                .Api.ExecuteCommand<List<string[]>>()
+                .Api.DataBaseResponse<List<string[]>>()!)
+                ProductModelByComponentCollection.Add(new ProductModel(cortage));
+
+            foreach (string[] cortage in
+                DataBaseApi.ConnectionAvailable()
+                .Api.PrepareCommand(DataBaseRequests.GetComponentsListByProduct, "ПС 250")
+                .Api.ExecuteCommand<List<string[]>>()
+                .Api.DataBaseResponse<List<string[]>>()!)
+                ComponentModelCollection.Add(new ComponentModel(cortage));
+
+            foreach (string[] cortage in
+                DataBaseApi.ConnectionAvailable()
+                .Api.PrepareCommand(DataBaseRequests.GetFilesListByComponent, "Корпус ПС 100")
+                .Api.ExecuteCommand<List<string[]>>()
+                .Api.DataBaseResponse<List<string[]>>()!)
+                ComponentFileModelCollection.Add(new ComponentFileModel(cortage));
+
+            foreach (FamilyModel x in FamilyModelCollection)
+                Debug.WriteLine(x);
+            Debug.WriteLine("\n");
+
+            foreach (ProductModel x in ProductModelByFamilyCollection)
+                Debug.WriteLine(x);
+            Debug.WriteLine("\n");
+
+            foreach (ProductModel x in ProductModelByComponentCollection)
+                Debug.WriteLine(x);
+            Debug.WriteLine("\n");
+
+            foreach (ComponentModel x in ComponentModelCollection)
+                Debug.WriteLine(x);
+            Debug.WriteLine("\n");
+
+            foreach (ComponentFileModel x in ComponentFileModelCollection)
+                Debug.WriteLine(x);
+            Debug.WriteLine("\n");
         }
     }
 }

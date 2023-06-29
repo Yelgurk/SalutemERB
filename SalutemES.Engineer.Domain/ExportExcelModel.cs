@@ -1,27 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace SalutemES.Engineer.Domain;
 
-namespace SalutemES.Engineer.Domain;
-
-public class ExportExcelModel : ReflectionExtensions
+public class ExportExcelModel : ReflectionExtension
 {
     private static int _counter = 0;
-    public void ClearCounter() => _counter = 0;
+    public static void ClearCounter() => _counter = 0;
 
     public ExportExcelModel(string[] DataBaseResponse)
     {
-        if (DataBaseResponse.Length == IgnoreSkipProperties(this).Length)
-        {
-            Index = Convert.ToString(++_counter);
-
-            for (int i = 0; i < IgnoreSkipProperties(this).Length; i++)
-                IgnoreSkipProperties(this)[i]
-                .SetValue(this, DataBaseResponse[i]);
-        }
+        FillModel(DataBaseResponse, this);
+        Index = Convert.ToString(++_counter);
     }
 
     [SkipReflection]
