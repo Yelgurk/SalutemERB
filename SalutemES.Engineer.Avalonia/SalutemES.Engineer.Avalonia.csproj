@@ -28,5 +28,6 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\SalutemES.Engineer.Infrastructure\SalutemES.Engineer.Infrastructure.csproj" />
+		<ProjectReference Include="..\SalutemES.Engineer.Domain\SalutemES.Engineer.Domain.csproj" />
 	</ItemGroup>
 </Project>
