@@ -1,12 +1,8 @@
-﻿using Newtonsoft.Json;
-using SalutemES.Engineer.Domain;
+﻿using SalutemES.Engineer.Domain;
 using CommunityToolkit.Mvvm.ComponentModel;
-using System.Reflection;
-using SalutemES.Engineer.Application.SourceGenerator;
 
 namespace SalutemES.Engineer.Application.ObservableModel;
 
-[CopyPropertiesAttribute(typeof(ComponentBase))]
 public partial class ComponentModel : ObservableObject
 {
     private ComponentBase _base;
