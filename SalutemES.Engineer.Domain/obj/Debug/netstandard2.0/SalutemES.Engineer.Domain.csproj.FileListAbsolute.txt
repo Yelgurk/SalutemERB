@@ -1,0 +1,10 @@
+D:\VS 2022 Projects\SalutemES\SalutemES.Engineer.Domain\bin\Debug\netstandard2.0\SalutemES.Engineer.Domain.deps.json
+D:\VS 2022 Projects\SalutemES\SalutemES.Engineer.Domain\bin\Debug\netstandard2.0\SalutemES.Engineer.Domain.dll
+D:\VS 2022 Projects\SalutemES\SalutemES.Engineer.Domain\bin\Debug\netstandard2.0\SalutemES.Engineer.Domain.pdb
+D:\VS 2022 Projects\SalutemES\SalutemES.Engineer.Domain\obj\Debug\netstandard2.0\SalutemES.Engineer.Domain.csproj.AssemblyReference.cache
+D:\VS 2022 Projects\SalutemES\SalutemES.Engineer.Domain\obj\Debug\netstandard2.0\SalutemES.Engineer.Domain.GeneratedMSBuildEditorConfig.editorconfig
+D:\VS 2022 Projects\SalutemES\SalutemES.Engineer.Domain\obj\Debug\netstandard2.0\SalutemES.Engineer.Domain.AssemblyInfoInputs.cache
+D:\VS 2022 Projects\SalutemES\SalutemES.Engineer.Domain\obj\Debug\netstandard2.0\SalutemES.Engineer.Domain.AssemblyInfo.cs
+D:\VS 2022 Projects\SalutemES\SalutemES.Engineer.Domain\obj\Debug\netstandard2.0\SalutemES.Engineer.Domain.csproj.CoreCompileInputs.cache
+D:\VS 2022 Projects\SalutemES\SalutemES.Engineer.Domain\obj\Debug\netstandard2.0\SalutemES.Engineer.Domain.dll
+D:\VS 2022 Projects\SalutemES\SalutemES.Engineer.Domain\obj\Debug\netstandard2.0\SalutemES.Engineer.Domain.pdb

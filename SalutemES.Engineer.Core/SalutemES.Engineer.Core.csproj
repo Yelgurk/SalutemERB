@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.0" />
+  </ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\SalutemES.Engineer.Domain\SalutemES.Engineer.Domain.csproj" />
+		<ProjectReference Include="..\SalutemES.Engineer.Infrastructure\SalutemES.Engineer.Infrastructure.csproj" />
+	</ItemGroup>
+	
+	<ItemGroup>
+		<ProjectReference Include="..\SalutemES.Engineer.SourceGenerator\SalutemES.Engineer.SourceGenerator.csproj" OutputItemType="Analyzer"/>
+	</ItemGroup>
+</Project>

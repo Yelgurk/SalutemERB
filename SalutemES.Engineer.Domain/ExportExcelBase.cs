@@ -12,7 +12,7 @@ public class ExportExcelBase : ReflectionExtension
     }
 
     [SkipReflection]
-    public string? Index { get; private init; }
+    public string? Index { get; private set; }
     public string? Name { get; set; }
     public string? Code { get; set; }
     public string? Count { get; set; }

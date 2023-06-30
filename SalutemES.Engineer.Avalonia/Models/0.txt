@@ -1,0 +1,10 @@
+string? | ProductName
+string? | Name
+string? | Code
+string? | Grade
+string? | Thickness
+string? | Folds
+string? | WeightKG
+string? | Note
+string? | Material
+string? | FilesCount

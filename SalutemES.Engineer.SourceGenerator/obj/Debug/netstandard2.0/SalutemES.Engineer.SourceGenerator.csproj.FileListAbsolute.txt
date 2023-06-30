@@ -1,0 +1,10 @@
+D:\VS 2022 Projects\SalutemES\SalutemES.Engineer.SourceGenerator\bin\Debug\netstandard2.0\SalutemES.Engineer.SourceGenerator.deps.json
+D:\VS 2022 Projects\SalutemES\SalutemES.Engineer.SourceGenerator\bin\Debug\netstandard2.0\SalutemES.Engineer.SourceGenerator.dll
+D:\VS 2022 Projects\SalutemES\SalutemES.Engineer.SourceGenerator\bin\Debug\netstandard2.0\SalutemES.Engineer.SourceGenerator.pdb
+D:\VS 2022 Projects\SalutemES\SalutemES.Engineer.SourceGenerator\obj\Debug\netstandard2.0\SalutemES.Engineer.SourceGenerator.csproj.AssemblyReference.cache
+D:\VS 2022 Projects\SalutemES\SalutemES.Engineer.SourceGenerator\obj\Debug\netstandard2.0\SalutemES.Engineer.SourceGenerator.GeneratedMSBuildEditorConfig.editorconfig
+D:\VS 2022 Projects\SalutemES\SalutemES.Engineer.SourceGenerator\obj\Debug\netstandard2.0\SalutemES.Engineer.SourceGenerator.AssemblyInfoInputs.cache
+D:\VS 2022 Projects\SalutemES\SalutemES.Engineer.SourceGenerator\obj\Debug\netstandard2.0\SalutemES.Engineer.SourceGenerator.AssemblyInfo.cs
+D:\VS 2022 Projects\SalutemES\SalutemES.Engineer.SourceGenerator\obj\Debug\netstandard2.0\SalutemES.Engineer.SourceGenerator.csproj.CoreCompileInputs.cache
+D:\VS 2022 Projects\SalutemES\SalutemES.Engineer.SourceGenerator\obj\Debug\netstandard2.0\SalutemES.Engineer.SourceGenerator.dll
+D:\VS 2022 Projects\SalutemES\SalutemES.Engineer.SourceGenerator\obj\Debug\netstandard2.0\SalutemES.Engineer.SourceGenerator.pdb
