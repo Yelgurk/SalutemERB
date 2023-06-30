@@ -1,9 +1,11 @@
 ﻿using OneOf;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
@@ -22,7 +24,7 @@ public sealed partial class DataBaseApi
     private static string ServerName { get; set; } = string.Empty;
     private static string DataBaseName { get; set; } = string.Empty;
 
-    private static SqlException? SQLConnectionException { get; set; }
+    private static Exception? SQLConnectionException { get; set; }
 
     private static void SQLOpenConnection()
     {
@@ -37,7 +39,7 @@ public sealed partial class DataBaseApi
                 Integrated Security = True;");
             Connection.Open();
         }
-        catch (SqlException e) { SQLConnectionException = e; }
+        catch (Exception e) { SQLConnectionException = e; }
     }
 
     private static void SQLCloseConnection()
@@ -48,7 +50,7 @@ public sealed partial class DataBaseApi
             Connection?.Dispose();
             Connection = null;
         }
-        catch (SqlException e) { SQLConnectionException = e; }
+        catch (Exception e) { SQLConnectionException = e; }
     }
 
     public static DataBaseApiOr<SQLUnavailable> ConnectionAvailable() => SetConnection(ServerName, DataBaseName);
@@ -59,8 +61,9 @@ public sealed partial class DataBaseApi
         DataBaseApi.DataBaseName = DataBaseName;
 
         SQLConnectionException = null;
-        SQLOpenConnection();
-        SQLCloseConnection();
+
+        try { SQLOpenConnection(); }
+        finally { SQLCloseConnection(); }
 
         return SQLConnectionException is null ? new DataBaseApi() : new SQLUnavailable();
     }
@@ -73,7 +76,30 @@ public sealed partial class DataBaseApi
 
         SQLOpenConnection();
 
-        try { Command = new SqlCommand(Request.Command(Args), Connection!); }
+        try { Command = new SqlCommand(Request.Command(Args)) { Connection = Connection! }; }
+        catch { Command = null; }
+
+        return Command is null ? new SQLCommandNotReady() : new DataBaseApi();
+    }
+
+    public DataBaseApiOr<SQLCommandNotReady> PrepareCommand<T>(DataBaseTableArgProcedure Procedure, List<T> StructuredToTableArgs, DataBaseTableTypeArgName TableArgName)
+    {
+        Command?.Dispose();
+
+        SQLOpenConnection();
+
+        try
+        {
+            Command = new SqlCommand(Procedure.Name)
+            {
+                CommandType = CommandType.StoredProcedure,
+                Connection = Connection!
+            };
+            Command
+                .Parameters
+                .AddWithValue(TableArgName.Name, ConvertListToDataTable(StructuredToTableArgs));
+                //.SqlDbType = SqlDbType.Structured;
+        }
         catch { Command = null; }
 
         return Command is null ? new SQLCommandNotReady() : new DataBaseApi();
@@ -138,5 +164,22 @@ public sealed partial class DataBaseApi
             Type str when str == typeof(string) => (T)Convert.ChangeType(ResponseString, typeof(T))!,
             _ => default(T)
         };
+    }
+
+    public static DataTable ConvertListToDataTable<T>(List<T> ModelsCollection)
+    {
+        DataTable Table = new DataTable();
+
+        foreach (PropertyInfo property in typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance))
+            Table.Columns.Add(property.Name, property.PropertyType);
+
+        foreach (T cortage in ModelsCollection)
+            Table.Rows.Add(
+            typeof(T)
+            .GetProperties(BindingFlags.Public | BindingFlags.Instance)
+            .Select(p => p.GetValue(cortage))
+            .ToArray());
+
+        return Table;
     }
 }

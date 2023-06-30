@@ -1,7 +1,7 @@
 Use DB_SE_EngineerWS;
 Go
 
-Create Procedure [dbo].GetExportTable
+Create Procedure [dbo].[GetExportTable]
 	@ProductsList export_product readonly
 As Begin
 	Select  Component.name,
