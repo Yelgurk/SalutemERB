@@ -1,14 +1,6 @@
-﻿using OneOf;
-using System;
-using System.Collections.Generic;
-using System.Data;
+﻿using System.Data;
 using System.Data.SqlClient;
-using System.Diagnostics;
-using System.Linq;
 using System.Reflection;
-using System.Reflection.Metadata;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SalutemES.Engineer.Infrastructure.DataBase;
 
@@ -166,7 +158,7 @@ public sealed partial class DataBaseApi
         };
     }
 
-    public static DataTable ConvertListToDataTable<T>(List<T> ModelsCollection)
+    private static DataTable ConvertListToDataTable<T>(List<T> ModelsCollection)
     {
         DataTable Table = new DataTable();
 
