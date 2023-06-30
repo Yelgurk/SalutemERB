@@ -38,10 +38,22 @@ public class ModelBySourcePropertiesGenerator : ISourceGenerator
             .Where(w => w.Modifiers.ToString().Contains("partial"))
             .ToList();
 
-        List<(string, string)> ObservableClassesNames = ObservableClasses
+        List<(string, string)> MatchedClassesPaths = ObservableClasses
             .Select(s => (
-            s.Identifier.Text,
-            s.AttributeLists
+                s.SyntaxTree.FilePath,
+                context
+                .Compilation
+                .GetSemanticModel(s.SyntaxTree)
+                .GetDeclaredSymbol(s)
+                .ContainingAssembly
+                .MetadataName
+            ))
+            .ToList();
+
+        List<(string, string)> MatchedClassesNames = ObservableClasses
+            .Select(s => (
+                s.Identifier.Text,
+                s.AttributeLists
                 .SelectMany(sm => sm.Attributes)
                 .Single(w => w.Name.ToString().Contains(typeof(ModelBySourcePropertiesAttribute).Name))
                 .ArgumentList
@@ -55,7 +67,7 @@ public class ModelBySourcePropertiesGenerator : ISourceGenerator
             ))
             .ToList();
 
-        List<List<(string, string)>> ObservableSourceSetters = ObservableClassesNames
+        List<List<(string, string)>> MatchedSourceSetters = MatchedClassesNames
             .Select(s => context
                 .Compilation
                 .GetTypeByMetadataName($"{ClassesNamespace}.{s.Item2}")
@@ -65,16 +77,6 @@ public class ModelBySourcePropertiesGenerator : ISourceGenerator
                 .Select(s => (s.Type.ToString(), s.Name))
                 .ToList())
             .ToList();
-
-        int i = 0;
-
-        foreach (var x in ObservableSourceSetters)
-        {
-            File.WriteAllText(@$"D:\VS 2022 Projects\SalutemES\SalutemES.Engineer.Avalonia\Models\{i++}.txt",
-                x.Select(s => $"{s.Item1} | {s.Item2}\n")
-                .ToList()
-                .Aggregate((prev, next) => prev += next));
-        }
     }
 
     public void Initialize(GeneratorInitializationContext context) { }
