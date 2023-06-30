@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace SalutemES.Engineer.Domain;
 
-public class ComponentFileModel : ReflectionExtension
+public class ComponentFileBase : ReflectionExtension
 {
-    public ComponentFileModel() { }
-    public ComponentFileModel(string[] DataBaseResponse) => FillModel(DataBaseResponse, this);
+    public ComponentFileBase() { }
+    public ComponentFileBase(string[] DataBaseResponse) => FillModel(DataBaseResponse, this);
 
     [SkipReflection]
     public int IdToInt => Id is null ? -1 : int.Parse(Id!);

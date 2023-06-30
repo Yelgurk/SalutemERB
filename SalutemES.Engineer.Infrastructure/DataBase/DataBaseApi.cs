@@ -90,7 +90,6 @@ public sealed partial class DataBaseApi
             Command
                 .Parameters
                 .AddWithValue(TableArgName.Name, ConvertListToDataTable(StructuredToTableArgs));
-                //.SqlDbType = SqlDbType.Structured;
         }
         catch { Command = null; }
 
@@ -101,16 +100,29 @@ public sealed partial class DataBaseApi
     {
         try
         {
-            Reader = Command!.ExecuteReader();
+            Reader = Command?.ExecuteReader();
 
-            ResponseString = "";
+            ResponseString = null;
 
-            while (Reader.Read())
-                for (int i = 0; i < Reader.FieldCount; i++)
-                    ResponseString += Convert.ToString(Reader.GetValue(i));
+            if (Reader is not null)
+            {
+                ResponseString = "";
+                for (object[] cortage; Reader!.Read();)
+                {
+                    Reader.GetValues(cortage = new object[Reader.FieldCount]);
+                    ResponseString +=
+                        Array.ConvertAll<object, string>(cortage, (o) => o?.ToString() ?? "")
+                        .Aggregate((prev, current) => prev + $"|{current}") + "|";
+                }
+                ResponseString = ResponseString.Length > 0 ? ResponseString.Remove(ResponseString.Length - 1) : ResponseString;
+            }
         }
         catch { ResponseString = null; }
-        finally { SQLCloseConnection(); }
+        finally
+        {
+            Reader = null;
+            SQLCloseConnection();
+        }
 
         return ResponseString is null ? new SQLExecError() : new DataBaseApi();
     }
@@ -119,11 +131,13 @@ public sealed partial class DataBaseApi
     {
         try
         {
-            Reader = Command!.ExecuteReader();
+            Reader = Command?.ExecuteReader();
 
-            ResponseArray = new List<string[]>();
+            ResponseArray = null;
 
-            if (Reader.HasRows)
+            if (Reader is not null && Reader.HasRows)
+            {
+                ResponseArray = new List<string[]>();
                 while (Reader.Read())
                 {
                     string[] Cortage = new string[Reader.FieldCount];
@@ -131,11 +145,26 @@ public sealed partial class DataBaseApi
                         Cortage[i] = Convert.ToString(Reader.GetValue(i))!;
                     ResponseArray.Add(Cortage);
                 }
+            }
         }
         catch { ResponseArray = null; }
-        finally { SQLCloseConnection(); }
+        finally
+        {
+            Reader = null;
+            SQLCloseConnection();
+        }
 
         return ResponseArray is null ? new SQLExecError() : new DataBaseApi();
+    }
+    private static BoolResponseOr<SQLExecError> WithoutTableResponse()
+    {
+        int? RowsAffected = null;
+
+        try { RowsAffected = Command!.ExecuteNonQuery(); }
+        catch { RowsAffected = null; }
+        finally { SQLCloseConnection(); }
+
+        return RowsAffected is null ? new SQLExecError() : (RowsAffected! > 0 ? true : false);
     }
 
     public DataBaseApiOr<SQLExecError> ExecuteCommand<T>()
@@ -147,6 +176,8 @@ public sealed partial class DataBaseApi
             _ => new SQLExecError()
         };
     }
+
+    public BoolResponseOr<SQLExecError> ExecuteCommand() => WithoutTableResponse();
 
     public T? DataBaseResponse<T>()
     {

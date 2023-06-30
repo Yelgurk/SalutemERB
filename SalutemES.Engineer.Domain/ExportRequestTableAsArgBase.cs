@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SalutemES.Engineer.Domain;
 
-public sealed class ExportRequestTableAsArgModel
+public sealed class ExportRequestTableAsArgBase
 {
     public string product { get; set; } = string.Empty;
     public int count { get; set; }

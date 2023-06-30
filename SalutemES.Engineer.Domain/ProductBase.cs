@@ -6,11 +6,12 @@ using System.Threading.Tasks;
 
 namespace SalutemES.Engineer.Domain;
 
-public class FamilyModel : ReflectionExtension
+public class ProductBase : ReflectionExtension
 {
-    public FamilyModel() { }
-    public FamilyModel(string[] DataBaseResponse) => FillModel(DataBaseResponse, this);
+    public ProductBase() { }
+    public ProductBase(string[] DataBaseResponse) => FillModel(DataBaseResponse, this);
 
     public string? Name { get; set; }
+    public string? FamilyName { get; set; }
     public string? Count { get; set; }
 }
