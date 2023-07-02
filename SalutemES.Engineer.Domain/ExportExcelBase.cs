@@ -5,6 +5,7 @@ public class ExportExcelBase : ReflectionExtension
     private static int _counter = 0;
     public static void ClearCounter() => _counter = 0;
 
+    public ExportExcelBase() { }
     public ExportExcelBase(string[] DataBaseResponse)
     {
         FillModel(DataBaseResponse, this);

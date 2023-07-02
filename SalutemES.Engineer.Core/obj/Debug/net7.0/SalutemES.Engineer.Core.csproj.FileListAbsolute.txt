@@ -1,8 +1,3 @@
-D:\VS 2022 Projects\SalutemES\SalutemES.Engineer.Core\obj\Debug\net7.0\SalutemES.Engineer.Core.csproj.AssemblyReference.cache
-D:\VS 2022 Projects\SalutemES\SalutemES.Engineer.Core\obj\Debug\net7.0\SalutemES.Engineer.Core.GeneratedMSBuildEditorConfig.editorconfig
-D:\VS 2022 Projects\SalutemES\SalutemES.Engineer.Core\obj\Debug\net7.0\SalutemES.Engineer.Core.AssemblyInfoInputs.cache
-D:\VS 2022 Projects\SalutemES\SalutemES.Engineer.Core\obj\Debug\net7.0\SalutemES.Engineer.Core.AssemblyInfo.cs
-D:\VS 2022 Projects\SalutemES\SalutemES.Engineer.Core\obj\Debug\net7.0\SalutemES.Engineer.Core.csproj.CoreCompileInputs.cache
 D:\VS 2022 Projects\SalutemES\SalutemES.Engineer.Core\bin\Debug\net7.0\SalutemES.Engineer.Core.deps.json
 D:\VS 2022 Projects\SalutemES\SalutemES.Engineer.Core\bin\Debug\net7.0\SalutemES.Engineer.Core.dll
 D:\VS 2022 Projects\SalutemES\SalutemES.Engineer.Core\bin\Debug\net7.0\SalutemES.Engineer.Core.pdb
@@ -12,6 +7,11 @@ D:\VS 2022 Projects\SalutemES\SalutemES.Engineer.Core\bin\Debug\net7.0\SalutemES
 D:\VS 2022 Projects\SalutemES\SalutemES.Engineer.Core\bin\Debug\net7.0\SalutemES.Engineer.Domain.pdb
 D:\VS 2022 Projects\SalutemES\SalutemES.Engineer.Core\bin\Debug\net7.0\SalutemES.Engineer.Infrastructure.pdb
 D:\VS 2022 Projects\SalutemES\SalutemES.Engineer.Core\bin\Debug\net7.0\SalutemES.Engineer.SourceGenerator.pdb
+D:\VS 2022 Projects\SalutemES\SalutemES.Engineer.Core\obj\Debug\net7.0\SalutemES.Engineer.Core.csproj.AssemblyReference.cache
+D:\VS 2022 Projects\SalutemES\SalutemES.Engineer.Core\obj\Debug\net7.0\SalutemES.Engineer.Core.GeneratedMSBuildEditorConfig.editorconfig
+D:\VS 2022 Projects\SalutemES\SalutemES.Engineer.Core\obj\Debug\net7.0\SalutemES.Engineer.Core.AssemblyInfoInputs.cache
+D:\VS 2022 Projects\SalutemES\SalutemES.Engineer.Core\obj\Debug\net7.0\SalutemES.Engineer.Core.AssemblyInfo.cs
+D:\VS 2022 Projects\SalutemES\SalutemES.Engineer.Core\obj\Debug\net7.0\SalutemES.Engineer.Core.csproj.CoreCompileInputs.cache
 D:\VS 2022 Projects\SalutemES\SalutemES.Engineer.Core\obj\Debug\net7.0\SalutemES.Engineer.Core.csproj.CopyComplete
 D:\VS 2022 Projects\SalutemES\SalutemES.Engineer.Core\obj\Debug\net7.0\SalutemES.Engineer.Core.dll
 D:\VS 2022 Projects\SalutemES\SalutemES.Engineer.Core\obj\Debug\net7.0\refint\SalutemES.Engineer.Core.dll

@@ -373,7 +373,7 @@
       },
       "SalutemES.Engineer.Domain/1.0.0": {
         "type": "project",
-        "framework": ".NETStandard,Version=v2.0",
+        "framework": ".NETCoreApp,Version=v7.0",
         "compile": {
           "bin/placeholder/SalutemES.Engineer.Domain.dll": {}
         },

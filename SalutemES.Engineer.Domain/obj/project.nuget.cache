@@ -1,11 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "jleD5I5ll9j3Ds1V+MW6mwPma6rJnz7uwGcqBvjB47PKsxDIea0XDrPVuPWpNUCegjpWhduc/PJWrGzxITWVAQ==",
+  "dgSpecHash": "qz6v0XqgYqBiIBA2yHeZB7YEEMqQkptjoByTuKybOljDXqz3PIKMSz6q8YQh8nVowTsCb1criSYuHNm9ztxhug==",
   "success": true,
   "projectFilePath": "D:\\VS 2022 Projects\\SalutemES\\SalutemES.Engineer.Domain\\SalutemES.Engineer.Domain.csproj",
-  "expectedPackageFiles": [
-    "C:\\Users\\Xell\\.nuget\\packages\\microsoft.netcore.platforms\\1.1.0\\microsoft.netcore.platforms.1.1.0.nupkg.sha512",
-    "C:\\Users\\Xell\\.nuget\\packages\\netstandard.library\\2.0.3\\netstandard.library.2.0.3.nupkg.sha512"
-  ],
+  "expectedPackageFiles": [],
   "logs": []
 }
