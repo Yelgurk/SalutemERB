@@ -2,6 +2,7 @@
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 
@@ -82,41 +83,53 @@ public class ModelBySourcePropertiesGenerator : ISourceGenerator
                     && !p.GetAttributes()
                         .Select(s => s.AttributeClass.Name)
                         .Contains(AttributeIgnoreName))
-                .Select(s => (s.Type.ToString(), s.Name))
+                .Select(s => (s.Type.ToString().Replace("?", ""), s.Name))
                 .ToList())
             .ToList();
 
-        int genIndex = 0;
         foreach (var GenClass in MatchedClassesNames)
         {
             StringBuilder generatedCode = new StringBuilder()
                 .AppendLine($"using CommunityToolkit.Mvvm.ComponentModel;")
                 .AppendLine($"using {ClassesNamespace};\n")
-                .AppendLine($"namespace {MatchedClassesPaths[genIndex].Item2};\n")
+                .AppendLine($"namespace {MatchedClassesPaths.First().Item2};\n")
                 .AppendLine($"public partial class {GenClass.Item1} : ObservableObject")
                 .AppendLine("{")
-                .AppendLine($"    private {GenClass.Item2} _base;\n")
-                .AppendLine($"    public {GenClass.Item1}() : this(new {GenClass.Item2}()) {{ }}")
+                .AppendLine($"    private {GenClass.Item2}? _base = null;\n")
                 .AppendLine($"    public {GenClass.Item1}(string[] SetterValue) : this(new {GenClass.Item2}(SetterValue)) {{ }}")
                 .AppendLine($"    public {GenClass.Item1}({GenClass.Item2} Base) => _base = Base;\n");
 
-            foreach (var GenProps in MatchedSourceSetters[genIndex])
+            foreach (var GenProps in MatchedSourceSetters.First())
             {
                 generatedCode
                     .AppendLine($"    " +
-                    $"private {GenProps.Item1} _{GenProps.Item2.ToLower()};")
+                    $"public Action On{GenProps.Item2}ChangedAction {{ get; set; }} = null;")
 
                     ?.AppendLine($"    " +
-                    $"public {GenProps.Item1} {GenProps.Item2} " +
-                    $"{{ get => _{GenProps.Item2.ToLower()} ?? _base.{GenProps.Item2} " +
-                    $"; set {{ _{GenProps.Item2.ToLower()} = value; OnPropertyChanged(nameof({GenProps.Item2})); " +
-                    $"}} }}\n");
+                    $"private {GenProps.Item1} _{GenProps.Item2.ToLower()} = default;")
+
+                    ?.AppendLine($"    " +
+                    $"public {GenProps.Item1} {GenProps.Item2}\n" +
+                    $"    {{")
+
+                    ?.AppendLine($"        " +
+                    $"get => !IsDefault(_{GenProps.Item2.ToLower()}) ? _{GenProps.Item2.ToLower()} : (_base?.{GenProps.Item2} ?? default); ")
+
+                    ?.AppendLine($"        " +
+                    $"set {{ _{GenProps.Item2.ToLower()} = value; OnPropertyChanged(nameof({GenProps.Item2})); On{GenProps.Item2}ChangedAction?.Invoke(); " +
+                    $"}}")
+
+                    ?.AppendLine($"    " +
+                    $"}}\n");
             }
 
+            MatchedClassesPaths.RemoveAt(0);
+            MatchedSourceSetters.RemoveAt(0);
+
+            generatedCode.AppendLine("    private bool IsDefault<T>(T obj) => object.Equals(obj, default(T));");
             generatedCode.Append("}");
 
             context.AddSource($"{GenClass.Item1}.g.cs", generatedCode.ToString());
-            genIndex++;
         }
     }
 

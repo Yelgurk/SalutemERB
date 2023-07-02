@@ -21,6 +21,7 @@ public record DataBaseRequest
 public static class DBRequests
 {
     public static DataBaseRequest GetFamilies => new("Select * From [dbo].VFamilyList;");
+    public static DataBaseRequest GetFamiliesByName => new("Select * From [dbo].VFamilyList Where family = '{0}';");
     public static DataBaseRequest GetProductsListByComponent => new("Exec [dbo].GetProductsListByComponent '{0}';");
     public static DataBaseRequest GetProductsListByFamily => new("Exec [dbo].GetProductsListByFamily '{0}';");
     public static DataBaseRequest GetComponentsListByProduct => new("Exec [dbo].GetComponentsListByProduct '{0}';");

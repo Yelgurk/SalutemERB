@@ -17,7 +17,6 @@
 	</ItemGroup>
 	
 	<ItemGroup>
-		<ProjectReference Include="..\SalutemES.Engineer.SourceGenerator\SalutemES.Engineer.SourceGenerator.csproj"
-						  OutputItemType="Analyzer"/>
+		<ProjectReference Include="..\SalutemES.Engineer.SourceGenerator\SalutemES.Engineer.SourceGenerator.csproj" OutputItemType="Analyzer" />
 	</ItemGroup>
 </Project>
