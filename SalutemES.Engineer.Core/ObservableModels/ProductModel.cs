@@ -3,7 +3,7 @@ using SalutemES.Engineer.SourceGenerator;
 
 namespace SalutemES.Engineer.Core;
 
-[ModelBySourcePropertiesAttribute(typeof(ProductBase))]
+[ModelBySourceProperties(typeof(ProductBase))]
 public partial class ProductModel
 {
 }

@@ -8,10 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Export\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="OneOf" Version="3.0.255" />
     <PackageReference Include="OneOf.SourceGenerator" Version="3.0.255" />
     <PackageReference Include="System.Data.SqlClient" Version="4.8.5" />

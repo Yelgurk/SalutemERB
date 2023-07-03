@@ -3,7 +3,7 @@ using SalutemES.Engineer.Domain;
 
 namespace SalutemES.Engineer.Core;
 
-[ModelBySourcePropertiesAttribute(typeof(ComponentBase))]
+[ModelBySourceProperties(typeof(ComponentBase))]
 public partial class ComponentModel
 {
 }

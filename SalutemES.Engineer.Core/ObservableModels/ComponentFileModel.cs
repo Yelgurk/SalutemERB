@@ -3,7 +3,7 @@ using SalutemES.Engineer.SourceGenerator;
 
 namespace SalutemES.Engineer.Core;
 
-[ModelBySourcePropertiesAttribute(typeof(ComponentFileBase))]
+[ModelBySourceProperties(typeof(ComponentFileBase))]
 public partial class ComponentFileModel
 {
 }
