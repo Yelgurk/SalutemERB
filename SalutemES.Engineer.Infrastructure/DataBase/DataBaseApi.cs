@@ -4,7 +4,7 @@ using System.Reflection;
 
 namespace SalutemES.Engineer.Infrastructure.DataBase;
 
-public sealed partial class DataBaseApi
+public sealed class DataBaseApi
 {
     private static SqlConnection? Connection { get; set; }
     private static SqlCommand? Command { get; set; }
@@ -13,7 +13,7 @@ public sealed partial class DataBaseApi
     public static List<string[]>? ResponseArray { get; private set; }
     public static string? ResponseString { get; private set; }
 
-    private static string ServerName { get; set; } = string.Empty;
+    private static string  ServerName { get; set; } = string.Empty;
     private static string DataBaseName { get; set; } = string.Empty;
 
     private static Exception? SQLConnectionException { get; set; }
@@ -106,15 +106,15 @@ public sealed partial class DataBaseApi
 
             if (Reader is not null)
             {
-                ResponseString = "";
+                List<string> ResponseArr = new List<string>();
+
                 for (object[] cortage; Reader!.Read();)
                 {
                     Reader.GetValues(cortage = new object[Reader.FieldCount]);
-                    ResponseString +=
-                        Array.ConvertAll<object, string>(cortage, (o) => o?.ToString() ?? "")
-                        .Aggregate((prev, current) => prev + $"|{current}") + "|";
+                    ResponseArr.AddRange(Array.ConvertAll<object, string>(cortage, (o) => o?.ToString() ?? ""));
                 }
-                ResponseString = ResponseString.Length > 0 ? ResponseString.Remove(ResponseString.Length - 1) : ResponseString;
+
+                ResponseString = string.Join("|", ResponseArr);
             }
         }
         catch { ResponseString = null; }
@@ -156,6 +156,7 @@ public sealed partial class DataBaseApi
 
         return ResponseArray is null ? new SQLExecError() : new DataBaseApi();
     }
+
     private static BoolResponseOr<SQLExecError> WithoutTableResponse()
     {
         int? RowsAffected = null;

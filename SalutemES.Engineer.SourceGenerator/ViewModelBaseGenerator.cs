@@ -89,11 +89,11 @@ public class ViewModelBaseGenerator : ISourceGenerator
                 .AppendLine($"        " +
                 $"{GenClass.Item2}Collection.Clear();\n        " +
                 $"DataBaseApi.ConnectionAvailable()\n            " +
-                $".Handler(conn => conn.IsSuccess, error => Logger.WriteLine(error.Exception.message))\n            " +
+                $".DoIf(conn => conn.IsSuccess, error => Logger.WriteLine(error.Exception.message))\n            " +
                 $"?.Api.PrepareCommand(Request, Args)\n            " +
-                $".Handler(comm => comm.IsSuccess, error => Logger.WriteLine(error.Exception.message))\n            " +
+                $".DoIf(comm => comm.IsSuccess, error => Logger.WriteLine(error.Exception.message))\n            " +
                 $"?.Api.ExecuteCommand<List<string[]>>()\n            " +
-                $".Handler(exec => exec.IsSuccess, error => Logger.WriteLine(error.Exception.message))\n            " +
+                $".DoIf(exec => exec.IsSuccess, error => Logger.WriteLine(error.Exception.message))\n            " +
                 $"?.Api.DataBaseResponse<List<string[]>>()\n            " +
                 $"?.ForEach(cortage => {GenClass.Item2}Collection.Add(new {GenClass.Item2}(cortage)));\n" +
                 $"    }}");
