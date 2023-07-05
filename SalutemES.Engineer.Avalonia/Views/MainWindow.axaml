@@ -3,16 +3,86 @@
         xmlns:vm="using:SalutemES.Engineer.Avalonia.ViewModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="600"
         x:Class="SalutemES.Engineer.Avalonia.Views.MainWindow"
         Icon="/Assets/avalonia-logo.ico"
         Title="SalutemES.Engineer.Avalonia">
+	<Window.Resources>
+		<RadialGradientBrush x:Key="gradRadial" GradientOrigin="0.5, 0.5" Center="0.5, 0.5" Radius="0.5" >
+			<GradientStop Color="#0073CF" Offset="0"/>
+			<GradientStop Color="Transparent" Offset="1"/>
+		</RadialGradientBrush>
+	</Window.Resources>
+	<Window.Styles>
+		<Style Selector="ListBox.DynamicDataTemplateBorder">
+			<Setter Property="Background" Value="Transparent"/>
+		</Style>
+		
+		<Style Selector="ListBox.DynamicDataTemplateBorder ListBoxItem">
+			<Setter Property="BorderThickness" Value="1"/>
+			<Setter Property="Padding" Value="-1"/>
+		</Style>
 
-    <Design.DataContext>
-        <vm:MainWindowViewModel/>
-    </Design.DataContext>
+		<Style Selector="ListBox.DynamicDataTemplateBorder ListBoxItem:pointerover /template/ ContentPresenter">
+			<Setter Property="BorderThickness" Value="1"/>
+			<Setter Property="BorderBrush" Value="{DynamicResource gradRadial}"/>
+		</Style>
 
-	<Grid>
+		<Style Selector="ListBox.DynamicDataTemplateBorder ListBoxItem Border">
+			<Setter Property="Padding" Value="10"/>
+			<Setter Property="Background" Value="Transparent"/>
+		</Style>
+	</Window.Styles>
 
-	</Grid>
+	<Window.DataContext>
+		<vm:MainWindowViewModel/>
+	</Window.DataContext>
+
+	<StackPanel>
+		<!-- Простой текст -->
+		<TextBlock Text="Hello, World!" />
+
+		<!-- Кнопка -->
+		<Button Content="Click me!" />
+
+		<!-- Чекбокс -->
+		<CheckBox Content="Check me!" />
+
+		<!-- Радиокнопки -->
+		<RadioButton Content="Option 1" />
+		<RadioButton Content="Option 2" />
+
+		<!-- Выпадающий список -->
+		<ComboBox>
+			<ComboBoxItem Content="Item 1" />
+			<ComboBoxItem Content="Item 2" />
+			<ComboBoxItem Content="Item 3" />
+		</ComboBox>
+
+		<!-- Слайдер для выбора числового значения -->
+		<Slider Minimum="0" Maximum="100" Value="15"/>
+
+		<!-- Прогресс-бар -->
+		<ProgressBar Minimum="0" Maximum="100" Value="30" />
+
+		<!-- Строка ввода текста -->
+		<TextBox/>
+
+		<!-- Метка для поля ввода -->
+		<Label Content="Name:" Target="{Binding ElementName=name}" />
+		<TextBox Name="name" />
+
+		<!-- Изображение -->
+		<Image Source="../Assets/avalonia-logo.ico" Width="80"/>
+
+		<ListBox ItemsSource="{Binding SomeCollection}" Classes="DynamicDataTemplateBorder">
+			<ListBox.ItemTemplate>
+				<DataTemplate>
+					<Border PointerMoved="ListBoxBorderGradientHandler">
+						<Label Content="{Binding}"/>
+					</Border>
+				</DataTemplate>
+			</ListBox.ItemTemplate>
+		</ListBox>
+	</StackPanel>
 </Window>

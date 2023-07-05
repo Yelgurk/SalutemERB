@@ -15,6 +15,13 @@ namespace SalutemES.Engineer.Avalonia.ViewModels
 {
     public class MainWindowViewModel : ViewModelBase
     {
-        
+        public List<string> SomeCollection { get; set; } = new List<string>()
+        {
+            "test 1",
+            "test 2",
+            "test 3",
+            "test 4",
+            "test 5"
+        };
     }
 }
