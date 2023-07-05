@@ -95,47 +95,69 @@ public class ModelPropertiesGenerator : ISourceGenerator
 
         foreach (var GenClass in MatchedClassesNames)
         {
+            List<string> generatedEquals = new List<string>();
             StringBuilder generatedCode = new StringBuilder()
-                .AppendLine($"#nullable enable\n")
-                .AppendLine($"using CommunityToolkit.Mvvm.ComponentModel;")
-                .AppendLine($"using {ClassesNamespace};\n")
-                .AppendLine($"namespace {MatchedClassesPaths.First().Item2};\n")
-                .AppendLine($"public partial class {GenClass.Item1} : ObservableObject")
-                .AppendLine("{")
-                .AppendLine($"    private {GenClass.Item2}? _base = null;\n")
-                .AppendLine($"    public {GenClass.Item1}() {{}}")
-                .AppendLine($"    public {GenClass.Item1}(string[] SetterValue) : this(new {GenClass.Item2}(SetterValue)) {{ }}")
-                .AppendLine($"    public {GenClass.Item1}({GenClass.Item2} Base) => _base = Base;\n");
+                .AppendLine(
+                $$"""
+                #nullable enable
+
+                using CommunityToolkit.Mvvm.ComponentModel;
+                using {{ClassesNamespace}};
+
+                namespace {{MatchedClassesPaths.First().Item2}};
+
+                public partial class {{GenClass.Item1}} : ObservableObject
+                {
+                    private {{GenClass.Item2}}? _base = null;
+
+                    public {{GenClass.Item1}}() { }
+                    public {{GenClass.Item1}}(string[] SetterValue) : this(new {{GenClass.Item2}}(SetterValue)) { }
+                    public {{GenClass.Item1}}({{GenClass.Item2}} Base) => _base = Base;
+
+                """
+                );
 
             foreach (var GenProps in MatchedSourceSetters.First())
             {
                 generatedCode
-                    .AppendLine($"    " +
-                    $"public Action? On{GenProps.Item2}ChangedAction {{ get; set; }} = null;")
+                .AppendLine(
+                $$"""
+                    public Action? On{{GenProps.Item2}}ChangedAction { get; set; } = null;
+                    private {{GenProps.Item1}} _{{GenProps.Item2.ToLower()}} = {{DefaultBuilder(GenProps.Item1)}};
 
-                    ?.AppendLine($"    " +
-                    $"private {GenProps.Item1} _{GenProps.Item2.ToLower()} = {DefaultBuilder(GenProps.Item1)};")
+                    public {{GenProps.Item1}} {{GenProps.Item2}}
+                    {
+                        get => !IsDefault(_{{GenProps.Item2.ToLower()}}) ? _{{GenProps.Item2.ToLower()}} : (_base?.{{GenProps.Item2}} ?? {{DefaultBuilder(GenProps.Item1)}});
+                        set { if (SetProperty(ref _{{GenProps.Item2.ToLower()}}, value)) On{{GenProps.Item2}}ChangedAction?.Invoke(); }
+                    }
 
-                    ?.AppendLine($"    " +
-                    $"public {GenProps.Item1} {GenProps.Item2}\n" +
-                    $"    {{")
+                """
+                );
 
-                    ?.AppendLine($"        " +
-                    $"get => !IsDefault(_{GenProps.Item2.ToLower()}) ? _{GenProps.Item2.ToLower()} : (_base?.{GenProps.Item2} ?? {DefaultBuilder(GenProps.Item1)}); ")
-
-                    ?.AppendLine($"        " +
-                    $"set {{ if (SetProperty(ref _{GenProps.Item2.ToLower()}, value)) On{GenProps.Item2}ChangedAction?.Invoke(); " +
-                    $"}}")
-
-                    ?.AppendLine($"    " +
-                    $"}}\n");
+                generatedEquals.Add($"this.{GenProps.Item2} == Model.{GenProps.Item2}");
             }
 
             MatchedClassesPaths.RemoveAt(0);
             MatchedSourceSetters.RemoveAt(0);
 
-            generatedCode.AppendLine("    private bool IsDefault<T>(T obj) => typeof(T) == typeof(string) ? object.Equals(obj, \"\") : object.Equals(obj, default(T));");
-            generatedCode.Append("}");
+            generatedCode
+                .AppendLine(
+                $$"""
+                    private bool IsDefault<T>(T obj) => typeof(T) == typeof(string) ? object.Equals(obj, "") : object.Equals(obj, default(T));
+
+                    public override bool Equals(object? obj)
+                    {
+                        if (obj is not null && obj is {{GenClass.Item1}} Model)
+                            if ({{string.Join(" && ", generatedEquals)}})
+                                return true;
+
+                        return false;
+                    }
+
+                    public override int GetHashCode() => base.GetHashCode();
+                }
+                """
+                );
 
             context.AddSource($"{GenClass.Item1}.g.cs", generatedCode.ToString());
         }

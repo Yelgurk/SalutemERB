@@ -69,38 +69,50 @@ public class ViewModelBaseGenerator : ISourceGenerator
         foreach (var GenClass in MatchedClassesNames)
         {
             StringBuilder generatedCode = new StringBuilder()
-                .AppendLine($"#nullable enable\n")
-                .AppendLine($"using System.Collections.ObjectModel;")
-                .AppendLine($"using CommunityToolkit.Mvvm.ComponentModel;")
-                .AppendLine($"using SalutemES.Engineer.Infrastructure;")
-                .AppendLine($"using SalutemES.Engineer.Infrastructure.DataBase;\n")
-                .AppendLine($"namespace {MatchedClassesPaths.First().Item2};\n")
-                .AppendLine($"public partial class {GenClass.Item1} : ObservableObject")
-                .AppendLine("{")
-                .AppendLine($"    public Action? OnSelectedModelChanged {{ private get; set; }} = null;")
-                .AppendLine($"    private {GenClass.Item2}? _{GenClass.Item2.ToLower()}selected;\n")
-                .AppendLine($"    public {GenClass.Item2}? {GenClass.Item2}Selected")
-                .AppendLine($"    {{")
-                .AppendLine($"        get => _{GenClass.Item2.ToLower()}selected ?? new {GenClass.Item2}();")
-                .AppendLine($"        set {{ if (SetProperty(ref _{GenClass.Item2.ToLower()}selected, value)) OnSelectedModelChanged?.Invoke(); }}")
-                .AppendLine($"    }}\n")
-                .AppendLine($"    public ObservableCollection<{GenClass.Item2}> {GenClass.Item2}Collection {{ get; }} = new ObservableCollection<{GenClass.Item2}>();")
-                .AppendLine($"    public void FillCollection(DataBaseRequest Request, params string[] Args)\n\n    {{")
-                .AppendLine($"        " +
-                $"{GenClass.Item2}Collection.Clear();\n        " +
-                $"DataBaseApi.ConnectionAvailable()\n            " +
-                $".DoIf(conn => conn.IsSuccess, error => Logger.WriteLine(error.Exception.message))\n            " +
-                $"?.Api.PrepareCommand(Request, Args)\n            " +
-                $".DoIf(comm => comm.IsSuccess, error => Logger.WriteLine(error.Exception.message))\n            " +
-                $"?.Api.ExecuteCommand<List<string[]>>()\n            " +
-                $".DoIf(exec => exec.IsSuccess, error => Logger.WriteLine(error.Exception.message))\n            " +
-                $"?.Api.DataBaseResponse<List<string[]>>()\n            " +
-                $"?.ForEach(cortage => {GenClass.Item2}Collection.Add(new {GenClass.Item2}(cortage)));\n" +
-                $"    }}");
+                .AppendLine(
+                $$"""
+                #nullable enable
+                
+                using CommunityToolkit.Mvvm.ComponentModel;
+                using System.Collections.ObjectModel;
+                using SalutemES.Engineer.Infrastructure;
+                using SalutemES.Engineer.Infrastructure.DataBase;
+
+                namespace {{MatchedClassesPaths.First().Item2}};
+
+                public partial class {{GenClass.Item1}} : ObservableObject
+                {
+                    public Action? OnSelectedModelChanged { private get; set; } = null;
+                    private {{GenClass.Item2}}? _{{GenClass.Item2.ToLower()}}selected;
+                    public {{GenClass.Item2}}? {{GenClass.Item2}}Selected
+                    {
+                        get => _{{GenClass.Item2.ToLower()}}selected ?? new {{GenClass.Item2}}();
+                        set { if (SetProperty(ref _{{GenClass.Item2.ToLower()}}selected, value)) OnSelectedModelChanged?.Invoke(); }
+                    }
+
+                    public ObservableCollection<{{GenClass.Item2}}> {{GenClass.Item2}}Collection { get; } = new ObservableCollection<{{GenClass.Item2}}>();
+
+                    public void FillCollection(DataBaseRequest Request, params string[] Args)
+                    {
+                        {{GenClass.Item2}}Collection.Clear();
+                        DataBaseApi.ConnectionAvailable()
+                        .DoIf(conn => conn.IsSuccess, error => Logger.WriteLine(error.Exception.message))
+                        ?.Api.PrepareCommand(Request, Args)
+                        .DoIf(prep => prep.IsSuccess, error => Logger.WriteLine(error.Exception.message))
+                        ?.Api.ExecuteCommand<List<string[]>>()
+                        .DoIf(exec => exec.IsSuccess, error => Logger.WriteLine(error.Exception.message))
+                        ?.Api.DataBaseResponse<List<string[]>>()
+                        ?.ForEach(cortage => {
+                            {{GenClass.Item2}}Collection.Add(new {{GenClass.Item2}}(cortage));
+                            if ({{GenClass.Item2}}Selected!.Equals({{GenClass.Item2}}Collection.Last()))
+                                {{GenClass.Item2}}Selected = {{GenClass.Item2}}Collection.Last();
+                        });
+                    }
+                }
+                """);
 
             MatchedClassesPaths.RemoveAt(0);
 
-            generatedCode.Append("}");
             context.AddSource($"{GenClass.Item1}.g.cs", generatedCode.ToString());
         }
     }
