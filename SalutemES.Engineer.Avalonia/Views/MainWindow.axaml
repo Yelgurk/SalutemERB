@@ -7,33 +7,6 @@
         x:Class="SalutemES.Engineer.Avalonia.Views.MainWindow"
         Icon="/Assets/avalonia-logo.ico"
         Title="SalutemES.Engineer.Avalonia">
-	<Window.Resources>
-		<RadialGradientBrush x:Key="gradRadial" GradientOrigin="0.5, 0.5" Center="0.5, 0.5" Radius="0.5" >
-			<GradientStop Color="#0073CF" Offset="0"/>
-			<GradientStop Color="Transparent" Offset="1"/>
-		</RadialGradientBrush>
-	</Window.Resources>
-	<Window.Styles>
-		<Style Selector="ListBox.DynamicDataTemplateBorder">
-			<Setter Property="Background" Value="Transparent"/>
-		</Style>
-		
-		<Style Selector="ListBox.DynamicDataTemplateBorder ListBoxItem">
-			<Setter Property="BorderThickness" Value="1"/>
-			<Setter Property="Padding" Value="-1"/>
-		</Style>
-
-		<Style Selector="ListBox.DynamicDataTemplateBorder ListBoxItem:pointerover /template/ ContentPresenter">
-			<Setter Property="BorderThickness" Value="1"/>
-			<Setter Property="BorderBrush" Value="{DynamicResource gradRadial}"/>
-		</Style>
-
-		<Style Selector="ListBox.DynamicDataTemplateBorder ListBoxItem Border">
-			<Setter Property="Padding" Value="10"/>
-			<Setter Property="Background" Value="Transparent"/>
-		</Style>
-	</Window.Styles>
-
 	<Window.DataContext>
 		<vm:MainWindowViewModel/>
 	</Window.DataContext>
@@ -78,9 +51,7 @@
 		<ListBox ItemsSource="{Binding SomeCollection}" Classes="DynamicDataTemplateBorder">
 			<ListBox.ItemTemplate>
 				<DataTemplate>
-					<Border PointerMoved="ListBoxBorderGradientHandler">
-						<Label Content="{Binding}"/>
-					</Border>
+					<Label Content="{Binding}"/>
 				</DataTemplate>
 			</ListBox.ItemTemplate>
 		</ListBox>
