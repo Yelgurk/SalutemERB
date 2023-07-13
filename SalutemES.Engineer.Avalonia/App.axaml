@@ -5,60 +5,66 @@
 			 RequestedThemeVariant="Light">
 	<Application.Resources>
 		<ResourceDictionary>
-			<Color x:Key="WindowBackgroundColor">#EBf3f3f3</Color>
-			<Color x:Key="WindowContainerBackgroundColor">#EBf9f9f9</Color>
-			<Color x:Key="ControlsBackgroundColor">#EBfdfdfd</Color>
-			<Color x:Key="AccentMainColor">#FF0082E3</Color>
-			<Color x:Key="AccentHighColor">#CD0082E3</Color>
-			<Color x:Key="AccentMediumColor">#9B0082E3</Color>
-			<Color x:Key="AccentLowColor">#690082E3</Color>
-			<Color x:Key="AccentButtonBackgroundColor">#EB0082E3</Color>
-			<Color x:Key="PrimaryButtonBackgroundColor">#EBffffff</Color>
-			<Color x:Key="TextForegroundColor">#FF3f3f3f</Color>
-			<Color x:Key="TextInactiveForegroundColor">#FFa0a0a0</Color>
-			<Color x:Key="TextActiveForegroundColor">#FF065ea0</Color>
-			
-			<ResourceDictionary.ThemeDictionaries>
-				<ResourceDictionary x:Key="Light">
-					<SolidColorBrush x:Key="WindowBackground" Color="{StaticResource WindowBackgroundColor}"/>
-					<SolidColorBrush x:Key="WindowContainerBackground" Color="{StaticResource WindowContainerBackgroundColor}"/>
-					<SolidColorBrush x:Key="ControlsBackground" Color="{StaticResource ControlsBackgroundColor}"/>
-					<SolidColorBrush x:Key="AccentMainBrush" Color="{StaticResource AccentMainColor}"/>
-					<SolidColorBrush x:Key="AccentHighBrush" Color="{StaticResource AccentHighColor}"/>
-					<SolidColorBrush x:Key="AccentMediumBrush" Color="{StaticResource AccentMediumColor}"/>
-					<SolidColorBrush x:Key="AccentLowBrush" Color="{StaticResource AccentLowColor}"/>
-					<SolidColorBrush x:Key="AccentButtonBackground" Color="{StaticResource AccentButtonBackgroundColor}"/>
-					<SolidColorBrush x:Key="PrimaryButtonBackground" Color="{StaticResource PrimaryButtonBackgroundColor}"/>
-					<SolidColorBrush x:Key="TextForeground" Color="{StaticResource TextInactiveForegroundColor}"/>
-					<SolidColorBrush x:Key="TextInactiveForeground" Color="{StaticResource TextInactiveForegroundColor}"/>
-					<SolidColorBrush x:Key="TextActiveForeground" Color="{StaticResource TextActiveForegroundColor}"/>
+			<ResourceDictionary.MergedDictionaries>
+				<ResourceDictionary>
+					<Color x:Key="WindowBackgroundColor">#EBf3f3f3</Color>
+					<Color x:Key="WindowContainerBackgroundColor">#EBf9f9f9</Color>
+					<Color x:Key="ControlsBackgroundColor">#EBfdfdfd</Color>
+					<Color x:Key="AccentMainColor">#FF0082E3</Color>
+					<Color x:Key="AccentHighColor">#CD0082E3</Color>
+					<Color x:Key="AccentMediumColor">#9B0082E3</Color>
+					<Color x:Key="AccentLowColor">#690082E3</Color>
+					<Color x:Key="AccentButtonBackgroundColor">#EB0082E3</Color>
+					<Color x:Key="PrimaryButtonBackgroundColor">#EBffffff</Color>
+					<Color x:Key="TextForegroundColor">#FF3f3f3f</Color>
+					<Color x:Key="TextInactiveForegroundColor">#FFa0a0a0</Color>
+					<Color x:Key="TextActiveForegroundColor">#FF065ea0</Color>
+
+					<ResourceDictionary.ThemeDictionaries>
+						<ResourceDictionary x:Key="Light">
+							<SolidColorBrush x:Key="WindowBackground" Color="{StaticResource WindowBackgroundColor}"/>
+							<SolidColorBrush x:Key="WindowContainerBackground" Color="{StaticResource WindowContainerBackgroundColor}"/>
+							<SolidColorBrush x:Key="ControlsBackground" Color="{StaticResource ControlsBackgroundColor}"/>
+							<SolidColorBrush x:Key="AccentMainBrush" Color="{StaticResource AccentMainColor}"/>
+							<SolidColorBrush x:Key="AccentHighBrush" Color="{StaticResource AccentHighColor}"/>
+							<SolidColorBrush x:Key="AccentMediumBrush" Color="{StaticResource AccentMediumColor}"/>
+							<SolidColorBrush x:Key="AccentLowBrush" Color="{StaticResource AccentLowColor}"/>
+							<SolidColorBrush x:Key="AccentButtonBackground" Color="{StaticResource AccentButtonBackgroundColor}"/>
+							<SolidColorBrush x:Key="PrimaryButtonBackground" Color="{StaticResource PrimaryButtonBackgroundColor}"/>
+							<SolidColorBrush x:Key="TextForeground" Color="{StaticResource TextInactiveForegroundColor}"/>
+							<SolidColorBrush x:Key="TextInactiveForeground" Color="{StaticResource TextInactiveForegroundColor}"/>
+							<SolidColorBrush x:Key="TextActiveForeground" Color="{StaticResource TextActiveForegroundColor}"/>
+						</ResourceDictionary>
+
+						<ResourceDictionary x:Key="Dark">
+							<SolidColorBrush x:Key="WindowBackground" Color="{StaticResource WindowBackgroundColor}"/>
+							<SolidColorBrush x:Key="WindowContainerBackground" Color="{StaticResource WindowContainerBackgroundColor}"/>
+							<SolidColorBrush x:Key="ControlsBackground" Color="{StaticResource ControlsBackgroundColor}"/>
+							<SolidColorBrush x:Key="AccentMainBrush" Color="{StaticResource AccentMainColor}"/>
+							<SolidColorBrush x:Key="AccentHighBrush" Color="{StaticResource AccentHighColor}"/>
+							<SolidColorBrush x:Key="AccentMediumBrush" Color="{StaticResource AccentMediumColor}"/>
+							<SolidColorBrush x:Key="AccentLowBrush" Color="{StaticResource AccentLowColor}"/>
+							<SolidColorBrush x:Key="AccentButtonBackground" Color="{StaticResource AccentButtonBackgroundColor}"/>
+							<SolidColorBrush x:Key="PrimaryButtonBackground" Color="{StaticResource PrimaryButtonBackgroundColor}"/>
+							<SolidColorBrush x:Key="TextForeground" Color="{StaticResource TextInactiveForegroundColor}"/>
+							<SolidColorBrush x:Key="TextInactiveForeground" Color="{StaticResource TextInactiveForegroundColor}"/>
+							<SolidColorBrush x:Key="TextActiveForeground" Color="{StaticResource TextActiveForegroundColor}"/>
+						</ResourceDictionary>
+					</ResourceDictionary.ThemeDictionaries>
+
+					<RadialGradientBrush x:Key="ListItemBorderRadialGradientAccent" GradientOrigin="0.5, 0.5" Center="0.5, 0.5" Radius="0.5" >
+						<GradientStop Color="{StaticResource AccentMainColor}" Offset="0"/>
+						<GradientStop Color="Transparent" Offset="1"/>
+					</RadialGradientBrush>
+
+					<RadialGradientBrush x:Key="ListItemBorderRadialGradientBase" GradientOrigin="0.5, 0.5" Center="0.5, 0.5" Radius="0.5" >
+						<GradientStop Color="Gray" Offset="0"/>
+						<GradientStop Color="Transparent" Offset="1"/>
+					</RadialGradientBrush>
 				</ResourceDictionary>
 
-				<ResourceDictionary x:Key="Dark">
-					<SolidColorBrush x:Key="WindowBackground" Color="{StaticResource WindowBackgroundColor}"/>
-					<SolidColorBrush x:Key="WindowContainerBackground" Color="{StaticResource WindowContainerBackgroundColor}"/>
-					<SolidColorBrush x:Key="ControlsBackground" Color="{StaticResource ControlsBackgroundColor}"/>
-					<SolidColorBrush x:Key="AccentMainBrush" Color="{StaticResource AccentMainColor}"/>
-					<SolidColorBrush x:Key="AccentHighBrush" Color="{StaticResource AccentHighColor}"/>
-					<SolidColorBrush x:Key="AccentMediumBrush" Color="{StaticResource AccentMediumColor}"/>
-					<SolidColorBrush x:Key="AccentLowBrush" Color="{StaticResource AccentLowColor}"/>
-					<SolidColorBrush x:Key="AccentButtonBackground" Color="{StaticResource AccentButtonBackgroundColor}"/>
-					<SolidColorBrush x:Key="PrimaryButtonBackground" Color="{StaticResource PrimaryButtonBackgroundColor}"/>
-					<SolidColorBrush x:Key="TextForeground" Color="{StaticResource TextInactiveForegroundColor}"/>
-					<SolidColorBrush x:Key="TextInactiveForeground" Color="{StaticResource TextInactiveForegroundColor}"/>
-					<SolidColorBrush x:Key="TextActiveForeground" Color="{StaticResource TextActiveForegroundColor}"/>
-				</ResourceDictionary>
-			</ResourceDictionary.ThemeDictionaries>
-
-			<RadialGradientBrush x:Key="ListItemBorderRadialGradientAccent" GradientOrigin="0.5, 0.5" Center="0.5, 0.5" Radius="0.5" >
-				<GradientStop Color="{StaticResource AccentMainColor}" Offset="0"/>
-				<GradientStop Color="Transparent" Offset="1"/>
-			</RadialGradientBrush>
-
-			<RadialGradientBrush x:Key="ListItemBorderRadialGradientBase" GradientOrigin="0.5, 0.5" Center="0.5, 0.5" Radius="0.5" >
-				<GradientStop Color="Gray" Offset="0"/>
-				<GradientStop Color="Transparent" Offset="1"/>
-			</RadialGradientBrush>
+				<ResourceInclude Source="/Assets/Icons.axaml"/>
+			</ResourceDictionary.MergedDictionaries>			
 		</ResourceDictionary>
 	</Application.Resources>
 	
@@ -123,10 +129,11 @@
 			</FluentTheme.Palettes>
 		</FluentTheme>
 
-		<Style Selector="ListBox.DynamicDataTemplateBorder">
-			<Setter Property="Background" Value="Transparent"/>
-		</Style>
-
+		<StyleInclude Source="/StyleDictionary/ComboBoxStyle.axaml"/>
+		<StyleInclude Source="/StyleDictionary/ListBoxStyle.axaml"/>
+		<StyleInclude Source="/StyleDictionary/ListBoxAsMenuStyle.axaml"/>
+		
+		<!-- ListBox style + pointer moved event -->
 		<Style Selector="ListBox.DynamicDataTemplateBorder ListBoxItem">
 			<Setter Property="BorderThickness" Value="0"/>
 			<Setter Property="Padding" Value="0"/>
@@ -142,44 +149,6 @@
 					</ControlTemplate>
 				</Setter.Value>
 			</Setter>
-		</Style>
-
-		<Style Selector="ListBox.DynamicDataTemplateBorder
-			   ListBoxItem > Grid > Border">
-			<Setter Property="Padding" Value="10"/>
-			<Setter Property="BorderThickness" Value="1"/>
-			<Setter Property="BorderBrush" Value="Transparent"/>
-			<Setter Property="Background" Value="Transparent"/>
-		</Style>
-
-		<Style Selector="ListBox.DynamicDataTemplateBorder ListBoxItem > Grid">
-			<Setter Property="Background" Value="Transparent"/>
-		</Style>
-
-		<Style Selector="ListBox.DynamicDataTemplateBorder ListBoxItem:pointerover > Grid">
-			<Setter Property="Background" Value="LightGray"/>
-		</Style>
-
-		<Style Selector="ListBox.DynamicDataTemplateBorder ListBoxItem:selected > Grid">
-			<Setter Property="Background" Value="{StaticResource AccentLowColor}"/>
-		</Style>
-
-		<Style Selector="ListBox.DynamicDataTemplateBorder ListBoxItem:selected:pointerover > Grid">
-			<Setter Property="Background" Value="{StaticResource AccentMediumColor}"/>
-		</Style>
-
-		<Style Selector="ListBox.DynamicDataTemplateBorder ListBoxItem:selected:pointerover:pressed > Grid">
-			<Setter Property="Background" Value="{StaticResource AccentHighColor}"/>
-		</Style>
-		
-		<Style Selector="ListBox.DynamicDataTemplateBorder
-			   ListBoxItem:pointerover > Grid > Border">
-			<Setter Property="BorderBrush" Value="{DynamicResource ListItemBorderRadialGradientBase}"/>
-		</Style>
-
-		<Style Selector="ListBox.DynamicDataTemplateBorder
-			   ListBoxItem:pointerover:selected > Grid > Border">
-			<Setter Property="BorderBrush" Value="{DynamicResource ListItemBorderRadialGradientAccent}"/>
 		</Style>
     </Application.Styles>
 </Application>

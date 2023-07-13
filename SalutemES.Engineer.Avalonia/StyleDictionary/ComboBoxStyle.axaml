@@ -1,0 +1,71 @@
+﻿<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+	<Design.PreviewWith>
+		<Border Padding="20" MinWidth="110">
+			<ComboBox Classes="ComboBoxModernStyle">
+				<ComboBoxItem Content="Item 1"/>
+				<ComboBoxItem Content="Item 2"/>
+				<ComboBoxItem Content="Item 3"/>
+				<ComboBoxItem Content="Item 4"/>
+				<ComboBoxItem Content="Item 5"/>
+			</ComboBox>
+		</Border>
+	</Design.PreviewWith>
+
+	<Style Selector="ComboBox.ComboBoxModernStyle">
+		<Setter Property="Margin" Value="-2,0,0,0"/>
+	</Style>
+
+	<Style Selector="ComboBox.ComboBoxModernStyle /template/ Grid">
+		<Setter Property="Margin" Value="2,0,0,0"/>
+	</Style>
+
+	<Style Selector="ComboBox.ComboBoxModernStyle /template/ Grid ItemsPresenter">
+		<Setter Property="Margin" Value="0"/>
+	</Style>
+
+	<Style Selector="ComboBox.ComboBoxModernStyle /template/ Grid > Popup">
+		<Setter Property="Placement" Value="AnchorAndGravity"/>
+		<Setter Property="PlacementAnchor" Value="Top"/>
+		<Setter Property="PlacementGravity" Value="Bottom"/>
+		<Setter Property="HorizontalAlignment" Value="Stretch"/>
+	</Style>
+
+	<Style Selector="ComboBox.ComboBoxModernStyle /template/ Grid > Popup ScrollContentPresenter">
+		<Setter Property="Margin" Value="0,5,0,0"/>
+	</Style>
+
+	<Style Selector="ComboBox.ComboBoxModernStyle ComboBoxItem">
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate>
+					<Grid Background="Transparent">
+						<Border Padding="5,0,5,5" Background="Transparent">
+							<ContentPresenter Name="PART_CustomContentPresenter"
+											  Background="Transparent"
+											  Content="{TemplateBinding Content}"
+											  Padding="4"
+											  CornerRadius="3,3,3,3"/>
+						</Border>
+					</Grid>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+	<Style Selector="ComboBox.ComboBoxModernStyle ComboBoxItem:pointerover /template/ ContentPresenter#PART_CustomContentPresenter">
+		<Setter Property="Background" Value="LightGray"/>
+	</Style>
+
+	<Style Selector="ComboBox.ComboBoxModernStyle ComboBoxItem:selected /template/ ContentPresenter#PART_CustomContentPresenter">
+		<Setter Property="Background" Value="{StaticResource AccentLowColor}"/>
+	</Style>
+
+	<Style Selector="ComboBox.ComboBoxModernStyle ComboBoxItem:selected:pointerover /template/ ContentPresenter#PART_CustomContentPresenter">
+		<Setter Property="Background" Value="{StaticResource AccentMediumColor}"/>
+	</Style>
+
+	<Style Selector="ComboBox.ComboBoxModernStyle ComboBoxItem:pressed /template/ ContentPresenter#PART_CustomContentPresenter">
+		<Setter Property="Background" Value="{StaticResource AccentHighColor}"/>
+	</Style>
+</Styles>

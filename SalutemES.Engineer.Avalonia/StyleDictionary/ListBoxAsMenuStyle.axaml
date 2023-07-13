@@ -1,0 +1,100 @@
+﻿<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Design.PreviewWith>
+        <Border Padding="20">
+            
+        </Border>
+    </Design.PreviewWith>
+
+	<Style Selector="ListBox.MenuSelectorStyle">
+		<Setter Property="Background" Value="Transparent"/>
+	</Style>
+
+	<Style Selector="ListBox.MenuSelectorStyle
+			   ListBoxItem">
+		<Setter Property="Template">
+			<ControlTemplate>
+				<Grid Background="Transparent">
+					<Border>
+						<ContentPresenter Content="{TemplateBinding Content}"/>
+					</Border>
+				</Grid>
+			</ControlTemplate>
+		</Setter>
+	</Style>
+
+	<Style Selector="ListBox.MenuSelectorStyle
+			   ListBoxItem TextBlock">
+		<Setter Property="Foreground" Value="{DynamicResource TextInactiveForeground}"/>
+		<Setter Property="FontSize" Value="10"/>
+		<Setter Property="FontWeight" Value="DemiBold"/>
+		<Setter Property="TextWrapping" Value="Wrap"/>
+		<Setter Property="HorizontalAlignment" Value="Center"/>
+		<Setter Property="Margin" Value="0 -20 0 20"/>
+		<Setter Property="VerticalAlignment" Value="Center"/>
+		<Setter Property="Transitions">
+			<Transitions>
+				<BrushTransition Property="Foreground" Duration="0:0:0.5" Easing="CircularEaseOut"/>
+			</Transitions>
+		</Setter>
+	</Style>
+
+	<Style Selector="ListBox.MenuSelectorStyle
+			   ListBoxItem Path">
+		<Setter Property="Stroke" Value="{DynamicResource TextInactiveForeground}"/>
+		<Setter Property="StrokeThickness" Value="1"/>
+		<Setter Property="HorizontalAlignment" Value="Center"/>
+		<Setter Property="RenderTransform" Value="Scale(1.3)"/>
+		<Setter Property="Margin" Value="0 10 3 -10"/>
+		<Setter Property="VerticalAlignment" Value="Center"/>
+		<Setter Property="Transitions">
+			<Transitions>
+				<BrushTransition Property="Fill" Duration="0:0:0.25" Easing="CircularEaseOut"/>
+				<ThicknessTransition Property="Margin" Duration="0:0:0.25" Easing="CircularEaseIn"/>
+				<TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.25" Easing="CircularEaseIn"/>
+			</Transitions>
+		</Setter>
+	</Style>
+
+	<Style Selector="ListBox.MenuSelectorStyle
+			   ListBoxItem /template/ Grid > Border">
+		<Setter Property="Padding" Value="10"/>
+		<Setter Property="Margin" Value="5 5 5 0"/>
+		<Setter Property="Height" Value="{Binding $self.Bounds.Width}"/>
+		<Setter Property="CornerRadius" Value="5"/>
+	</Style>
+
+	<Style Selector="ListBox.MenuSelectorStyle
+			   ListBoxItem:pointerover /template/ Grid > Border">
+		<Setter Property="Background" Value="LightGray"/>
+	</Style>
+
+	<Style Selector="ListBox.MenuSelectorStyle
+			   ListBoxItem:pointerover TextBlock">
+		<Setter Property="Foreground" Value="Black"/>
+	</Style>
+
+	<Style Selector="ListBox.MenuSelectorStyle
+			   ListBoxItem:pointerover Path">
+		<Setter Property="Stroke" Value="Black"/>
+	</Style>
+
+	<Style Selector="ListBox.MenuSelectorStyle
+			   ListBoxItem:selected /template/ Grid > Border">
+		<Setter Property="Background" Value="{DynamicResource ControlsBackground}"/>
+	</Style>
+
+	<Style Selector="ListBox.MenuSelectorStyle
+			   ListBoxItem:selected TextBlock">
+		<Setter Property="Foreground" Value="Transparent"/>
+	</Style>
+
+	<Style Selector="ListBox.MenuSelectorStyle
+			   ListBoxItem:selected Path">
+		<Setter Property="Stroke" Value="Black"/>
+		<Setter Property="Fill" Value="{DynamicResource AccentHighBrush}"/>
+		<Setter Property="Margin" Value="0 0 3 0"/>
+		<Setter Property="RenderTransform" Value="Scale(2.2)"/>
+		<Setter Property="StrokeThickness" Value="0.33"/>
+	</Style>
+</Styles>

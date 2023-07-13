@@ -10,8 +10,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Models\" />
     <AvaloniaResource Include="Assets\**" />
+    <AvaloniaResource Remove="Assets\Icons.axaml" />
     <None Remove=".gitignore" />
   </ItemGroup>
 
@@ -30,11 +30,19 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.1" />
   </ItemGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\SalutemES.Engineer.Infrastructure\SalutemES.Engineer.Infrastructure.csproj" />
 		<ProjectReference Include="..\SalutemES.Engineer.Domain\SalutemES.Engineer.Domain.csproj" />
 		<ProjectReference Include="..\SalutemES.Engineer.Core\SalutemES.Engineer.Core.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <AvaloniaXaml Update="Assets\Icons.axaml">
+	    <SubType>Designer</SubType>
+	  </AvaloniaXaml>
 	</ItemGroup>
 </Project>

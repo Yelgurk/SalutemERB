@@ -10,44 +10,104 @@ using Avalonia.Media;
 using Avalonia.VisualTree;
 using SalutemES.Engineer.Avalonia.ViewModels;
 using SalutemES.Engineer.Avalonia.Views;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using SalutemES.Engineer.Avalonia.Models;
+using System.Drawing;
+using System.Collections.ObjectModel;
+using Point = Avalonia.Point;
 
-namespace SalutemES.Engineer.Avalonia
+namespace SalutemES.Engineer.Avalonia;
+
+public partial class App : Application
 {
-    public partial class App : Application
+    /* style event handler */
+    private Control? GradientListBoxItemContent = null;
+
+    public void ListBoxItemBorderGradientHandler(object? sender, PointerEventArgs args)
     {
-        private Control? GradientListBoxItemContent = null;
-
-        public void ListBoxItemBorderGradientHandler(object? sender, PointerEventArgs args)
+        if (sender is not null && (sender as Border)?.GetVisualParent() is Grid listBoxItem)
         {
-            if (sender is not null && (sender as Border)?.GetVisualParent() is Grid listBoxItem)
-            {
-                Point mouse = args.GetPosition(listBoxItem);
-                RadialGradientBrush Accent = (Resources["ListItemBorderRadialGradientAccent"] as RadialGradientBrush)!;
-                RadialGradientBrush Base = (Resources["ListItemBorderRadialGradientBase"] as RadialGradientBrush)!;
+            Point mouse = args.GetPosition(listBoxItem);
+            RadialGradientBrush Accent = (Resources["ListItemBorderRadialGradientAccent"] as RadialGradientBrush)!;
+            RadialGradientBrush Base = (Resources["ListItemBorderRadialGradientBase"] as RadialGradientBrush)!;
 
-                Base.Center = Base.GradientOrigin
-                    = Accent.Center = Accent.GradientOrigin
-                    = new RelativePoint(mouse.X / listBoxItem.Bounds.Width, mouse.Y / listBoxItem.Bounds.Height, RelativeUnit.Relative);
+            Base.Center = Base.GradientOrigin
+                = Accent.Center = Accent.GradientOrigin
+                = new RelativePoint(mouse.X / listBoxItem.Bounds.Width, mouse.Y / listBoxItem.Bounds.Height, RelativeUnit.Relative);
 
-                GradientListBoxItemContent = (sender as Border)!.Child;
-                (sender as Border)!.Child = null;
-                (sender as Border)!.Child = GradientListBoxItemContent;
-            }
+            GradientListBoxItemContent = (sender as Border)!.Child;
+            (sender as Border)!.Child = null;
+            (sender as Border)!.Child = GradientListBoxItemContent;
+        }
+    }
+
+    /* app init */
+
+    public static IHost? Host { get; private set; }
+
+    public override void Initialize()
+    {
+        Host = Microsoft.Extensions.Hosting.Host.CreateDefaultBuilder()
+            .ConfigureServices(services => {
+                services.AddSingleton<MainWindow>();
+                services.AddSingleton<WindowContentService>();
+                services.AddSingleton<ProductsEditorControl>();
+                services.AddSingleton<ComponentsEditorControl>();
+                services.AddSingleton<OrderBuilderControl>();
+                services.AddSingleton<SettingsControl>();
+            })
+            .Build();
+
+        AvaloniaXamlLoader.Load(this);
+    }
+
+    public override void OnFrameworkInitializationCompleted()
+    {
+        if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+        {
+            desktop.MainWindow = Host!.Services
+                .GetRequiredService<MainWindow>();
         }
 
-        public override void Initialize()
-        {
-            AvaloniaXamlLoader.Load(this);
-        }
+        base.OnFrameworkInitializationCompleted();
+    }
 
-        public override void OnFrameworkInitializationCompleted()
-        {
-            if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
-            {
-                desktop.MainWindow = new MainWindow();
-            }
+    public static T SetWindowContent<T>() => Host!.Services
+        .GetRequiredService<WindowContentService>()!
+        .Set<T>()!;
 
-            base.OnFrameworkInitializationCompleted();
-        }
+    public static void SetWindowContent<T>(T Control) => Host!.Services
+        .GetRequiredService<MainWindow>()!
+        .SetContent(Control);
+
+    public static StreamGeometry GetIcon(string? ResourceName)
+    {
+        object? FoundedGeometryObject;
+        if (ResourceName is not null
+            && Application.Current!.TryGetResource(ResourceName, out FoundedGeometryObject)
+            && FoundedGeometryObject is StreamGeometry FoundedGeometry)
+            return FoundedGeometry;
+
+        Application.Current!.TryGetResource("question_regular", out FoundedGeometryObject);
+        return (FoundedGeometryObject as StreamGeometry)!;
+    }
+}
+
+public interface IWindowContentService
+{
+    public T Set<T>() where T : notnull;
+}
+
+public class WindowContentService : IWindowContentService
+{
+    public T Set<T>() where T : notnull
+    {
+        App.Host!.Services
+            .GetRequiredService<MainWindow>()!
+            .SetContent(App.Host!.Services.GetRequiredService<T>()!);
+
+        return App.Host!.Services
+            .GetRequiredService<T>()!;
     }
 }

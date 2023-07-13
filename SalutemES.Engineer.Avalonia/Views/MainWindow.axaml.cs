@@ -16,5 +16,7 @@ namespace SalutemES.Engineer.Avalonia.Views
             InitializeComponent();
             DataContext = new MainWindowViewModel();
         }
+
+        public void SetContent<T>(T Control) => MainWindowContentPanel.Content = Control;
     }
 }

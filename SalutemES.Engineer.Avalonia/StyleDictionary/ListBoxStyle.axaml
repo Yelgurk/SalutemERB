@@ -1,0 +1,56 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+	<Design.PreviewWith>
+		<Border Padding="20" MinWidth="110">
+			<ListBox Classes="ComboBoxModernStyle">
+				<ListBoxItem Content="Item 1"/>
+				<ListBoxItem Content="Item 2"/>
+				<ListBoxItem Content="Item 3"/>
+				<ListBoxItem Content="Item 4"/>
+				<ListBoxItem Content="Item 5"/>
+			</ListBox>
+		</Border>
+	</Design.PreviewWith>
+
+	<Style Selector="ListBox.DynamicDataTemplateBorder">
+		<Setter Property="Background" Value="Transparent"/>
+	</Style>
+
+	<Style Selector="ListBox.DynamicDataTemplateBorder
+			   ListBoxItem > Grid > Border">
+		<Setter Property="Padding" Value="10"/>
+		<Setter Property="BorderThickness" Value="1"/>
+		<Setter Property="BorderBrush" Value="Transparent"/>
+		<Setter Property="Background" Value="Transparent"/>
+	</Style>
+
+	<Style Selector="ListBox.DynamicDataTemplateBorder ListBoxItem > Grid">
+		<Setter Property="Background" Value="Transparent"/>
+	</Style>
+
+	<Style Selector="ListBox.DynamicDataTemplateBorder ListBoxItem:pointerover > Grid">
+		<Setter Property="Background" Value="LightGray"/>
+	</Style>
+
+	<Style Selector="ListBox.DynamicDataTemplateBorder ListBoxItem:selected > Grid">
+		<Setter Property="Background" Value="{StaticResource AccentLowColor}"/>
+	</Style>
+
+	<Style Selector="ListBox.DynamicDataTemplateBorder ListBoxItem:selected:pointerover > Grid">
+		<Setter Property="Background" Value="{StaticResource AccentMediumColor}"/>
+	</Style>
+
+	<Style Selector="ListBox.DynamicDataTemplateBorder ListBoxItem:selected:pointerover:pressed > Grid">
+		<Setter Property="Background" Value="{StaticResource AccentHighColor}"/>
+	</Style>
+
+	<Style Selector="ListBox.DynamicDataTemplateBorder
+			   ListBoxItem:pointerover > Grid > Border">
+		<Setter Property="BorderBrush" Value="{DynamicResource ListItemBorderRadialGradientBase}"/>
+	</Style>
+
+	<Style Selector="ListBox.DynamicDataTemplateBorder
+			   ListBoxItem:pointerover:selected > Grid > Border">
+		<Setter Property="BorderBrush" Value="{DynamicResource ListItemBorderRadialGradientAccent}"/>
+	</Style>
+</Styles>
