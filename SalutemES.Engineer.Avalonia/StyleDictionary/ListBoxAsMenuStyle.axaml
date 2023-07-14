@@ -14,11 +14,7 @@
 			   ListBoxItem">
 		<Setter Property="Template">
 			<ControlTemplate>
-				<Grid Background="Transparent">
-					<Border>
-						<ContentPresenter Content="{TemplateBinding Content}"/>
-					</Border>
-				</Grid>
+				<ContentPresenter Content="{TemplateBinding Content}"/>
 			</ControlTemplate>
 		</Setter>
 	</Style>
@@ -57,7 +53,7 @@
 	</Style>
 
 	<Style Selector="ListBox.MenuSelectorStyle
-			   ListBoxItem /template/ Grid > Border">
+			   ListBoxItem Grid > Border">
 		<Setter Property="Padding" Value="10"/>
 		<Setter Property="Margin" Value="5 5 5 0"/>
 		<Setter Property="Height" Value="{Binding $self.Bounds.Width}"/>
@@ -65,7 +61,7 @@
 	</Style>
 
 	<Style Selector="ListBox.MenuSelectorStyle
-			   ListBoxItem:pointerover /template/ Grid > Border">
+			   ListBoxItem:pointerover Grid > Border">
 		<Setter Property="Background" Value="LightGray"/>
 	</Style>
 
@@ -80,7 +76,7 @@
 	</Style>
 
 	<Style Selector="ListBox.MenuSelectorStyle
-			   ListBoxItem:selected /template/ Grid > Border">
+			   ListBoxItem:selected Grid > Border">
 		<Setter Property="Background" Value="{DynamicResource ControlsBackground}"/>
 	</Style>
 

@@ -24,9 +24,13 @@
 					 SelectedItem="{Binding MenuItemSelected}">
 				<ListBox.DataTemplates>
 					<DataTemplate DataType="{x:Type model:MenuItemModel}">
-						<Grid>
-							<TextBlock Text="{Binding Name}"/>
-							<Path Data="{Binding Icon}"/>
+						<Grid Background="Transparent" IsVisible="{Binding IsSelectable}">
+							<Border>
+								<Grid>
+									<TextBlock Text="{Binding Name}"/>
+									<Path Data="{Binding Icon}"/>
+								</Grid>
+							</Border>
 						</Grid>
 					</DataTemplate>
 				</ListBox.DataTemplates>

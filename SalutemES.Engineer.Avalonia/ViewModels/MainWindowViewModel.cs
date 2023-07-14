@@ -16,8 +16,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Avalonia.Controls;
 using Microsoft.Extensions.Hosting;
 using SalutemES.Engineer.Avalonia.Views;
-using System.Drawing;
 using System.Xml.Linq;
+using Avalonia.Layout;
+using Avalonia.Data;
+using Avalonia.Media;
 
 namespace SalutemES.Engineer.Avalonia.ViewModels;
 
@@ -26,10 +28,11 @@ public class MainWindowViewModel : ViewModelBase
     public ObservableCollection<MenuItemModel> MenuCollection { get; private set; }
 
     public MainWindowViewModel() => MenuCollection = new ObservableCollection<MenuItemModel>() {
-        new MenuItemModel() { Name = "Создание заявки", Icon = App.GetIcon("save_regular"), Control = App.Host!.Services.GetRequiredService<OrderBuilderControl>() },
-        new MenuItemModel() { Name = "Детали", Icon = App.GetIcon("document_edit_regular"), Control = App.Host!.Services.GetRequiredService<ComponentsEditorControl>() },
-        new MenuItemModel() { Name = "Изделия", Icon = App.GetIcon("table_edit_regular"), Control = App.Host!.Services.GetRequiredService<ProductsEditorControl>() },
-        new MenuItemModel() { Name = "Настройки", Icon = App.GetIcon("launcher_settings_regular"), Control = App.Host!.Services.GetRequiredService<SettingsControl>() }
+        new MenuItemModel() { Name = "Запуск", Icon = App.GetIcon("save_regular"), Control = new(), IsSelectable = false },
+        new MenuItemModel() { Name = "Создание заявки", Icon = App.GetIcon("save_regular"), Control = App.Host!.Services.GetRequiredService<OrderBuilderControl>(), IsSelectable = true },
+        new MenuItemModel() { Name = "Детали", Icon = App.GetIcon("document_edit_regular"), Control = App.Host!.Services.GetRequiredService<ComponentsEditorControl>(), IsSelectable = true },
+        new MenuItemModel() { Name = "Изделия", Icon = App.GetIcon("table_edit_regular"), Control = App.Host!.Services.GetRequiredService<ProductsEditorControl>(), IsSelectable = true },
+        new MenuItemModel() { Name = "Настройки", Icon = App.GetIcon("launcher_settings_regular"), Control = App.Host!.Services.GetRequiredService<SettingsControl>(), IsSelectable = true }
     };
 
     private MenuItemModel? _menuItemSelected;

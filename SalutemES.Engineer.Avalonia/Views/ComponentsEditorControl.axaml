@@ -1,9 +1,30 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:vm="using:SalutemES.Engineer.Avalonia.ViewModels"
+			 xmlns:core="using:SalutemES.Engineer.Core"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="SalutemES.Engineer.Avalonia.Views.ComponentsEditorControl"
-			 Background="Green">
-  Welcome to Avalonia!
+			 Background="Transparent">
+	<UserControl.DataContext>
+		<vm:ComponentEditorViewModel/>
+	</UserControl.DataContext>
+	
+	<Grid ColumnDefinitions="1*, 1*">
+		<ListBox ItemsSource="{Binding ComponentUsageModelCollection}" SelectedItem="{Binding ComponentUsageModelSelected}">
+			<ListBox.DataTemplates>
+				<DataTemplate DataType="{x:Type core:ComponentUsageModel}">
+					<StackPanel>
+						<TextBlock Text="{Binding Name}"/>
+						<TextBlock Text="{Binding Code}"/>
+						<TextBlock Text="{Binding FilesCount}"/>
+						<TextBlock Text="{Binding ReferencesCount}"/>
+					</StackPanel>
+				</DataTemplate>
+			</ListBox.DataTemplates>
+		</ListBox>
+		
+		<Button Grid.Column="1" Width="100" Height="50" Command="{Binding UpdateListCommand}"/>
+	</Grid>
 </UserControl>

@@ -1,21 +1,16 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Controls.Presenters;
-using Avalonia.Data.Core;
-using Avalonia.Data.Core.Plugins;
 using Avalonia.Input;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 using Avalonia.VisualTree;
-using SalutemES.Engineer.Avalonia.ViewModels;
 using SalutemES.Engineer.Avalonia.Views;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using SalutemES.Engineer.Avalonia.Models;
-using System.Drawing;
-using System.Collections.ObjectModel;
 using Point = Avalonia.Point;
+using SalutemES.Engineer.Infrastructure.DataBase;
+using SalutemES.Engineer.Infrastructure;
 
 namespace SalutemES.Engineer.Avalonia;
 
@@ -48,6 +43,8 @@ public partial class App : Application
 
     public override void Initialize()
     {
+        AvaloniaXamlLoader.Load(this);
+
         Host = Microsoft.Extensions.Hosting.Host.CreateDefaultBuilder()
             .ConfigureServices(services => {
                 services.AddSingleton<MainWindow>();
@@ -59,7 +56,13 @@ public partial class App : Application
             })
             .Build();
 
-        AvaloniaXamlLoader.Load(this);
+        Logger.SetLoggerPath(Environment.CurrentDirectory);
+
+        DataBaseApi
+            .SetConnection("DESKTOP-STD16R1", "DB_SE_EngineerWS")
+            .DoIf(conn => conn.Do(x => { Logger.WriteLine("Попытка подключения к БД..."); return x; }).IsSuccess,
+                  error => Logger.WriteLine(error.Exception.message))
+            ?.Do(ok => Logger.WriteLine("Успешное подключение к БД!"));
     }
 
     public override void OnFrameworkInitializationCompleted()
@@ -73,7 +76,7 @@ public partial class App : Application
         base.OnFrameworkInitializationCompleted();
     }
 
-    public static T SetWindowContent<T>() => Host!.Services
+    public static T SetWindowContent<T>() where T : notnull => Host!.Services
         .GetRequiredService<WindowContentService>()!
         .Set<T>()!;
 
