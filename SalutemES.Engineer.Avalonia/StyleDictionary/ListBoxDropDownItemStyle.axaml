@@ -1,0 +1,146 @@
+﻿<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Design.PreviewWith>
+        <Border Padding="20">
+            <!-- Add Controls for Previewer Here -->
+        </Border>
+    </Design.PreviewWith>
+
+	<Style Selector="ListBox.ListBoxDropDownItem">
+		<Setter Property="Background" Value="Transparent"/>
+	</Style>
+
+	<Style Selector="ListBox.ListBoxDropDownItem
+			   ListBoxItem Path">
+		<Setter Property="Stroke" Value="{DynamicResource TextInactiveForeground}"/>
+		<Setter Property="Fill" Value="{DynamicResource TextInactiveForeground}"/>
+		<Setter Property="StrokeThickness" Value="0"/>
+		<Setter Property="HorizontalAlignment" Value="Center"/>
+		<Setter Property="RenderTransform" Value="Scale(0.75)"/>
+		<Setter Property="Margin" Value="0 0 5 0"/>
+		<Setter Property="VerticalAlignment" Value="Center"/>
+	</Style>
+
+	<Style Selector="ListBox.ListBoxDropDownItem ListBoxItem">
+		<Setter Property="Template">
+			<ControlTemplate>
+				<Grid RowDefinitions="1*,auto"
+					  ColumnDefinitions="auto,1*, auto,auto"
+					  Background="Transparent"
+					  Margin="0 1 10 0">
+
+					<Label Grid.Column="1"
+						   Grid.ColumnSpan="2"
+						   Grid.RowSpan="2"/>
+
+					<TextBlock Text="{Binding Name}"
+							   Grid.Column="1"
+							   VerticalAlignment="Center"
+							   TextWrapping="Wrap"
+							   Margin="5 0 0 0"/>
+
+					<TextBlock Text="{Binding Code}"
+							   Grid.Column="2"
+							   VerticalAlignment="Center"
+							   Margin="0 0 5 0"/>
+
+					<Button Classes="Edit"
+							Grid.RowSpan="2"
+							Grid.Column="0"/>
+
+					<CheckBox Classes="UpDown"
+							  Grid.RowSpan="2"
+							  Grid.Column="3"
+							  IsChecked="False"
+							  Name="UpDownStateName"/>
+
+					<Grid Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="1"
+						  IsVisible="{Binding #UpDownStateName.IsChecked}">
+						<ContentPresenter Content="{TemplateBinding Content}"/>
+					</Grid>
+				</Grid>
+			</ControlTemplate>
+		</Setter>
+	</Style>
+
+	<Style Selector="ListBox.ListBoxDropDownItem
+			   ListBoxItem:pointerover > Grid > Label">
+		<Setter Property="Background" Value="LightGray"/>
+	</Style>
+
+	<Style Selector="ListBox.ListBoxDropDownItem
+			   ListBoxItem:selected > Grid > Label">
+		<Setter Property="Background" Value="{StaticResource AccentLowColor}"/>
+	</Style>
+
+	<Style Selector="ListBox.ListBoxDropDownItem
+			   ListBoxItem:selected:pointerover > Grid > Label">
+		<Setter Property="Background" Value="{StaticResource AccentMediumColor}"/>
+	</Style>
+
+	<Style Selector="ListBox.ListBoxDropDownItem
+			   ListBoxItem:selected:pointerover:pressed > Grid > Label">
+		<Setter Property="Background" Value="{StaticResource AccentHighColor}"/>
+	</Style>
+
+	<Style Selector="ListBox.ListBoxDropDownItem
+			   ListBoxItem /template/ Button">
+		<Setter Property="CornerRadius" Value="0"/>
+		<Setter Property="BorderThickness" Value="0"/>
+		<Setter Property="Padding" Value="5 5 3 5"/>
+		<Setter Property="VerticalAlignment" Value="Stretch"/>
+		<Setter Property="VerticalContentAlignment" Value="Center"/>
+		<Setter Property="HorizontalContentAlignment" Value="Center"/>
+	</Style>
+
+	<Style Selector="ListBox.ListBoxDropDownItem
+			   ListBoxItem /template/ Button.Edit">
+		<Setter Property="Content">
+			<Template>
+				<Path Data="{StaticResource document_edit_regular}"/>
+			</Template>
+		</Setter>
+	</Style>
+
+	<Style Selector="ListBox.ListBoxDropDownItem
+			   ListBoxItem /template/ CheckBox.UpDown">
+		<Setter Property="Margin" Value="0"/>
+		<Setter Property="Padding" Value="0"/>
+		<Setter Property="BorderThickness" Value="0"/>
+		<Setter Property="VerticalAlignment" Value="Stretch"/>
+		<Setter Property="Template">
+			<ControlTemplate>
+				<Grid Background="LightGray">
+					<Grid Classes="IconWrapping" Background="Transparent" Margin="5 0 8 0">
+						<Path Data="{StaticResource arrow_upload_regular}"/>
+					</Grid>
+				</Grid>
+			</ControlTemplate>
+		</Setter>
+	</Style>
+
+	<Style Selector="ListBox.ListBoxDropDownItem
+			   ListBoxItem /template/ CheckBox.UpDown Grid.IconWrapping">
+		<Setter Property="RenderTransform" Value="rotate(180deg)"/>
+		<Setter Property="Transitions">
+			<Transitions>
+				<TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.20" Easing="CircularEaseOut"/>
+			</Transitions>
+		</Setter>
+	</Style>
+
+	<Style Selector="ListBox.ListBoxDropDownItem
+			   ListBoxItem /template/ CheckBox.UpDown:checked Grid.IconWrapping">
+		<Setter Property="RenderTransform" Value="rotate(0deg)"/>
+	</Style>
+
+	<Style Selector="ListBox.ListBoxDropDownItem
+			   ListBoxItem /template/ CheckBox.UpDown:checked > Grid">
+		<Setter Property="Background" Value="{DynamicResource AccentHighBrush}"/>
+	</Style>
+
+	<Style Selector="ListBox.ListBoxDropDownItem
+			   ListBoxItem /template/ CheckBox.UpDown:checked Grid.IconWrapping Path">
+		<Setter Property="Fill" Value="White"/>
+	</Style>
+</Styles>

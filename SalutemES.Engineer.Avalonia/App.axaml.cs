@@ -11,6 +11,7 @@ using Microsoft.Extensions.Hosting;
 using Point = Avalonia.Point;
 using SalutemES.Engineer.Infrastructure.DataBase;
 using SalutemES.Engineer.Infrastructure;
+using SalutemES.Engineer.Core;
 
 namespace SalutemES.Engineer.Avalonia;
 
@@ -53,6 +54,7 @@ public partial class App : Application
                 services.AddSingleton<ComponentsEditorControl>();
                 services.AddSingleton<OrderBuilderControl>();
                 services.AddSingleton<SettingsControl>();
+                services.AddSingleton<ComponentUsageViewModel>();
             })
             .Build();
 

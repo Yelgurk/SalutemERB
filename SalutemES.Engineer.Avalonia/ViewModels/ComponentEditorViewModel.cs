@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.Input;
+using Microsoft.Extensions.DependencyInjection;
 using SalutemES.Engineer.Core;
 using System;
 using System.Collections.Generic;
@@ -8,10 +9,17 @@ using System.Threading.Tasks;
 
 namespace SalutemES.Engineer.Avalonia.ViewModels;
 
-public partial class ComponentEditorViewModel : ComponentUsageViewModel
+public partial class ComponentEditorViewModel : ViewModelBase
 {
-    public ComponentEditorViewModel() => this.FillCollection();
+    public ComponentUsageViewModel ComponentUsageHost { get; set; }
+
+    public ComponentEditorViewModel()
+    {
+        ComponentUsageHost = App.Host!.Services.GetRequiredService<ComponentUsageViewModel>();
+
+        ComponentUsageHost.FillCollection();
+    }
 
     [RelayCommand]
-    public void UpdateList() => this.FillCollection();
+    public void UpdateList() => ComponentUsageHost.FillCollection();
 }

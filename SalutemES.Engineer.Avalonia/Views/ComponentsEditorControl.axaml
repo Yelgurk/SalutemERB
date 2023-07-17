@@ -11,20 +11,82 @@
 		<vm:ComponentEditorViewModel/>
 	</UserControl.DataContext>
 	
-	<Grid ColumnDefinitions="1*, 1*">
-		<ListBox ItemsSource="{Binding ComponentUsageModelCollection}" SelectedItem="{Binding ComponentUsageModelSelected}">
+	<Grid ColumnDefinitions="1*, auto, 1*">
+		<Grid.RowDefinitions>
+			<RowDefinition Height="40"/>
+			<RowDefinition Height="40"/>
+			<RowDefinition/>
+		</Grid.RowDefinitions>
+
+		<Grid Grid.Column="1"
+			  Grid.RowSpan="3"
+			  Width="1"
+			  Background="Gray"
+			  Margin="5 0"/>
+		
+		<TextBlock Text="Детали"
+				   VerticalAlignment="Center"
+				   HorizontalAlignment="Center"
+				   FontSize="18"/>
+		
+		<TextBlock Text="[поиск в разработке]"
+				   Grid.Row="1"
+				   VerticalAlignment="Center"
+				   HorizontalAlignment="Center"/>
+		
+		<ListBox ItemsSource="{Binding ComponentUsageHost.ComponentUsageModelCollection}"
+				 SelectedItem="{Binding ComponentUsageHost.ComponentUsageModelSelected}"
+				 Classes="ListBoxDropDownItem"
+				 Grid.Row="2">
 			<ListBox.DataTemplates>
 				<DataTemplate DataType="{x:Type core:ComponentUsageModel}">
 					<StackPanel>
-						<TextBlock Text="{Binding Name}"/>
-						<TextBlock Text="{Binding Code}"/>
-						<TextBlock Text="{Binding FilesCount}"/>
-						<TextBlock Text="{Binding ReferencesCount}"/>
+						<DockPanel Margin="5 0 5 5">
+							<TextBlock Text="Количество файлов: "/>
+							<TextBlock Text="{Binding FilesCount}"/>
+						</DockPanel>
+						<DockPanel Margin="5 0 5 5">
+							<TextBlock Text="Использовано в сборках: "/>
+							<TextBlock Text="{Binding ReferencesCount}"/>
+						</DockPanel>
 					</StackPanel>
 				</DataTemplate>
 			</ListBox.DataTemplates>
 		</ListBox>
-		
-		<Button Grid.Column="1" Width="100" Height="50" Command="{Binding UpdateListCommand}"/>
+
+		<TextBlock Text="Сборки"
+				   VerticalAlignment="Center"
+				   HorizontalAlignment="Center"
+				   FontSize="18"
+				   Grid.Column="2"/>
+
+		<TextBlock Text="[поиск в разработке]"
+				   Grid.Row="1"
+				   VerticalAlignment="Center"
+				   HorizontalAlignment="Center"
+				   Grid.Column="2"/>
+
+		<ListBox ItemsSource="{Binding ComponentUsageHost.ComponentUsageModelCollection}"
+				 SelectedItem="{Binding ComponentUsageHost.ComponentUsageModelSelected}"
+				 Classes="ListBoxDropDownItem"
+				 Grid.Row="2"
+				 Grid.Column="2">
+			<ListBox.DataTemplates>
+				<DataTemplate DataType="{x:Type core:ComponentUsageModel}">
+					<StackPanel>
+						<DockPanel Margin="5 0 5 5">
+							<TextBlock Text="Количество файлов: "/>
+							<TextBlock Text="{Binding FilesCount}"/>
+						</DockPanel>
+						<DockPanel Margin="5 0 5 5">
+							<TextBlock Text="Использовано в сборках: "/>
+							<TextBlock Text="{Binding ReferencesCount}"/>
+						</DockPanel>
+					</StackPanel>
+				</DataTemplate>
+			</ListBox.DataTemplates>
+		</ListBox>
+
+		<!--Button Grid.Column="2" Grid.Row="2" Width="100" Height="50" Command="{Binding UpdateListCommand}"/-->
 	</Grid>
 </UserControl>

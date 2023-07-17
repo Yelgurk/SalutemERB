@@ -132,6 +132,7 @@
 		<StyleInclude Source="/StyleDictionary/ComboBoxStyle.axaml"/>
 		<StyleInclude Source="/StyleDictionary/ListBoxStyle.axaml"/>
 		<StyleInclude Source="/StyleDictionary/ListBoxAsMenuStyle.axaml"/>
+		<StyleInclude Source="/StyleDictionary/ListBoxDropDownItemStyle.axaml"/>
 		
 		<!-- ListBox style + pointer moved event -->
 		<Style Selector="ListBox.DynamicDataTemplateBorder ListBoxItem">
