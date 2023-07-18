@@ -15,15 +15,24 @@ namespace SalutemES.Engineer.Avalonia.ViewModels;
 
 public partial class ComponentDetailsViewModel : ViewModelBase
 {
+    public ComponentViewModel ComponentHost { get; } = new ComponentViewModel();
+    public ProductViewModel ProductHost { get; } = new ProductViewModel();
+    public ComponentFileViewModel FilesHost { get; } = new ComponentFileViewModel();
+
+    public ComponentDetailsViewModel() =>
+        ComponentHost.OnFillCollection = () =>
+        ComponentHost.ComponentModelSelected = ComponentHost.ComponentModelCollection[0] ?? new ComponentModel();
+
+    public void SetComponent(ComponentModel Component) => FillCollection(Component.Name, Component.Code);
+    public void SetComponent(ComponentUsageModel Component) => FillCollection(Component.Name, Component.Code);
+
+    public void FillCollection(string Name, string Code)
+    {
+        ComponentHost.FillCollection(DBRequests.GetComponentsDetailsByNameCode, Name, Code);
+        ProductHost.FillCollection(ComponentHost.ComponentModelSelected!);
+        FilesHost.FillCollection(ComponentHost.ComponentModelSelected!);
+    }
+
     [RelayCommand]
     public void ClosePopup() => App.Host!.Services.GetRequiredService<MainWindow>().ViewModel.ClosePopupControl();
-
-    public ComponentViewModel ComponentHost { get; } = new ComponentViewModel();
-
-    public ComponentModel NewComponent { get; set; } = new ComponentModel();
-
-    public ComponentDetailsViewModel() => ComponentHost.OnFillCollection = () => ComponentHost.ComponentModelSelected = ComponentHost.ComponentModelCollection[0] ?? new ComponentModel();
-
-    public void SetComponent(ComponentModel Component) => ComponentHost.FillCollection(DBRequests.GetComponentsDetailsByNameCode, Component.Name, Component.Code);
-    public void SetComponent(ComponentUsageModel Component) => ComponentHost.FillCollection(DBRequests.GetComponentsDetailsByNameCode, Component.Name, Component.Code);
 }

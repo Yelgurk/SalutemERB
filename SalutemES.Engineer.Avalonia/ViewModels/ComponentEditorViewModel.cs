@@ -25,7 +25,8 @@ public partial class ComponentEditorViewModel : ViewModelBase
         ComponentUsageHost.FillCollection();
 
         ComponentUsageHost.OnSelectedModelChanged = () => this
-            .DoIf(state => state.ProductListOpened, closed => {
+            .DoIf(state => state.ProductListOpened, closed =>
+            {
                 App.Host!.Services.GetRequiredService<MainWindow>()
                 .ViewModel
                 .DisplayPopupControl(App.Host!.Services.GetRequiredService<ComponentDetails>()

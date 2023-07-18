@@ -75,7 +75,7 @@
 			  Classes.PopupTriggeredStyle="{Binding PopupTriggered}">
 			<Grid/>
 			<UserControl Content="{Binding PopupPanelContent}"
-						 Margin="20"/>
+						 Margin="50"/>
 		</Grid>
 	</Grid>
 </Window>

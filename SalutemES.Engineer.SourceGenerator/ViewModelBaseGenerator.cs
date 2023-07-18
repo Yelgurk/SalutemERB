@@ -93,7 +93,7 @@ public class ViewModelBaseGenerator : ISourceGenerator
                     public ObservableCollection<{{GenClass.Item2}}> {{GenClass.Item2}}Collection { get; } = new ObservableCollection<{{GenClass.Item2}}>();
 
                     public Action? OnFillCollection { private get; set; } = null;
-                    public void FillCollection(DataBaseRequest Request, params string[] Args)
+                    public {{GenClass.Item1}} FillCollection(DataBaseRequest Request, params string[] Args)
                     {
                         {{GenClass.Item2}}Collection.Clear();
                         DataBaseApi.ConnectionAvailable()
@@ -110,6 +110,8 @@ public class ViewModelBaseGenerator : ISourceGenerator
                         });
 
                         OnFillCollection?.Invoke();
+
+                        return this;
                     }
                 }
                 """);
