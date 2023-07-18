@@ -1,0 +1,111 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:SalutemES.Engineer.Avalonia.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="SalutemES.Engineer.Avalonia.Views.ComponentDetails">
+	<UserControl.DataContext>
+		<vm:ComponentDetailsViewModel/>
+	</UserControl.DataContext>
+
+	<UserControl.Styles>
+		<Style Selector="Grid.TextBoxesContainer TextBlock">
+			<Setter Property="VerticalAlignment" Value="Center"/>
+			<Setter Property="Margin" Value="5 0"/>
+			<Setter Property="FontSize" Value="14"/>
+		</Style>
+
+		<Style Selector="Grid.TextBoxesContainer TextBox">
+			<Setter Property="DataContext" Value="{Binding ComponentHost.ComponentModelSelected}"/>
+			<Setter Property="Margin" Value="0 5 0 0"/>
+			<Setter Property="Padding" Value="2 0"/>
+			<Setter Property="Text" Value="Test test test"/>
+			<Setter Property="VerticalContentAlignment" Value="Center"/>
+			<Setter Property="CornerRadius" Value="0"/>
+			<Setter Property="BorderThickness" Value="0 0 0 1"/>
+			<Setter Property="Background" Value="WhiteSmoke"/>
+			<Setter Property="Height" Value="20"/>
+		</Style>
+
+		<!--Style Selector="Grid.TextBoxesContainer TextBox:focus">
+			<Setter Property="DataContext" Value="{Binding NewComponent}"/>
+		</Style-->
+	</UserControl.Styles>
+
+	<Grid ColumnDefinitions="1*, 5*, 1*"
+		  RowDefinitions="auto, 1*"
+		  Background="White">
+		<Button CornerRadius="0"
+				BorderThickness="0"
+				Padding="8"
+				Content="Назад"
+				FontSize="16"
+				HorizontalAlignment="Stretch"
+				HorizontalContentAlignment="Center"/>
+		
+		<Label  Grid.Column="1"
+				Content="Редактор детали"
+				HorizontalContentAlignment="Center"
+				VerticalContentAlignment="Center"
+				FontSize="16"
+				FontWeight="DemiBold"
+				Foreground="White"
+				Background="{DynamicResource AccentMainBrush}"/>
+
+		<Button Grid.Column="2"
+				CornerRadius="0"
+				BorderThickness="0"
+				Padding="8"
+				Content="Сохранить"
+				FontWeight="DemiBold"
+				FontSize="16"
+				HorizontalAlignment="Stretch"
+				HorizontalContentAlignment="Center"/>
+
+		<Grid Grid.ColumnSpan="3"
+			  Grid.Row="1"
+			  ColumnDefinitions="1*, 1*, 1*">
+			<Grid Grid.Column="1"
+				  Background="WhiteSmoke"/>
+
+			<ScrollViewer Grid.Column="0">
+				<Grid ColumnDefinitions="auto, 1*, auto"
+					  RowDefinitions="auto, auto, auto, auto, auto, auto, auto, auto, 1*"
+					  Classes="TextBoxesContainer">
+					<TextBlock Grid.Column="0"	Grid.Row="0" Text="Название:"/>
+					<TextBox Grid.Column="1"	Grid.Row="0" Text="{Binding Name}"/>
+					<TextBlock Grid.Column="2"	Grid.Row="0" Text=""/>
+					
+					<TextBlock Grid.Column="0"	Grid.Row="1" Text="Код:"/>
+					<TextBox Grid.Column="1"	Grid.Row="1" Text="{Binding Code}"/>
+					<TextBlock Grid.Column="2"	Grid.Row="1" Text=""/>
+					
+					<TextBlock Grid.Column="0"	Grid.Row="2" Text="Металл:"/>
+					<TextBox Grid.Column="1"	Grid.Row="2" Text="{Binding Grade}"/>
+					<TextBlock Grid.Column="2"	Grid.Row="2" Text=""/>
+					
+					<TextBlock Grid.Column="0"	Grid.Row="3" Text="Толщина:"/>
+					<TextBox Grid.Column="1"	Grid.Row="3" Text="{Binding Thickness}"/>
+					<TextBlock Grid.Column="2"	Grid.Row="3" Text=""/>
+					
+					<TextBlock Grid.Column="0"	Grid.Row="4" Text="Сгибы:"/>
+					<TextBox Grid.Column="1"	Grid.Row="4" Text="{Binding Folds}"/>
+					<TextBlock Grid.Column="2"	Grid.Row="4" Text=""/>
+					
+					<TextBlock Grid.Column="0"	Grid.Row="5" Text="Вес шт.:"/>
+					<TextBox Grid.Column="1"	Grid.Row="5" Text="{Binding WeightKG}"/>
+					<TextBlock Grid.Column="2"	Grid.Row="5" Text=""/>
+					
+					<TextBlock Grid.Column="0"	Grid.Row="6" Text="Материал:"/>
+					<TextBox Grid.Column="1"	Grid.Row="6" Text="{Binding Material}"/>
+					<TextBlock Grid.Column="2"	Grid.Row="6" Text=""/>
+					
+					<TextBlock Grid.Column="0"	Grid.Row="7" Text="Примечание:"/>
+					<TextBox Grid.Column="1"	Grid.Row="7" Text="{Binding Note}"/>
+					<TextBlock Grid.Column="2"	Grid.Row="7" Text=""/>
+				</Grid>
+			</ScrollViewer>
+		</Grid>
+	</Grid>
+</UserControl>

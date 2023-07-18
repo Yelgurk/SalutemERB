@@ -133,6 +133,8 @@
 		<StyleInclude Source="/StyleDictionary/ListBoxStyle.axaml"/>
 		<StyleInclude Source="/StyleDictionary/ListBoxAsMenuStyle.axaml"/>
 		<StyleInclude Source="/StyleDictionary/ListBoxDropDownItemStyle.axaml"/>
+		<StyleInclude Source="/StyleDictionary/ListBoxDropDownListStyle.axaml"/>
+		<StyleInclude Source="/StyleDictionary/CheckBoxTextToggleStyle.axaml"/>
 		
 		<!-- ListBox style + pointer moved event -->
 		<Style Selector="ListBox.DynamicDataTemplateBorder ListBoxItem">

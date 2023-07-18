@@ -12,6 +12,30 @@
 		<vm:MainWindowViewModel/>
 	</Window.DataContext>
 
+	<Window.Styles>
+		<Style Selector="Grid#MainWindowPopupPanelContainer">
+			<Setter Property="Grid.ColumnSpan" Value="2"/>
+			<Setter Property="IsVisible" Value="False"/>
+			<Setter Property="Opacity" Value="0"/>
+			<Setter Property="Transitions">
+				<Transitions>
+					<DoubleTransition Property="Opacity" Duration="0:0:0.25" Easing="CircularEaseOut"/>
+				</Transitions>
+			</Setter>
+		</Style>
+
+		<Style Selector="Grid#MainWindowPopupPanelContainer > Grid">
+			<Setter Property="Background" Value="Black"/>
+			<Setter Property="Opacity" Value="0.5"/>
+			<Setter Property="Grid.ColumnSpan" Value="2"/>
+		</Style>
+
+		<Style Selector="Grid#MainWindowPopupPanelContainer.PopupTriggeredStyle">
+			<Setter Property="IsVisible" Value="True"/>
+			<Setter Property="Opacity" Value="1"/>
+		</Style>
+	</Window.Styles>
+
 	<Grid Background="{StaticResource WindowBackground}">
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="100"/>
@@ -46,5 +70,12 @@
 						   FontSize="16" Foreground="{DynamicResource TextInactiveForeground}"/>
 			</UserControl.Content>
 		</UserControl>
+
+		<Grid Name="MainWindowPopupPanelContainer"
+			  Classes.PopupTriggeredStyle="{Binding PopupTriggered}">
+			<Grid/>
+			<UserControl Content="{Binding PopupPanelContent}"
+						 Margin="20"/>
+		</Grid>
 	</Grid>
 </Window>

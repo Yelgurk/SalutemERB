@@ -1,0 +1,112 @@
+﻿<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Design.PreviewWith>
+        <Border Padding="20">
+        </Border>
+    </Design.PreviewWith>
+
+	<Style Selector="ListBox.ListBoxDropDownList">
+		<Setter Property="Background" Value="Transparent"/>
+	</Style>
+
+	<Style Selector="ListBox.ListBoxDropDownList
+			   ListBoxItem Path">
+		<Setter Property="Stroke" Value="{DynamicResource TextInactiveForeground}"/>
+		<Setter Property="Fill" Value="{DynamicResource TextInactiveForeground}"/>
+		<Setter Property="StrokeThickness" Value="0"/>
+		<Setter Property="HorizontalAlignment" Value="Center"/>
+		<Setter Property="RenderTransform" Value="Scale(0.75)"/>
+		<Setter Property="Margin" Value="0 0 5 0"/>
+		<Setter Property="VerticalAlignment" Value="Center"/>
+	</Style>
+
+	<Style Selector="ListBox.ListBoxDropDownList > ListBoxItem">
+		<Setter Property="Template">
+			<ControlTemplate>
+				<Grid RowDefinitions="1*,auto"
+					  ColumnDefinitions="auto,1*, auto,auto"
+					  Background="Transparent"
+					  Margin="0 1 10 0">
+
+					<Label Grid.Column="1"
+						   Grid.ColumnSpan="2"
+						   Grid.RowSpan="2"/>
+
+					<TextBlock Text="{Binding Name}"
+							   Grid.Column="1"
+							   VerticalAlignment="Center"
+							   TextWrapping="Wrap"
+							   Margin="5 0 0 0"/>
+
+					<Button Classes="Edit"
+							Grid.RowSpan="2"
+							Grid.Column="0"/>
+
+					<Grid Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="1"
+						  IsVisible="{TemplateBinding IsSelected}">
+						<ContentPresenter Content="{TemplateBinding Content}"/>
+					</Grid>
+				</Grid>
+			</ControlTemplate>
+		</Setter>
+	</Style>
+
+	<Style Selector="ListBox.ListBoxDropDownList
+			   ListBoxItem:pointerover > Grid > Label">
+		<Setter Property="Background" Value="LightGray"/>
+	</Style>
+
+	<Style Selector="ListBox.ListBoxDropDownList
+			   ListBoxItem:selected > Grid > Label">
+		<Setter Property="Background" Value="{StaticResource AccentLowColor}"/>
+	</Style>
+
+	<Style Selector="ListBox.ListBoxDropDownList
+			   ListBoxItem:selected:pointerover > Grid > Label">
+		<Setter Property="Background" Value="{StaticResource AccentMediumColor}"/>
+	</Style>
+
+	<Style Selector="ListBox.ListBoxDropDownList
+			   ListBoxItem:selected:pointerover:pressed > Grid > Label">
+		<Setter Property="Background" Value="{StaticResource AccentHighColor}"/>
+	</Style>
+
+	<Style Selector="ListBox.ListBoxDropDownList Button.Edit">
+		<Setter Property="CornerRadius" Value="0"/>
+		<Setter Property="BorderThickness" Value="0"/>
+		<Setter Property="Padding" Value="5 5 3 5"/>
+		<Setter Property="VerticalAlignment" Value="Stretch"/>
+		<Setter Property="VerticalContentAlignment" Value="Center"/>
+		<Setter Property="HorizontalContentAlignment" Value="Center"/>
+		<Setter Property="Content">
+			<Template>
+				<Path Data="{StaticResource document_edit_regular}"/>
+			</Template>
+		</Setter>
+	</Style>
+
+	<Style Selector="ListBox.ListBoxDropDownList > ListBoxItem
+		   ListBox ListBoxItem">
+		<Setter Property="Padding" Value="0"/>
+		<Setter Property="Margin" Value="0 1 0 0"/>
+	</Style>
+
+	<Style Selector="ListBox.ListBoxDropDownList > ListBoxItem
+		   Border">
+		<Setter Property="BorderBrush" Value="Gray"/>
+	</Style>
+
+	<Style Selector="ListBox.ListBoxDropDownList > ListBoxItem
+		   TextBlock.Center">
+		<Setter Property="VerticalAlignment" Value="Center"/>
+		<Setter Property="HorizontalAlignment" Value="Center"/>
+	</Style>
+
+	<Style Selector="ListBox.ListBoxDropDownList > ListBoxItem
+		   TextBlock.Left">
+		<Setter Property="VerticalAlignment" Value="Center"/>
+		<Setter Property="HorizontalAlignment" Value="Left"/>
+		<Setter Property="TextWrapping" Value="Wrap"/>
+		<Setter Property="Margin" Value="10 3 0 3"/>
+	</Style>
+</Styles>

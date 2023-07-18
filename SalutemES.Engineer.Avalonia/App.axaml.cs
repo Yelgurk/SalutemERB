@@ -54,7 +54,7 @@ public partial class App : Application
                 services.AddSingleton<ComponentsEditorControl>();
                 services.AddSingleton<OrderBuilderControl>();
                 services.AddSingleton<SettingsControl>();
-                services.AddSingleton<ComponentUsageViewModel>();
+                services.AddSingleton<ComponentDetails>();
             })
             .Build();
 

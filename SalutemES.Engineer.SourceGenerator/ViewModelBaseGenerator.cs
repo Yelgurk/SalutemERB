@@ -92,6 +92,7 @@ public class ViewModelBaseGenerator : ISourceGenerator
 
                     public ObservableCollection<{{GenClass.Item2}}> {{GenClass.Item2}}Collection { get; } = new ObservableCollection<{{GenClass.Item2}}>();
 
+                    public Action? OnFillCollection { private get; set; } = null;
                     public void FillCollection(DataBaseRequest Request, params string[] Args)
                     {
                         {{GenClass.Item2}}Collection.Clear();
@@ -107,6 +108,8 @@ public class ViewModelBaseGenerator : ISourceGenerator
                             if ({{GenClass.Item2}}Selected!.Equals({{GenClass.Item2}}Collection.Last()))
                                 {{GenClass.Item2}}Selected = {{GenClass.Item2}}Collection.Last();
                         });
+
+                        OnFillCollection?.Invoke();
                     }
                 }
                 """);

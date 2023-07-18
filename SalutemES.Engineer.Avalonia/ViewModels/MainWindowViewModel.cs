@@ -20,12 +20,19 @@ using System.Xml.Linq;
 using Avalonia.Layout;
 using Avalonia.Data;
 using Avalonia.Media;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace SalutemES.Engineer.Avalonia.ViewModels;
 
-public class MainWindowViewModel : ViewModelBase
+public partial class MainWindowViewModel : ViewModelBase
 {
     public ObservableCollection<MenuItemModel> MenuCollection { get; private set; }
+
+    [ObservableProperty]
+    private bool _popupTriggered = false;
+
+    [ObservableProperty]
+    private object? _popupPanelContent;
 
     public MainWindowViewModel() => MenuCollection = new ObservableCollection<MenuItemModel>() {
         new MenuItemModel() { Name = "Запуск", Icon = App.GetIcon("save_regular"), Control = new(), IsSelectable = false },
@@ -46,4 +53,12 @@ public class MainWindowViewModel : ViewModelBase
                 App.SetWindowContent((_menuItemSelected = value).Control);
         }
     }
+
+    public void DisplayPopupControl(UserControl Control)
+    {
+        PopupPanelContent = Control;
+        PopupTriggered = true;
+    }
+
+    public void ClosePopupControl() => PopupTriggered = false;
 }

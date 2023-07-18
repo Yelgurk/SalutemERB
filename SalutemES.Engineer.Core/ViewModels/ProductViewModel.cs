@@ -12,6 +12,5 @@ namespace SalutemES.Engineer.Core;
 public partial class ProductViewModel
 {
     public void FillCollection(ComponentModel Component) => FillCollection(DBRequests.GetProductsListByComponent, Component.Name);
-
     public void FillCollection(FamilyModel Family) => FillCollection(DBRequests.GetProductsListByFamily, Family.Name);
 }

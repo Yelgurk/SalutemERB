@@ -56,6 +56,19 @@ As Begin
 End
 Go
 
+Create Procedure [dbo].GetComponentsDetails
+	@Name string_short,
+	@Code string_short
+As Begin
+	Select	'' as 'doesntMatter',
+		    Component.*,
+			[dbo].GetComponentFilesCount(Component.name) as 'files_count'
+	From	Component
+	Where	Component.name = @Name And
+			Component.code = @Code
+End
+Go
+
 Create Procedure [dbo].GetFilesListByComponent
 	@Component string_short
 As Begin

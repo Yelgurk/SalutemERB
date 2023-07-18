@@ -10,83 +10,173 @@
 	<UserControl.DataContext>
 		<vm:ComponentEditorViewModel/>
 	</UserControl.DataContext>
+
+	<UserControl.Styles>
+		<Style Selector="Grid.MaximumWidthGrid, Grid.ShowHideGrid">
+			<Setter Property="Grid.ColumnSpan" Value="2"/>
+			<Setter Property="Transitions">
+				<Transitions>
+					<DoubleTransition Property="Width" Duration="0:0:0.25" Easing="CircularEaseOut"/>
+				</Transitions>
+			</Setter>
+		</Style>
+		
+		<Style Selector="Grid.MaximumWidthGrid">
+			<Setter Property="HorizontalAlignment" Value="Left"/>
+			<Setter Property="Width" Value="{Binding #FullSizeGrid.Bounds.Width}"/>
+		</Style>
+		
+		<Style Selector="Grid.ShowHideGrid">
+			<Setter Property="HorizontalAlignment" Value="Right"/>
+			<Setter Property="Width" Value="0"/>
+		</Style>
+
+		<Style Selector="Grid.MaximumWidthGrid.ShowToggle, Grid.ShowHideGrid.ShowToggle">
+			<Setter Property="Width" Value="{Binding #HalfSizeGrid.Bounds.Width}"/>
+		</Style>
+	</UserControl.Styles>
 	
-	<Grid ColumnDefinitions="1*, auto, 1*">
-		<Grid.RowDefinitions>
-			<RowDefinition Height="40"/>
-			<RowDefinition Height="40"/>
-			<RowDefinition/>
-		</Grid.RowDefinitions>
+	<Grid>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="1*"/>
+			<ColumnDefinition Width="1*"/>
+		</Grid.ColumnDefinitions>
 
-		<Grid Grid.Column="1"
-			  Grid.RowSpan="3"
-			  Width="1"
-			  Background="Gray"
-			  Margin="5 0"/>
 		
-		<TextBlock Text="Детали"
-				   VerticalAlignment="Center"
-				   HorizontalAlignment="Center"
-				   FontSize="18"/>
-		
-		<TextBlock Text="[поиск в разработке]"
-				   Grid.Row="1"
-				   VerticalAlignment="Center"
-				   HorizontalAlignment="Center"/>
-		
-		<ListBox ItemsSource="{Binding ComponentUsageHost.ComponentUsageModelCollection}"
-				 SelectedItem="{Binding ComponentUsageHost.ComponentUsageModelSelected}"
-				 Classes="ListBoxDropDownItem"
-				 Grid.Row="2">
-			<ListBox.DataTemplates>
-				<DataTemplate DataType="{x:Type core:ComponentUsageModel}">
-					<StackPanel>
-						<DockPanel Margin="5 0 5 5">
-							<TextBlock Text="Количество файлов: "/>
-							<TextBlock Text="{Binding FilesCount}"/>
-						</DockPanel>
-						<DockPanel Margin="5 0 5 5">
-							<TextBlock Text="Использовано в сборках: "/>
-							<TextBlock Text="{Binding ReferencesCount}"/>
-						</DockPanel>
-					</StackPanel>
-				</DataTemplate>
-			</ListBox.DataTemplates>
-		</ListBox>
+		<Grid Name="HalfSizeGrid"/>
+		<Grid Name="FullSizeGrid" Grid.ColumnSpan="3"/>
 
-		<TextBlock Text="Сборки"
-				   VerticalAlignment="Center"
-				   HorizontalAlignment="Center"
-				   FontSize="18"
-				   Grid.Column="2"/>
+		<Grid Classes="MaximumWidthGrid" Classes.ShowToggle="{Binding ProductListOpened}">
+			<Grid.RowDefinitions>
+				<RowDefinition Height="40"/>
+				<RowDefinition Height="40"/>
+				<RowDefinition/>
+			</Grid.RowDefinitions>
+			<TextBlock Text="Детали"
+					   VerticalAlignment="Center"
+					   HorizontalAlignment="Center"
+					   FontSize="18"/>
 
-		<TextBlock Text="[поиск в разработке]"
-				   Grid.Row="1"
-				   VerticalAlignment="Center"
-				   HorizontalAlignment="Center"
-				   Grid.Column="2"/>
+			<TextBlock Text="[поиск в разработке]"
+					   Grid.Row="1"
+					   VerticalAlignment="Center"
+					   HorizontalAlignment="Center"/>
 
-		<ListBox ItemsSource="{Binding ComponentUsageHost.ComponentUsageModelCollection}"
-				 SelectedItem="{Binding ComponentUsageHost.ComponentUsageModelSelected}"
-				 Classes="ListBoxDropDownItem"
-				 Grid.Row="2"
-				 Grid.Column="2">
-			<ListBox.DataTemplates>
-				<DataTemplate DataType="{x:Type core:ComponentUsageModel}">
-					<StackPanel>
-						<DockPanel Margin="5 0 5 5">
-							<TextBlock Text="Количество файлов: "/>
-							<TextBlock Text="{Binding FilesCount}"/>
-						</DockPanel>
-						<DockPanel Margin="5 0 5 5">
-							<TextBlock Text="Использовано в сборках: "/>
-							<TextBlock Text="{Binding ReferencesCount}"/>
-						</DockPanel>
-					</StackPanel>
-				</DataTemplate>
-			</ListBox.DataTemplates>
-		</ListBox>
+			<CheckBox Classes="TextToggle" Content="Показать сборки"
+					  IsChecked="{Binding ProductListOpened}"/>
 
-		<!--Button Grid.Column="2" Grid.Row="2" Width="100" Height="50" Command="{Binding UpdateListCommand}"/-->
+			<ListBox ItemsSource="{Binding ComponentUsageHost.ComponentUsageModelCollection}"
+					 SelectedItem="{Binding ComponentUsageHost.ComponentUsageModelSelected}"
+					 Classes="ListBoxDropDownItem"
+					 Grid.Row="2">
+				<ListBox.DataTemplates>
+					<DataTemplate DataType="{x:Type core:ComponentUsageModel}">
+						<StackPanel>
+							<DockPanel Margin="5 0 5 5">
+								<TextBlock Text="Количество файлов: "/>
+								<TextBlock Text="{Binding FilesCount}"/>
+							</DockPanel>
+							<DockPanel Margin="5 0 5 5">
+								<TextBlock Text="Использовано в сборках: "/>
+								<TextBlock Text="{Binding ReferencesCount}"/>
+							</DockPanel>
+						</StackPanel>
+					</DataTemplate>
+				</ListBox.DataTemplates>
+			</ListBox>
+		</Grid>
+
+		<Grid Classes="ShowHideGrid" Classes.ShowToggle="{Binding ProductListOpened}">
+			<Border BorderThickness="2 0 0 0"
+					BorderBrush="Gray">
+				<Grid>
+					<Grid.RowDefinitions>
+						<RowDefinition Height="40"/>
+						<RowDefinition Height="40"/>
+						<RowDefinition/>
+					</Grid.RowDefinitions>
+					<DockPanel Grid.Column="2"
+							   VerticalAlignment="Center"
+							   HorizontalAlignment="Center">
+						<TextBlock Text="Сборки"
+								   FontSize="18"/>
+						<TextBlock Text="{Binding ProductHost.ProductWithComponentsModelCollection.Count, StringFormat={}[найдено {0}]}"
+								   FontSize="12"
+								   VerticalAlignment="Center"
+								   Margin="5 0 0 0"/>
+					</DockPanel>
+
+					<TextBlock Text="[поиск в разработке]"
+							   Grid.Row="1"
+							   VerticalAlignment="Center"
+							   HorizontalAlignment="Center"
+							   Grid.Column="2"/>
+
+					<ListBox ItemsSource="{Binding ProductHost.ProductWithComponentsModelCollection}"
+							 SelectedItem="{Binding ProductHost.ProductWithComponentsModelSelected}"
+							 Classes="ListBoxDropDownList"
+							 Grid.Row="2"
+							 Grid.Column="2">
+						<ListBox.DataTemplates>
+							<DataTemplate DataType="{x:Type core:ProductWithComponentsModel}">
+								<StackPanel>
+									<DockPanel Margin="5 0 5 5">
+										<TextBlock Text="Группа: "/>
+										<TextBlock Text="{Binding FamilyName}"/>
+									</DockPanel>
+
+									<DockPanel Margin="5 0 5 5">
+										<TextBlock Text="Уникальных деталей в сборке: "/>
+										<TextBlock Text="{Binding Count}"/>
+									</DockPanel>
+
+									<TextBlock Text="Список деталей" Classes="Center"/>
+
+									<Border BorderThickness="1 0 0 0">
+										<StackPanel>
+											<Grid ColumnDefinitions="2*, 1*, 1*, 1*">
+												<Border Grid.ColumnSpan="4" BorderThickness="0 1 0 0"/>
+												<Border Grid.Column="1" BorderThickness="1 0"/>
+												<Border Grid.Column="2" BorderThickness="0 0 1 0"/>
+
+												<TextBlock Grid.Column="0" Text="Имя" Classes="Center"/>
+												<TextBlock Grid.Column="1" Text="Код" Classes="Center"/>
+												<TextBlock Grid.Column="2" Text="Металл" Classes="Center"/>
+												<TextBlock Grid.Column="3" Text="Детали" Classes="Center"/>
+											</Grid>
+
+											<ListBox ItemsSource="{Binding Components.ComponentModelCollection}">
+												<ListBox.DataTemplates>
+													<DataTemplate DataType="{x:Type core:ComponentModel}">
+														<Grid ColumnDefinitions="2*, 1*, 1*, 1*">
+															<DockPanel>
+																<Button Classes="Edit"/>
+																<TextBlock Text="{Binding Name}" Classes="Left"/>
+															</DockPanel>
+
+															<Border Grid.Column="1"
+																	BorderThickness="1 0">
+																<TextBlock Text="{Binding Code}" Classes="Left"/>
+															</Border>
+
+															<Border Grid.Column="2"
+																	BorderThickness="0 0 1 0">
+																<TextBlock Text="{Binding Grade}" Classes="Left"/>
+															</Border>
+
+															<TextBlock Grid.Column="3" Text="{Binding Material}" Classes="Left"/>
+														</Grid>
+													</DataTemplate>
+												</ListBox.DataTemplates>
+											</ListBox>
+										</StackPanel>
+									</Border>
+								</StackPanel>
+							</DataTemplate>
+						</ListBox.DataTemplates>
+					</ListBox>
+				</Grid>
+			</Border>
+		</Grid>
 	</Grid>
 </UserControl>

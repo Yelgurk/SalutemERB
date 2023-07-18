@@ -1,0 +1,46 @@
+﻿<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Design.PreviewWith>
+        <Border Padding="20">
+            <CheckBox Classes="TextToggle" Content="Привет"/>
+        </Border>
+    </Design.PreviewWith>
+
+	<Style Selector="CheckBox.TextToggle">
+		<Setter Property="VerticalAlignment" Value="Top"/>
+		<Setter Property="HorizontalAlignment" Value="Right"/>
+		<Setter Property="Template">
+			<ControlTemplate>
+				<Border>
+					<Grid Background="Transparent">
+						<TextBlock Text="{TemplateBinding Content}"
+								   IsVisible="{Binding !$parent[CheckBox].IsChecked}"/>
+						<Grid>
+							<Path Data="{StaticResource dismiss_regular}"
+								  IsVisible="{TemplateBinding IsChecked}"/>
+						</Grid>
+					</Grid>
+				</Border>
+			</ControlTemplate>
+		</Setter>
+	</Style>
+
+	<Style Selector="CheckBox.TextToggle /template/ Path">
+		<Setter Property="StrokeThickness" Value="0"/>
+		<Setter Property="Fill" Value="Black"/>
+		<Setter Property="RenderTransform" Value="scale(0.55)"/>
+		<Setter Property="Margin" Value="0 0 2 2"/>
+	</Style>
+
+	<Style Selector="CheckBox.TextToggle /template/ Border">
+		<Setter Property="Background" Value="LightGray"/>
+		<Setter Property="BorderThickness" Value="0"/>
+		<Setter Property="CornerRadius" Value="0"/>
+		<Setter Property="Padding" Value="5"/>
+		<Setter Property="Margin" Value="0"/>
+	</Style>
+
+	<Style Selector="CheckBox.TextToggle /template/ Border:pointerover">
+		<Setter Property="Background" Value="WhiteSmoke"/>
+	</Style>
+</Styles>

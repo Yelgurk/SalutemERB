@@ -26,6 +26,7 @@ public static class DBRequests
     public static DataBaseRequest GetProductsListByFamily => new("Exec [dbo].GetProductsListByFamily '{0}';");
     public static DataBaseRequest GetComponentsList => new("Select * From [dbo].VComponentUsageList;");
     public static DataBaseRequest GetComponentsListByProduct => new("Exec [dbo].GetComponentsListByProduct '{0}';");
+    public static DataBaseRequest GetComponentsDetailsByNameCode => new("Exec [dbo].GetComponentsDetails '{0}', '{1}';");
     public static DataBaseRequest GetFilesListByComponent => new("Exec [dbo].GetFilesListByComponent '{0}';");
     public static DataBaseRequest RenameFamily => new("Exec [dbo].RenameFamily '{0}', '{1}';");
     public static DataBaseRequest RenameProduct => new("Exec [dbo].RenameProduct '{0}', '{1}';");
