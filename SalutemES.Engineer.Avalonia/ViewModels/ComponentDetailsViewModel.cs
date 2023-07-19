@@ -7,12 +7,15 @@ using SalutemES.Engineer.Avalonia.Views;
 using SalutemES.Engineer.Core;
 using SalutemES.Engineer.Infrastructure;
 using SalutemES.Engineer.Infrastructure.DataBase;
+using System.ComponentModel;
 using System.Diagnostics;
+
 
 namespace SalutemES.Engineer.Avalonia.ViewModels;
 
 public partial class ComponentDetailsViewModel : ViewModelBase
 {
+
     public ComponentViewModel ComponentHost { get; } = new ComponentViewModel();
     public ProductViewModel ProductHost { get; } = new ProductViewModel();
     public ComponentFileViewModel FilesHost { get; } = new ComponentFileViewModel();
@@ -22,7 +25,15 @@ public partial class ComponentDetailsViewModel : ViewModelBase
 
     public ComponentDetailsViewModel() =>
         ComponentHost.OnFillCollection = () =>
-        ComponentHost.ComponentModelSelected = ComponentHost.ComponentModelCollection[0] ?? new ComponentModel();
+        {
+            if (ComponentHost.ComponentModelCollection.Count > 0)
+                ComponentHost.ComponentModelSelected = ComponentHost.ComponentModelCollection[0];
+
+            ComponentHost.ComponentModelSelected!.NumericThicknessRegex = true;
+            ComponentHost.ComponentModelSelected!.NumericFoldsRegex = true;
+            ComponentHost.ComponentModelSelected!.NumericWeightKGRegex = true;
+            ComponentHost.ComponentModelSelected!.ResetByBase();
+        };
 
     public void SetComponent(ComponentModel Component) => FillCollection(Component.Name, Component.Code);
     public void SetComponent(ComponentUsageModel Component) => FillCollection(Component.Name, Component.Code);
@@ -38,57 +49,52 @@ public partial class ComponentDetailsViewModel : ViewModelBase
     public void ClosePopup() => App.Host!.Services.GetRequiredService<MainWindow>().ViewModel.ClosePopupControl();
 
     [RelayCommand]
-    public void SaveInfo()
-    {
-        if (DataBaseApi.RequestWithBoolResponse(
+    public void SaveInfo() => ComponentHost.ComponentModelSelected!
+        .DoIf(c => DataBaseApi.RequestWithBoolResponse(
             DBRequests.EditComponent,
             onErr => Logger.WriteLine(onErr),
-            ComponentHost.ComponentModelSelected!.Base!.Name!,
-            ComponentHost.ComponentModelSelected!.Base!.Code!,
-            ComponentHost.ComponentModelSelected.Name,
-            ComponentHost.ComponentModelSelected.Code,
-            ComponentHost.ComponentModelSelected.Grade,
-            ComponentHost.ComponentModelSelected.Thickness,
-            ComponentHost.ComponentModelSelected.Folds,
-            ComponentHost.ComponentModelSelected.WeightKG,
-            ComponentHost.ComponentModelSelected.Note,
-            ComponentHost.ComponentModelSelected.Material
-            ))
-            Debug.WriteLine("Save successfully");
-        else
-            Debug.WriteLine("Save error");
-    }
+            c.Base!.Name!,
+            c.Base!.Code!,
+            c.Name,
+            c.Code,
+            c.Grade,
+            c.Thickness,
+            c.Folds,
+            c.WeightKG,
+            c.Note,
+            c.Material
+            ), error => Debug.WriteLine("Save error")
+        )
+        ?.Do(success => Debug.WriteLine("Save successfully"))
+        .Do(c => this.SetComponent(c))
+        .Do(c => App.Host!.Services.GetRequiredService<ComponentsEditorControl>().ViewModel.ComponentUsageHost.FillCollection());
 
     [RelayCommand]
     public void CancelInfoEdit() => ComponentHost.ComponentModelSelected!.ResetByBase();
 
     [RelayCommand]
-    public void DeleteWithAllReference()
-    {
-        if (DataBaseApi.RequestWithBoolResponse(
+    public void DeleteWithAllReference() => ComponentHost.ComponentModelSelected!
+        .DoIf(c => DataBaseApi.RequestWithBoolResponse(
             DBRequests.DeleteComponent,
             onErr => Logger.WriteLine(onErr),
-            ComponentHost.ComponentModelSelected!.Name,
-            ComponentHost.ComponentModelSelected!.Code
-            ))
-            Debug.WriteLine("Delete component successfully");
-        else
-            Debug.WriteLine("Delete component error");
-    }
+            c.Name,
+            c.Code
+            ), error => Debug.WriteLine("Delete component error")
+        )?.Do(success => Debug.WriteLine("Delete component successfully"))
+        .Do(c => this.ClosePopup())
+        .Do(c => App.Host!.Services.GetRequiredService<ComponentsEditorControl>().ViewModel.ComponentUsageHost.FillCollection());
 
     [RelayCommand]
-    public void DeleteReferencedFile(ComponentFileModel SelectedFile)
-    {
-        if (DataBaseApi.RequestWithBoolResponse(
+    public void DeleteReferencedFile(ComponentFileModel SelectedFile) => ComponentHost.ComponentModelSelected!
+        .DoIf(c => DataBaseApi.RequestWithBoolResponse(
             DBRequests.DeleteComponentFile,
             onErr => Logger.WriteLine(onErr),
-            ComponentHost.ComponentModelSelected!.Name,
+            c.Name,
             SelectedFile.LocalFilePath
-            ))
-            Debug.WriteLine("Delete file successfully");
-        else
-            Debug.WriteLine("Delete file error");
-    }
+            ), error => Debug.WriteLine("Delete file error")
+        )?.Do(success => Debug.WriteLine("Delete file successfully"))
+        .Do(c => this.SetComponent(c))
+        .Do(c => App.Host!.Services.GetRequiredService<ComponentsEditorControl>().ViewModel.ComponentUsageHost.FillCollection());
 
     [RelayCommand]
     [Obsolete]
@@ -101,34 +107,31 @@ public partial class ComponentDetailsViewModel : ViewModelBase
     [RelayCommand]
     public void AddSelectedFileIntoRef() => NewFileLocalPath
         .DoIf(filePath => filePath.Length > 0, error => Logger.WriteLine("Can't add file path, because file not selected"))
-        .Do(filePath => {
-            if (DataBaseApi.RequestWithBoolResponse(
-                DBRequests.DeleteComponentFile,
-                onErr => Logger.WriteLine(onErr),
-                ComponentHost.ComponentModelSelected!.Name,
-                filePath!
-            ))
-                Debug.WriteLine("Add file successfully");
-            else
-                Debug.WriteLine("Add file error");
-        });
+        ?.Do(filePath => ComponentHost.ComponentModelSelected)
+        ?.DoIf(c => DataBaseApi.RequestWithBoolResponse(
+            DBRequests.AddComponentFile,
+            onErr => Logger.WriteLine(onErr),
+            c.Name,
+            NewFileLocalPath
+            ), error => Debug.WriteLine("Add file error")
+        )?.Do(success => Debug.WriteLine("Add file successfully"))
+        .Do(c => this.SetComponent(c))
+        .Do(c => App.Host!.Services.GetRequiredService<ComponentsEditorControl>().ViewModel.ComponentUsageHost.FillCollection());
 
     [RelayCommand]
     public void ShowSelectedFileInExplorer(ComponentFileModel SelectedFile) => ExplorerProvider.OpenFolderAndSelectItem(SelectedFile.LocalFilePath);
 
     [RelayCommand]
-    public void DeleteReferencedProduct(ProductModel Product)
-    {
-        if (DataBaseApi.RequestWithBoolResponse(
+    public void DeleteReferencedProduct(ProductModel Product) => ComponentHost.ComponentModelSelected!
+        .DoIf(c => DataBaseApi.RequestWithBoolResponse(
             DBRequests.DeleteProductComponent,
             onErr => Logger.WriteLine(onErr),
-            ComponentHost.ComponentModelSelected!.Name,
+            c.Name,
             Product.Name
-            ))
-            Debug.WriteLine("Delete file successfully");
-        else
-            Debug.WriteLine("Delete file error");
-    }
+            ), error => Debug.WriteLine("Delete prdouct ref error")
+        )?.Do(success => Debug.WriteLine("Delete prdouct ref successfully"))
+        .Do(c => this.SetComponent(c))
+        .Do(c => App.Host!.Services.GetRequiredService<ComponentsEditorControl>().ViewModel.ComponentUsageHost.FillCollection());
 
     [RelayCommand]
     public void BackgroundProductOpen() { Debug.WriteLine("Try goto selected product"); }

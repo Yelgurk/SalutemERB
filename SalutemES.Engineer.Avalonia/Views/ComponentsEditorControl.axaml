@@ -63,7 +63,8 @@
 					   HorizontalAlignment="Center"/>
 
 			<CheckBox Classes="TextToggle" Content="Показать сборки"
-					  IsChecked="{Binding ProductListOpened}"/>
+					  IsChecked="{Binding ProductListOpened}"
+					  Command="{Binding AfterSelectFocusResetCommand}"/>
 
 			<ListBox ItemsSource="{Binding ComponentUsageHost.ComponentUsageModelCollection}"
 					 SelectedItem="{Binding ComponentUsageHost.ComponentUsageModelSelected}"

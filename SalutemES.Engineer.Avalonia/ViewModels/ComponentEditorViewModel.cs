@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using Avalonia.Controls.Documents;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.DependencyInjection;
 using SalutemES.Engineer.Avalonia.Views;
@@ -20,24 +21,35 @@ public partial class ComponentEditorViewModel : ViewModelBase
     [ObservableProperty]
     private bool _productListOpened = false;
 
+    private bool PopupLock = false;
+
+    [RelayCommand]
+    public void AfterSelectFocusReset() => ComponentUsageHost
+        .DoIf(host => !ProductListOpened)
+        ?.Do(run => {
+            PopupLock = true;
+            ComponentUsageHost.FillCollection();
+            PopupLock = false;
+        });
+
     public ComponentEditorViewModel()
     {
         ComponentUsageHost.FillCollection();
 
         ComponentUsageHost.OnSelectedModelChanged = () => this
-            .DoIf(state => state.ProductListOpened, closed =>
-            {
+            .DoIf(state => !state.ProductListOpened, closed => this.ProductHost.FillCollection(ComponentUsageHost.ComponentUsageModelSelected!))
+            //?.DoIf(vm => vm.ComponentUsageHost.ComponentUsageModelSelected is not null)
+            ?.DoIf(vm => !PopupLock)
+            ?.Do(vm => {
                 App.Host!.Services.GetRequiredService<MainWindow>()
                 .ViewModel
                 .DisplayPopupControl(App.Host!.Services.GetRequiredService<ComponentDetails>()
                 .Do(cd => { cd.ViewModel.SetComponent(ComponentUsageHost.ComponentUsageModelSelected!); return cd; }));
-            })?
-            .ProductHost
-            .FillCollection(ComponentUsageHost.ComponentUsageModelSelected!);
+            });
 
         ProductHost.OnSelectedModelChanged = () => ProductHost
-            .ProductWithComponentsModelSelected?
-            .Components
-            .FillCollection(ProductHost.ProductWithComponentsModelSelected);
+        .ProductWithComponentsModelSelected?
+        .Components
+        .FillCollection(ProductHost.ProductWithComponentsModelSelected);
     }
 }

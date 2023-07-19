@@ -259,17 +259,31 @@
 				<ListBox Grid.Row="1"
 						 Margin="10 0 10 10"
 						 BorderThickness="0 1"
+						 Classes="FilesCollectionStyle"
 						 ItemsSource="{Binding ProductHost.ProductModelCollection}">
 					<ListBox.DataTemplates>
 						<DataTemplate DataType="{x:Type model:ProductModel}">
-							<Grid ColumnDefinitions="auto, 1*, auto">
+							<Grid ColumnDefinitions="auto, 1*, auto, auto">
 								<TextBlock Text="{Binding Name}" Margin="0 0 10 0"
 										   TextTrimming="CharacterEllipsis"
-										   HorizontalAlignment="Left"/>
+										   HorizontalAlignment="Left"
+										   VerticalAlignment="Center"/>
 								<TextBlock Text="{Binding FamilyName, StringFormat={}[{0}]}"
 										   TextTrimming="CharacterEllipsis"
 										   HorizontalAlignment="Right"
+										   VerticalAlignment="Center"
+										   Margin="0 0 5 0"
 										   Grid.Column="2"/>
+
+								<Button Grid.Column="3"
+										Classes="FileActionButton"
+										CommandParameter="{Binding}"
+										Command="{Binding $parent[UserControl].DataContext.DeleteReferencedProductCommand}">
+									<Path Data="{StaticResource dismiss_regular}"
+										  Fill="Gray"
+										  RenderTransform="scale(0.75)"
+										  Margin="-6 -6 0 0"/>
+								</Button>
 							</Grid>
 						</DataTemplate>
 					</ListBox.DataTemplates>

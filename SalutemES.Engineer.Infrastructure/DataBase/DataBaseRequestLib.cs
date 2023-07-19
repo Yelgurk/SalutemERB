@@ -34,10 +34,10 @@ public static class DBRequests
     public static DataBaseRequest RenameComponent => new("Exec [dbo].RenameComponent '{0}', '{1}';");
 
     public static DataBaseRequest AddComponentFile => new("Exec [dbo].AddComponentFile '{0}', '{1}';");
-    public static DataBaseRequest AddComponent => new("Exec [dbo].AddComponent '{0}', '{1}', '{2}', {3}, {4}, {5}, '{6}', '{7}';");
+    public static DataBaseRequest AddComponent => new("Exec [dbo].AddComponent '{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}';");
     public static DataBaseRequest AddProduct => new("Exec [dbo].AddProduct '{0}', '{1}';");
     public static DataBaseRequest AddFamily => new("Exec [dbo].AddFamily '{0}';");
-    public static DataBaseRequest AddProductComponent => new("Exec [dbo].AddProductComponent '{0}', '{1}', {2};");
+    public static DataBaseRequest AddProductComponent => new("Exec [dbo].AddProductComponent '{0}', '{1}', '{2}';");
 
     public static DataBaseRequest DeleteComponentFile => new("Exec [dbo].DeleteComponentFile '{0}', '{1}';");
     public static DataBaseRequest DeleteComponent => new("Exec [dbo].DeleteComponent '{0}', '{1}';");
@@ -45,7 +45,7 @@ public static class DBRequests
     public static DataBaseRequest DeleteFamily => new("Exec [dbo].DeleteFamily '{0}';");
     public static DataBaseRequest DeleteProductComponent => new("Exec [dbo].DeleteProductComponent '{0}', '{1}';");
 
-    public static DataBaseRequest EditComponent => new("Exec [dbo].EditComponent '{0}', '{1}', '{2}', '{3}', '{4}', {5}, {6}, {7}, '{8}', '{9}';");
+    public static DataBaseRequest EditComponent => new("Exec [dbo].EditComponent '{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', '{8}', '{9}';");
 }
 
 public record DataBaseTableTypeArgName(string Name);

@@ -102,12 +102,15 @@ public class ModelPropertiesGenerator : ISourceGenerator
                 #nullable enable
 
                 using CommunityToolkit.Mvvm.ComponentModel;
+                using System.Text.RegularExpressions;
                 using {{ClassesNamespace}};
 
                 namespace {{MatchedClassesPaths.First().Item2}};
 
                 public partial class {{GenClass.Item1}} : ObservableObject
                 {
+                    private static readonly Regex _regex = new Regex("[0-9]*[.]{0,1}[0-9]*");
+
                     public {{GenClass.Item2}}? Base { get; private set; } = null;
 
                     public {{GenClass.Item1}}() { }
@@ -125,10 +128,11 @@ public class ModelPropertiesGenerator : ISourceGenerator
                     public Action? On{{GenProps.Item2}}ChangedAction { get; set; } = null;
                     private {{GenProps.Item1}} _{{GenProps.Item2.ToLower()}} = {{DefaultBuilder(GenProps.Item1)}};
 
+                    public bool Numeric{{GenProps.Item2}}Regex { get; set; } = false;
                     public {{GenProps.Item1}} {{GenProps.Item2}}
                     {
-                        get => !IsDefault(_{{GenProps.Item2.ToLower()}}) ? _{{GenProps.Item2.ToLower()}} : (Base?.{{GenProps.Item2}} ?? {{DefaultBuilder(GenProps.Item1)}});
-                        set { if (SetProperty(ref _{{GenProps.Item2.ToLower()}}, value)) On{{GenProps.Item2}}ChangedAction?.Invoke(); }
+                        get => RegexFormatter(Numeric{{GenProps.Item2}}Regex, (!IsDefault(_{{GenProps.Item2.ToLower()}}) ? _{{GenProps.Item2.ToLower()}} : (_{{GenProps.Item2.ToLower()}} = Base?.{{GenProps.Item2}} ?? {{DefaultBuilder(GenProps.Item1)}})));
+                        set { if (SetProperty(ref _{{GenProps.Item2.ToLower()}}, RegexFormatter(Numeric{{GenProps.Item2}}Regex, value))) On{{GenProps.Item2}}ChangedAction?.Invoke(); }
                     }
 
                 """
@@ -145,10 +149,14 @@ public class ModelPropertiesGenerator : ISourceGenerator
                 $$"""
                     public void ResetByBase()
                     {
-                        {{string.Join("!;\n        ", generatedEquals).Replace("== Model", "= Base!")}}!;
+                        {{string.Join("!);\n        ", generatedEquals).Replace("== Model", "= SetDefaultOrValue(Base!")}}!);
                     }
                     
+                    private T SetDefaultOrValue<T>(T? obj) => obj is not null ? obj! : (typeof(T) == typeof(string) ? (T)Convert.ChangeType("", typeof(T)) : default(T))!;
+
                     private bool IsDefault<T>(T obj) => typeof(T) == typeof(string) ? object.Equals(obj, "") : object.Equals(obj, default(T));
+
+                    private string RegexFormatter(bool IsOn, string Content) => IsOn ? _regex.Match(Content.Replace(',', '.')).Value : Content;
 
                     public override bool Equals(object? obj)
                     {
