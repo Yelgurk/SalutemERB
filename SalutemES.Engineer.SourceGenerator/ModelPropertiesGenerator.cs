@@ -108,11 +108,11 @@ public class ModelPropertiesGenerator : ISourceGenerator
 
                 public partial class {{GenClass.Item1}} : ObservableObject
                 {
-                    private {{GenClass.Item2}}? _base = null;
+                    public {{GenClass.Item2}}? Base { get; private set; } = null;
 
                     public {{GenClass.Item1}}() { }
                     public {{GenClass.Item1}}(string[] SetterValue) : this(new {{GenClass.Item2}}(SetterValue)) { }
-                    public {{GenClass.Item1}}({{GenClass.Item2}} Base) => _base = Base;
+                    public {{GenClass.Item1}}({{GenClass.Item2}} Base) => this.Base = Base;
 
                 """
                 );
@@ -127,7 +127,7 @@ public class ModelPropertiesGenerator : ISourceGenerator
 
                     public {{GenProps.Item1}} {{GenProps.Item2}}
                     {
-                        get => !IsDefault(_{{GenProps.Item2.ToLower()}}) ? _{{GenProps.Item2.ToLower()}} : (_base?.{{GenProps.Item2}} ?? {{DefaultBuilder(GenProps.Item1)}});
+                        get => !IsDefault(_{{GenProps.Item2.ToLower()}}) ? _{{GenProps.Item2.ToLower()}} : (Base?.{{GenProps.Item2}} ?? {{DefaultBuilder(GenProps.Item1)}});
                         set { if (SetProperty(ref _{{GenProps.Item2.ToLower()}}, value)) On{{GenProps.Item2}}ChangedAction?.Invoke(); }
                     }
 
@@ -143,6 +143,11 @@ public class ModelPropertiesGenerator : ISourceGenerator
             generatedCode
                 .AppendLine(
                 $$"""
+                    public void ResetByBase()
+                    {
+                        {{string.Join("!;\n        ", generatedEquals).Replace("== Model", "= Base!")}}!;
+                    }
+                    
                     private bool IsDefault<T>(T obj) => typeof(T) == typeof(string) ? object.Equals(obj, "") : object.Equals(obj, default(T));
 
                     public override bool Equals(object? obj)

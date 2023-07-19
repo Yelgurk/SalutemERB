@@ -190,6 +190,39 @@ public sealed class DataBaseApi
         };
     }
 
+    public static List<string[]>? RequestWithListResponse(DataBaseRequest Request, Action<string>? OnException = null, params string[] Args)
+    {
+        return ConnectionAvailable()
+            .DoIf(conn => conn.IsSuccess, error => OnException?.Invoke(error.Exception.message))
+            ?.Api.PrepareCommand(Request, Args)
+            .DoIf(prep => prep.IsSuccess, error => OnException?.Invoke(error.Exception.message))
+            ?.Api.ExecuteCommand<List<string[]>>()
+            .DoIf(exec => exec.IsSuccess, error => OnException?.Invoke(error.Exception.message))
+            ?.Api.DataBaseResponse<List<string[]>>();
+    }
+
+    public static string? RequestWithStringResponse(DataBaseRequest Request, Action<string>? OnException = null, params string[] Args)
+    {
+        return ConnectionAvailable()
+            .DoIf(conn => conn.IsSuccess, error => OnException?.Invoke(error.Exception.message))
+            ?.Api.PrepareCommand(Request, Args)
+            .DoIf(prep => prep.IsSuccess, error => OnException?.Invoke(error.Exception.message))
+            ?.Api.ExecuteCommand<List<string[]>>()
+            .DoIf(exec => exec.IsSuccess, error => OnException?.Invoke(error.Exception.message))
+            ?.Api.DataBaseResponse<string>();
+    }
+
+    public static bool RequestWithBoolResponse(DataBaseRequest Request, Action<string>? OnException = null, params string[] Args)
+    {
+        return ConnectionAvailable()
+            .DoIf(conn => conn.IsSuccess, error => OnException?.Invoke(error.Exception.message))
+            ?.Api.PrepareCommand(Request, Args)
+            .DoIf(prep => prep.IsSuccess, error => OnException?.Invoke(error.Exception.message))
+            ?.Api.ExecuteCommand()
+            .DoIf(exec => exec.IsT0)
+            ?.IsSuccess ?? false;
+    }
+
     private static DataTable ConvertListToDataTable<T>(List<T> ModelsCollection)
     {
         DataTable Table = new DataTable();

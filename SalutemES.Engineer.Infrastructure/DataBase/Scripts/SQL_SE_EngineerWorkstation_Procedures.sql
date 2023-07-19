@@ -108,12 +108,144 @@ As Begin
 End
 Go
 
-Create Procedure [dbo].ChangeFilePath
-	@id string_short,
-	@NewPath string_short
+Create Procedure [dbo].AddComponentFile
+	@Component string_short,
+	@FilePath string_long
 As Begin
-	Update	Component_File
-	Set		Component_File.localFilePath = @NewPath
-	Where	Component_File.id = (Select cast(@id as int))
+	If not exists (Select *
+					From	Component_File
+					Where   Component_File.component = @Component And
+							Component_File.localFilePath = @FilePath)
+	Begin
+		Insert Into Component_File Values
+		(@Component, @FilePath);
+	End
+End
+Go
+
+Create Procedure [dbo].AddComponent
+	@Name string_short,
+	@Code string_short,
+	@Grade string_short,
+	@Thickness decimal(3, 1),
+	@Folds int,
+	@WeightKG decimal(5, 2),
+	@Note string_medium,
+	@Material string_short
+As Begin
+	Insert Into Component Values
+	(@Name, @Code, @Grade, @Thickness, @Folds, @WeightKG, @Note, @Material);
+End
+Go
+
+Create Procedure [dbo].AddProduct
+	@Name string_short,
+	@Family string_short
+As Begin
+	Insert Into Product Values
+	(@name, @Family);
+End
+Go
+
+Create Procedure [dbo].AddFamily
+	@Name string_short
+As Begin
+	Insert Into Family Values
+	(@Name);
+End
+Go
+
+Create Procedure [dbo].AddProductComponent
+	@Product string_short,
+	@Component string_short,
+	@Count int
+As Begin
+	If not exists (Select *
+					From	Structure
+					Where   Structure.product = @Product And
+							Structure.component = @Component)
+	Begin
+		Insert Into Structure Values
+		(@Product, @Component, @Count);
+	End
+	Else
+	Begin
+		Update	Structure
+		Set		Structure.count = @Count
+		Where	Structure.product = @Product And
+				Structure.component = @Component;
+	End
+End
+Go
+
+Create Procedure [dbo].DeleteComponentFile
+	@Component string_short,
+	@FilePath string_long
+As Begin
+	Delete From Component_File
+	Where	Component_File.component = @Component And
+			Component_File.localFilePath = @FilePath;
+End
+Go
+
+Create Procedure [dbo].DeleteComponent
+	@Name string_short,
+	@Code string_short
+As Begin
+	Delete From Component
+	Where	Component.name = @Name And
+			Component.code = @Code;
+End
+Go
+
+Create Procedure [dbo].DeleteProduct
+	@Name string_short
+As Begin
+	Delete From Product
+	Where Product.name = @Name;
+End
+Go
+
+Create Procedure [dbo].DeleteFamily
+	@Name string_short
+As Begin
+	Delete From Family
+	Where Family.name = @Name;
+End
+Go
+
+Create Procedure [dbo].DeleteProductComponent
+	@Component string_short,
+	@Product string_short
+As Begin
+	Delete From Structure
+	Where	Structure.component = @Component And
+			Structure.product = @Product;
+End
+Go
+
+Create Procedure [dbo].EditComponent
+	@Name string_short,
+	@Code string_short,
+	@NewName string_short,
+	@NewCode string_short,
+	@Grade string_short,
+	@Thickness decimal(3, 1),
+	@Folds int,
+	@WeightKG decimal(5, 2),
+	@Note string_medium,
+	@Material string_short
+As Begin
+	Update	Component
+	Set		Component.name = @NewName,
+			Component.code = @NewCode,
+			Component.grade = @Grade,
+			Component.thickness = @Thickness,
+			Component.folds = @Folds,
+			Component.weightKG = @WeightKG,
+			Component.note = @Note,
+			Component.material = @Material
+	Where	Component.name = @Name And
+			Component.code = @Code
 End
 Go
