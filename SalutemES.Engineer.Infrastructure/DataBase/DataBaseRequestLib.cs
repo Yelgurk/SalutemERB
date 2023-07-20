@@ -46,6 +46,8 @@ public static class DBRequests
     public static DataBaseRequest DeleteProductComponent => new("Exec [dbo].DeleteProductComponent '{0}', '{1}';");
 
     public static DataBaseRequest EditComponent => new("Exec [dbo].EditComponent '{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', '{8}', '{9}';");
+
+    public static DataBaseRequest CheckComponentExists => new("Exec [dbo].IsComponentExists '{0}', '{1}';");
 }
 
 public record DataBaseTableTypeArgName(string Name);

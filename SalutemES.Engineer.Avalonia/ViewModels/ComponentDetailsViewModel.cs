@@ -21,7 +21,10 @@ public partial class ComponentDetailsViewModel : ViewModelBase
     public ComponentFileViewModel FilesHost { get; } = new ComponentFileViewModel();
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(FileInfo))]
     private string _newFileLocalPath = "";
+
+    public string FileInfo => $"{NewFileLocalPath.Split("\\").Last()} [{NewFileLocalPath}]";
 
     public ComponentDetailsViewModel() =>
         ComponentHost.OnFillCollection = () =>
@@ -63,9 +66,9 @@ public partial class ComponentDetailsViewModel : ViewModelBase
             c.WeightKG,
             c.Note,
             c.Material
-            ), error => Debug.WriteLine("Save error")
+            ), error => Logger.WriteLine("Save error")
         )
-        ?.Do(success => Debug.WriteLine("Save successfully"))
+        ?.DoInst(success => Logger.WriteLine("Save successfully"))
         .Do(c => this.SetComponent(c))
         .Do(c => App.Host!.Services.GetRequiredService<ComponentsEditorControl>().ViewModel.ComponentUsageHost.FillCollection());
 
@@ -79,10 +82,10 @@ public partial class ComponentDetailsViewModel : ViewModelBase
             onErr => Logger.WriteLine(onErr),
             c.Name,
             c.Code
-            ), error => Debug.WriteLine("Delete component error")
-        )?.Do(success => Debug.WriteLine("Delete component successfully"))
-        .Do(c => this.ClosePopup())
-        .Do(c => App.Host!.Services.GetRequiredService<ComponentsEditorControl>().ViewModel.ComponentUsageHost.FillCollection());
+            ), error => Logger.WriteLine("Delete component error")
+        )?.Do(success => Logger.WriteLine("Delete component successfully"))
+        .Do(c => App.Host!.Services.GetRequiredService<ComponentsEditorControl>().ViewModel.ComponentUsageHost.FillCollection())
+        .Do(c => this.ClosePopup());
 
     [RelayCommand]
     public void DeleteReferencedFile(ComponentFileModel SelectedFile) => ComponentHost.ComponentModelSelected!
@@ -91,8 +94,8 @@ public partial class ComponentDetailsViewModel : ViewModelBase
             onErr => Logger.WriteLine(onErr),
             c.Name,
             SelectedFile.LocalFilePath
-            ), error => Debug.WriteLine("Delete file error")
-        )?.Do(success => Debug.WriteLine("Delete file successfully"))
+            ), error => Logger.WriteLine("Delete file error")
+        )?.DoInst(success => Logger.WriteLine("Delete file successfully"))
         .Do(c => this.SetComponent(c))
         .Do(c => App.Host!.Services.GetRequiredService<ComponentsEditorControl>().ViewModel.ComponentUsageHost.FillCollection());
 
@@ -113,8 +116,8 @@ public partial class ComponentDetailsViewModel : ViewModelBase
             onErr => Logger.WriteLine(onErr),
             c.Name,
             NewFileLocalPath
-            ), error => Debug.WriteLine("Add file error")
-        )?.Do(success => Debug.WriteLine("Add file successfully"))
+            ), error => Logger.WriteLine("Add file error")
+        )?.DoInst(success => Logger.WriteLine("Add file successfully"))
         .Do(c => this.SetComponent(c))
         .Do(c => App.Host!.Services.GetRequiredService<ComponentsEditorControl>().ViewModel.ComponentUsageHost.FillCollection());
 
@@ -128,11 +131,11 @@ public partial class ComponentDetailsViewModel : ViewModelBase
             onErr => Logger.WriteLine(onErr),
             c.Name,
             Product.Name
-            ), error => Debug.WriteLine("Delete prdouct ref error")
-        )?.Do(success => Debug.WriteLine("Delete prdouct ref successfully"))
+            ), error => Logger.WriteLine("Delete prdouct ref error")
+        )?.DoInst(success => Logger.WriteLine("Delete prdouct ref successfully"))
         .Do(c => this.SetComponent(c))
         .Do(c => App.Host!.Services.GetRequiredService<ComponentsEditorControl>().ViewModel.ComponentUsageHost.FillCollection());
 
     [RelayCommand]
-    public void BackgroundProductOpen() { Debug.WriteLine("Try goto selected product"); }
+    public void BackgroundProductOpen() { Logger.WriteLine("Try goto selected product"); }
 }

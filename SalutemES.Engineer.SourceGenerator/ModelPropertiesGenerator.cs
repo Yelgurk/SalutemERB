@@ -96,6 +96,7 @@ public class ModelPropertiesGenerator : ISourceGenerator
         foreach (var GenClass in MatchedClassesNames)
         {
             List<string> generatedEquals = new List<string>();
+            List<string> generatedDefaults = new List<string>();
             StringBuilder generatedCode = new StringBuilder()
                 .AppendLine(
                 $$"""
@@ -139,6 +140,7 @@ public class ModelPropertiesGenerator : ISourceGenerator
                 );
 
                 generatedEquals.Add($"this.{GenProps.Item2} == Model.{GenProps.Item2}");
+                generatedDefaults.Add($"this.{GenProps.Item2} = SetDefaultOrValue(Base?.{GenProps.Item2})");
             }
 
             MatchedClassesPaths.RemoveAt(0);
@@ -149,7 +151,7 @@ public class ModelPropertiesGenerator : ISourceGenerator
                 $$"""
                     public void ResetByBase()
                     {
-                        {{string.Join("!);\n        ", generatedEquals).Replace("== Model", "= SetDefaultOrValue(Base!")}}!);
+                        {{string.Join(";\n        ", generatedDefaults)}};
                     }
                     
                     private T SetDefaultOrValue<T>(T? obj) => obj is not null ? obj! : (typeof(T) == typeof(string) ? (T)Convert.ChangeType("", typeof(T)) : default(T))!;

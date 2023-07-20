@@ -249,3 +249,21 @@ As Begin
 			Component.code = @Code
 End
 Go
+
+Create Procedure [dbo].IsComponentExists
+	@Name string_short,
+	@Code string_short
+As Begin
+	Declare @Counter int = 0;
+
+	If ((Select Count(*) From Component Where Component.name = @Name) > 0) Begin
+		Set @Counter = @Counter + 1;
+	End
+	
+	If ((Select Count(*) From Component Where Component.code = @Code) > 0) Begin
+		Set @Counter = @Counter + 2;
+	End
+
+	Select @Counter;
+End
+Go

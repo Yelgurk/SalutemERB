@@ -32,13 +32,17 @@ public partial class ComponentEditorViewModel : ViewModelBase
             PopupLock = false;
         });
 
+    [RelayCommand]
+    public void OpenAddComponentControl() => App.Host!.Services.GetRequiredService<MainWindow>()
+        .ViewModel
+        .DisplayPopupControl(App.Host!.Services.GetRequiredService<ComponentAddNew>());
+
     public ComponentEditorViewModel()
     {
         ComponentUsageHost.FillCollection();
 
         ComponentUsageHost.OnSelectedModelChanged = () => this
             .DoIf(state => !state.ProductListOpened, closed => this.ProductHost.FillCollection(ComponentUsageHost.ComponentUsageModelSelected!))
-            //?.DoIf(vm => vm.ComponentUsageHost.ComponentUsageModelSelected is not null)
             ?.DoIf(vm => !PopupLock)
             ?.Do(vm => {
                 App.Host!.Services.GetRequiredService<MainWindow>()
@@ -48,8 +52,8 @@ public partial class ComponentEditorViewModel : ViewModelBase
             });
 
         ProductHost.OnSelectedModelChanged = () => ProductHost
-        .ProductWithComponentsModelSelected?
-        .Components
-        .FillCollection(ProductHost.ProductWithComponentsModelSelected);
+            .ProductWithComponentsModelSelected?
+            .Components
+            .FillCollection(ProductHost.ProductWithComponentsModelSelected);
     }
 }

@@ -42,7 +42,6 @@
 			<ColumnDefinition Width="1*"/>
 		</Grid.ColumnDefinitions>
 
-		
 		<Grid Name="HalfSizeGrid"/>
 		<Grid Name="FullSizeGrid" Grid.ColumnSpan="3"/>
 
@@ -52,6 +51,14 @@
 				<RowDefinition Height="40"/>
 				<RowDefinition/>
 			</Grid.RowDefinitions>
+			<Button CornerRadius="0"
+					BorderThickness="0"
+					Padding="5 7"
+					VerticalAlignment="Top"
+					HorizontalAlignment="Left"
+					Content="Новая деталь"
+					Command="{Binding OpenAddComponentControlCommand}"/>
+			
 			<TextBlock Text="Детали"
 					   VerticalAlignment="Center"
 					   HorizontalAlignment="Center"

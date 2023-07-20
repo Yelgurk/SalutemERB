@@ -207,7 +207,7 @@ public sealed class DataBaseApi
             .DoIf(conn => conn.IsSuccess, error => OnException?.Invoke(error.Exception.message))
             ?.Api.PrepareCommand(Request, Args)
             .DoIf(prep => prep.IsSuccess, error => OnException?.Invoke(error.Exception.message))
-            ?.Api.ExecuteCommand<List<string[]>>()
+            ?.Api.ExecuteCommand<string>()
             .DoIf(exec => exec.IsSuccess, error => OnException?.Invoke(error.Exception.message))
             ?.Api.DataBaseResponse<string>();
     }
