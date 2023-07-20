@@ -2,8 +2,243 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:SalutemES.Engineer.Avalonia.ViewModels"
+			 xmlns:core="using:SalutemES.Engineer.Core"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="SalutemES.Engineer.Avalonia.Views.ProductsEditorControl"
-			 Background="Blue">
-  Welcome to Avalonia!
+			 Background="Transparent">
+	<UserControl.DataContext>
+		<vm:ProductEditorViewModel/>
+	</UserControl.DataContext>
+
+	<UserControl.Styles>
+		<!-- family list style -->
+		<Style Selector="ListBox.ListBoxDropDownItem_Family">
+			<Setter Property="Background" Value="Transparent"/>
+		</Style>
+
+		<Style Selector="ListBox.ListBoxDropDownItem_Family
+			   ListBoxItem Path">
+			<Setter Property="Stroke" Value="{DynamicResource TextInactiveForeground}"/>
+			<Setter Property="Fill" Value="{DynamicResource TextInactiveForeground}"/>
+			<Setter Property="StrokeThickness" Value="0"/>
+			<Setter Property="HorizontalAlignment" Value="Center"/>
+			<Setter Property="RenderTransform" Value="Scale(0.75)"/>
+			<Setter Property="Margin" Value="0 0 5 0"/>
+			<Setter Property="VerticalAlignment" Value="Center"/>
+		</Style>
+
+		<Style Selector="ListBox.ListBoxDropDownItem_Family ListBoxItem">
+			<Setter Property="Template">
+				<ControlTemplate>
+					<Grid RowDefinitions="1*,auto"
+						  ColumnDefinitions="auto,1*, auto,auto"
+						  Background="Transparent"
+						  Margin="0 1 10 0">
+
+						<Label Grid.Column="1"
+							   Grid.ColumnSpan="2"
+							   Grid.RowSpan="2"/>
+
+						<TextBlock Text="{Binding Name}"
+								   Grid.Column="1"
+								   VerticalAlignment="Center"
+								   TextWrapping="Wrap"
+								   Margin="5 0 0 0"/>
+
+						<TextBlock Text="{Binding Count, StringFormat={}сборок: {0}}"
+								   Grid.Column="2"
+								   VerticalAlignment="Center"
+								   Margin="0 0 5 0"/>
+
+						<Button Classes="Edit"
+								Grid.RowSpan="2"
+								Grid.Column="0"
+								CommandParameter="{Binding}"
+								Command="{Binding $parent[UserControl].DataContext.OpenEditFamilyControlCommand}"/>
+					</Grid>
+				</ControlTemplate>
+			</Setter>
+		</Style>
+
+		<Style Selector="ListBox.ListBoxDropDownItem_Family
+			   ListBoxItem:pointerover > Grid > Label">
+			<Setter Property="Background" Value="LightGray"/>
+		</Style>
+
+		<Style Selector="ListBox.ListBoxDropDownItem_Family
+			   ListBoxItem:selected > Grid > Label">
+			<Setter Property="Background" Value="{StaticResource AccentLowColor}"/>
+		</Style>
+
+		<Style Selector="ListBox.ListBoxDropDownItem_Family
+			   ListBoxItem:selected:pointerover > Grid > Label">
+			<Setter Property="Background" Value="{StaticResource AccentMediumColor}"/>
+		</Style>
+
+		<Style Selector="ListBox.ListBoxDropDownItem_Family
+			   ListBoxItem:selected:pointerover:pressed > Grid > Label">
+			<Setter Property="Background" Value="{StaticResource AccentHighColor}"/>
+		</Style>
+
+		<Style Selector="ListBox.ListBoxDropDownItem_Family
+			   ListBoxItem /template/ Button">
+			<Setter Property="CornerRadius" Value="0"/>
+			<Setter Property="BorderThickness" Value="0"/>
+			<Setter Property="Padding" Value="5 5 3 5"/>
+			<Setter Property="VerticalAlignment" Value="Stretch"/>
+			<Setter Property="VerticalContentAlignment" Value="Center"/>
+			<Setter Property="HorizontalContentAlignment" Value="Center"/>
+		</Style>
+
+		<Style Selector="ListBox.ListBoxDropDownItem_Family
+			   ListBoxItem /template/ Button.Edit">
+			<Setter Property="Content">
+				<Template>
+					<Path Data="{StaticResource document_edit_regular}"/>
+				</Template>
+			</Setter>
+		</Style>
+	</UserControl.Styles>
+
+	<Grid>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="1*"/>
+			<ColumnDefinition Width="2*"/>
+		</Grid.ColumnDefinitions>
+
+		<Grid Grid.Column="0">
+			<Grid.RowDefinitions>
+				<RowDefinition Height="40"/>
+				<RowDefinition Height="40"/>
+				<RowDefinition/>
+			</Grid.RowDefinitions>
+			<Button CornerRadius="0"
+					BorderThickness="0"
+					Padding="5 7"
+					VerticalAlignment="Top"
+					HorizontalAlignment="Left"
+					Content="Добавить"
+					Command="{Binding OpenAddFamilyControlCommand}"/>
+
+			<TextBlock Text="Категории"
+					   VerticalAlignment="Center"
+					   HorizontalAlignment="Center"
+					   FontSize="18"/>
+
+			<TextBlock Text="[поиск в разработке]"
+					   Grid.Row="1"
+					   VerticalAlignment="Center"
+					   HorizontalAlignment="Center"/>
+
+			<ListBox ItemsSource="{Binding FamilyHost.FamilyModelCollection}"
+					 SelectedItem="{Binding FamilyHost.FamilyModelSelected}"
+					 Classes="ListBoxDropDownItem_Family"
+					 Grid.Row="2"/>
+		</Grid>
+
+		<Grid Grid.Column="1">
+			<Border BorderThickness="2 0 0 0"
+					BorderBrush="Gray">
+				<Grid>
+					<Grid.RowDefinitions>
+						<RowDefinition Height="40"/>
+						<RowDefinition Height="40"/>
+						<RowDefinition/>
+					</Grid.RowDefinitions>
+					<DockPanel Grid.Column="2"
+							   VerticalAlignment="Center"
+							   HorizontalAlignment="Center">
+						<TextBlock Text="Сборки"
+								   FontSize="18"/>
+						<TextBlock Text="{Binding ProductHost.ProductWithComponentsModelCollection.Count, StringFormat={}[найдено {0}]}"
+								   FontSize="12"
+								   VerticalAlignment="Center"
+								   Margin="5 0 0 0"/>
+					</DockPanel>
+
+					<TextBlock Text="[поиск в разработке]"
+							   Grid.Row="1"
+							   VerticalAlignment="Center"
+							   HorizontalAlignment="Center"
+							   Grid.Column="2"/>
+
+					<Button CornerRadius="0"
+							BorderThickness="0"
+							Padding="5 7"
+							VerticalAlignment="Top"
+							HorizontalAlignment="Right"
+							Content="Добавить"
+							Command="{Binding OpenAddProductControlCommand}"/>
+
+					<ListBox ItemsSource="{Binding ProductHost.ProductWithFullComponentsModelCollection}"
+							 SelectedItem="{Binding ProductHost.ProductWithFullComponentsModelSelected}"
+							 Classes="ListBoxDropDownList"
+							 Grid.Row="2"
+							 Grid.Column="2">
+						<ListBox.DataTemplates>
+							<DataTemplate DataType="{x:Type core:ProductWithFullComponentsModel}">
+								<StackPanel>
+									<DockPanel Margin="5 0 5 5">
+										<TextBlock Text="Группа: "/>
+										<TextBlock Text="{Binding FamilyName}"/>
+									</DockPanel>
+
+									<DockPanel Margin="5 0 5 5">
+										<TextBlock Text="Уникальных деталей в сборке: "/>
+										<TextBlock Text="{Binding Count}"/>
+									</DockPanel>
+
+									<TextBlock Text="Список деталей" Classes="Center"/>
+
+									<Border BorderThickness="1 0 0 0">
+										<StackPanel>
+											<Grid ColumnDefinitions="3*, 2*, 1*, 1*, 1*, 1*">
+												<Border Grid.ColumnSpan="6" BorderThickness="0 1 0 0"/>
+												<Border Grid.Column="1" BorderThickness="1 0"/>
+												<Border Grid.Column="3" BorderThickness="1 0"/>
+												<Border Grid.Column="5" BorderThickness="1 0 0 0"/>
+
+												<TextBlock Grid.Column="0" Text="Имя" Classes="Center"/>
+												<TextBlock Grid.Column="1" Text="Код" Classes="Center"/>
+												<TextBlock Grid.Column="2" Text="Кол-во" Classes="Center"/>
+												<TextBlock Grid.Column="3" Text="Металл" Classes="Center"/>
+												<TextBlock Grid.Column="4" Text="Толщина" Classes="Center"/>
+												<TextBlock Grid.Column="5" Text="Сгибы" Classes="Center"/>
+											</Grid>
+
+											<ListBox ItemsSource="{Binding Components.ExportComponentModelCollection}">
+												<ListBox.DataTemplates>
+													<DataTemplate DataType="{x:Type core:ExportComponentModel}">
+														<Grid ColumnDefinitions="3*, 2*, 1*, 1*, 1*, 1*">
+															<DockPanel>
+																<Button Classes="Edit"
+																		CommandParameter="{Binding}"
+																		Command="{Binding $parent[UserControl].DataContext.OpenEditComponentControl}"/>
+																<TextBlock Text="{Binding Name}" Classes="Left"/>
+															</DockPanel>
+															
+															<Border Grid.Column="1" BorderThickness="1 0"/>
+															<Border Grid.Column="3" BorderThickness="1 0"/>
+															<Border Grid.Column="5" BorderThickness="1 0 0 0"/>
+															
+															<TextBlock Grid.Column="1" Classes="Left" Text="{Binding Code}"/>
+															<TextBlock Grid.Column="2" Classes="Left" Text="{Binding Count, StringFormat={}{0} шт.}"/>
+															<TextBlock Grid.Column="3" Classes="Left" Text="{Binding Grade}"/>
+															<TextBlock Grid.Column="4" Classes="Left" Text="{Binding Thickness, StringFormat={}{0} мм.}"/>
+															<TextBlock Grid.Column="5" Classes="Left" Text="{Binding Folds}"/>
+														</Grid>
+													</DataTemplate>
+												</ListBox.DataTemplates>
+											</ListBox>
+										</StackPanel>
+									</Border>
+								</StackPanel>
+							</DataTemplate>
+						</ListBox.DataTemplates>
+					</ListBox>
+				</Grid>
+			</Border>
+		</Grid>
+	</Grid>
 </UserControl>

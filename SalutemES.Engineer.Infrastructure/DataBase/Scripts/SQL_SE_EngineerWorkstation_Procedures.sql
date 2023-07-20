@@ -4,19 +4,19 @@ Go
 Create Procedure [dbo].[GetExportTable]
 	@ProductsList export_product readonly
 As Begin
-	Select  Component.name,
-		Component.code,
-		sum(Structure.count * TT.count) as 'count',
-		Component.grade,
-		Component.thickness,
-		Replace(Component.folds, 0, '') as 'folds',
-		Component.weightKG,
-		sum(Component.weightKG * Structure.count * TT.count) as 'totalKG',
-		Component.note,
-		Component.material
-	From Component
-	Inner Join Structure on Structure.component = Component.name
-	Inner Join @ProductsList as TT on TT.product = Structure.product
+	Select Component.name,
+			Component.code,
+			sum(Structure.count * TT.count) as 'count',
+			Component.grade,
+			Component.thickness,
+			Replace(Component.folds, 0, '') as 'folds',
+			Component.weightKG,
+			sum(Component.weightKG * Structure.count * TT.count) as 'totalKG',
+			Component.note,
+			Component.material
+	From	Component
+	Inner Join	Structure on Structure.component = Component.name
+	Inner Join	@ProductsList as TT on TT.product = Structure.product
 	Group by	Component.name,
 			Component.code,
 			Component.grade,
@@ -25,6 +25,33 @@ As Begin
 			Component.weightKG,
 			Component.note,
 			Component.material;
+End
+Go
+
+Create Procedure [dbo].[GetProductComponentsFullInfo]
+	@Product string_short
+As Begin
+	 Select Component.name,
+			Component.code,
+			sum(Structure.count) as 'count',
+			Component.grade,
+			Component.thickness,
+			Replace(Component.folds, 0, '') as 'folds',
+			Component.weightKG,
+			sum(Component.weightKG * Structure.count) as 'totalKG',
+			Component.note,
+			Component.material
+	From	Component
+	Inner Join	Structure on Structure.component = Component.name
+	Where		Structure.product = @Product
+	Group by	Component.name,
+				Component.code,
+				Component.grade,
+				Component.thickness,
+				Component.folds,
+				Component.weightKG,
+				Component.note,
+				Component.material;
 End
 Go
 
@@ -250,7 +277,17 @@ As Begin
 End
 Go
 
-Create Procedure [dbo].IsComponentExists
+Create Procedure [dbo].EditFamily
+	@Name string_short,
+	@NewName string_short
+As Begin
+	Update	Family
+	Set		Family.name = @NewName
+	Where	Family.name = @Name;
+End
+Go
+
+Create Procedure [dbo].CheckComponentExists
 	@Name string_short,
 	@Code string_short
 As Begin
@@ -265,5 +302,12 @@ As Begin
 	End
 
 	Select @Counter;
+End
+Go
+
+Create Procedure [dbo].CheckFamilyExists
+	@Name string_short
+As Begin
+	Select Count(*) From Family Where Family.name = @Name;
 End
 Go

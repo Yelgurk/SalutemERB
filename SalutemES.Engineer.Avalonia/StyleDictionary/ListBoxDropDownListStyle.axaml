@@ -40,7 +40,9 @@
 
 					<Button Classes="Edit"
 							Grid.RowSpan="2"
-							Grid.Column="0"/>
+							Grid.Column="0"
+							CommandParameter="{Binding}"
+							Command="{Binding $parent[UserControl].DataContext.OpenEditProductControlCommand}"/>
 
 					<Grid Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="1"
 						  IsVisible="{TemplateBinding IsSelected}">

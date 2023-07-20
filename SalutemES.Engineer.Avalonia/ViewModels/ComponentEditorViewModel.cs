@@ -32,11 +32,6 @@ public partial class ComponentEditorViewModel : ViewModelBase
             PopupLock = false;
         });
 
-    [RelayCommand]
-    public void OpenAddComponentControl() => App.Host!.Services.GetRequiredService<MainWindow>()
-        .ViewModel
-        .DisplayPopupControl(App.Host!.Services.GetRequiredService<ComponentAddNew>());
-
     public ComponentEditorViewModel()
     {
         ComponentUsageHost.FillCollection();
@@ -56,4 +51,12 @@ public partial class ComponentEditorViewModel : ViewModelBase
             .Components
             .FillCollection(ProductHost.ProductWithComponentsModelSelected);
     }
+
+    [RelayCommand]
+    public void OpenAddComponentControl() => App.Host!.Services.GetRequiredService<MainWindow>()
+        .ViewModel
+        .DisplayPopupControl(App.Host!.Services.GetRequiredService<ComponentAddNew>());
+
+    [RelayCommand]
+    public void OpenEditProductControl() { Debug.WriteLine("Some 3"); }
 }

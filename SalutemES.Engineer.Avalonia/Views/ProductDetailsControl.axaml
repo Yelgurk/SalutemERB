@@ -1,0 +1,282 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:SalutemES.Engineer.Avalonia.ViewModels"
+			 xmlns:model="using:SalutemES.Engineer.Core"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="SalutemES.Engineer.Avalonia.Views.ProductDetailsControl">
+	<UserControl.DataContext>
+		<vm:ProductDetailsViewModel/>
+	</UserControl.DataContext>
+
+	<UserControl.Styles>
+		<Style Selector="Grid.TextBoxesContainer TextBlock">
+			<Setter Property="VerticalAlignment" Value="Center"/>
+			<Setter Property="Margin" Value="5 0"/>
+			<Setter Property="FontSize" Value="14"/>
+		</Style>
+
+		<Style Selector="Grid.TextBoxesContainer TextBox">
+			<Setter Property="DataContext" Value="{Binding ComponentHost.ComponentModelSelected}"/>
+			<Setter Property="Margin" Value="0 5 0 0"/>
+			<Setter Property="Padding" Value="2 0"/>
+			<Setter Property="Text" Value="Test test test"/>
+			<Setter Property="VerticalContentAlignment" Value="Center"/>
+			<Setter Property="CornerRadius" Value="0"/>
+			<Setter Property="BorderThickness" Value="0 0 0 1"/>
+			<Setter Property="Background" Value="WhiteSmoke"/>
+			<Setter Property="Height" Value="20"/>
+		</Style>
+
+		<Style Selector="Button.EditActionButton">
+			<Setter Property="HorizontalContentAlignment" Value="Center"/>
+			<Setter Property="VerticalContentAlignment" Value="Center"/>
+			<Setter Property="HorizontalAlignment" Value="Stretch"/>
+			<Setter Property="Padding" Value="8"/>
+			<Setter Property="BorderThickness" Value="0"/>
+			<Setter Property="CornerRadius" Value="0"/>
+			<Setter Property="Height" Value="36"/>
+		</Style>
+
+		<Style Selector="Button.FileActionButton">
+			<Setter Property="CornerRadius" Value="0"/>
+			<Setter Property="BorderThickness" Value="0"/>
+			<Setter Property="Padding" Value="8"/>
+			<Setter Property="Width" Value="36"/>
+			<Setter Property="Height" Value="{Binding $self.Bounds.Width}"/>
+			<Setter Property="VerticalContentAlignment" Value="Center"/>
+			<Setter Property="HorizontalContentAlignment" Value="Center"/>
+		</Style>
+
+		<Style Selector="Button.DeleteButton">
+			<Setter Property="Background" Value="#E32636"/>
+			<Setter Property="Foreground" Value="White"/>
+			<Setter Property="FontWeight" Value="DemiBold"/>
+			<Setter Property="IsEnabled" Value="False"/>
+			<Setter Property="ToolTip.Tip" Value="Для удаления необходимо 0 использований в сборках"/>
+		</Style>
+
+		<Style Selector="Button.DeleteEnabled">
+			<Setter Property="IsEnabled" Value="True"/>
+		</Style>
+
+		<Style Selector="ListBox.FilesCollectionStyle ListBoxItem">
+			<Setter Property="Padding" Value="8 3 3 3"/>
+		</Style>
+
+		<!--Style Selector="Grid.TextBoxesContainer TextBox:focus">
+			<Setter Property="DataContext" Value="{Binding NewComponent}"/>
+		</Style-->
+	</UserControl.Styles>
+
+	<Grid ColumnDefinitions="1*, 1*, 4*"
+		  RowDefinitions="auto, 1*"
+		  Background="White">
+		<Button CornerRadius="0"
+				BorderThickness="0"
+				Padding="8"
+				Content="Назад"
+				FontSize="16"
+				HorizontalAlignment="Stretch"
+				HorizontalContentAlignment="Center"
+				Command="{Binding ClosePopupCommand}"/>
+
+		<Button Grid.Column="1"
+				CornerRadius="0"
+				BorderThickness="0"
+				Padding="8"
+				Margin="1 0"
+				Content="Сохранить"
+				FontWeight="DemiBold"
+				FontSize="16"
+				HorizontalAlignment="Stretch"
+				HorizontalContentAlignment="Center"
+				Command="{Binding SaveInfoCommand}"/>
+
+		<Label  Grid.Column="2"
+				Content="Редактор детали"
+				HorizontalContentAlignment="Center"
+				VerticalContentAlignment="Center"
+				FontSize="16"
+				FontWeight="DemiBold"
+				Foreground="White"
+				Background="{DynamicResource AccentMainBrush}"/>
+
+		<Grid Grid.ColumnSpan="3"
+			  Grid.Row="1"
+			  ColumnDefinitions="1*, 1*, 1*">
+			<Grid Grid.Column="1"
+				  Background="WhiteSmoke"/>
+
+			<ScrollViewer Grid.Column="0">
+				<Grid ColumnDefinitions="auto, 1*, auto"
+					  RowDefinitions="auto, auto, auto, auto, auto, auto, auto, auto, auto, 1*, auto"
+					  Classes="TextBoxesContainer">
+					<TextBlock	Text="Информация:"
+								Margin="5"
+								Grid.ColumnSpan="3"
+								VerticalAlignment="Center"
+								HorizontalAlignment="Center"
+								FontSize="18"/>
+
+					<TextBlock Grid.Column="0"	Grid.Row="1" Text="Продукт:"/>
+					<TextBox Grid.Column="1"	Grid.Row="1" Text="{Binding Name}"/>
+					<TextBlock Grid.Column="2"	Grid.Row="1" Text=""/>
+
+					<TextBlock Grid.Column="0"	Grid.Row="2" Text="Каталог:"/>
+					<TextBlock Grid.Column="1"	Grid.Row="2" Text="{Binding Code}" Margin="0 5"/>
+					<TextBlock Grid.Column="2"	Grid.Row="2" Text=""/>
+
+					<TextBlock Text="Выбор новой категории:"
+							   Grid.ColumnSpan="3"
+							   Grid.Row="3"
+							   Margin="5 10 0 0"/>
+					<Grid Grid.ColumnSpan="4" 
+						  Grid.Row="4"
+						  Margin="5 5 2 5"
+						  ColumnDefinitions="1*, 40">
+						<ComboBox Classes="ComboBoxModernStyle"
+								  HorizontalAlignment="Stretch"
+								  Margin="0 0 5 0"/>
+						<Button Grid.Column="1"
+								CornerRadius="0"
+								BorderThickness="0"
+								VerticalAlignment="Stretch"
+								Width="{Binding $self.Bounds.Height}">
+							<Path Data="{StaticResource save_regular}"
+								  Fill="Gray"
+								  Margin="-4 -2 0 0"/>
+						</Button>
+					</Grid>
+					
+					<Grid Grid.ColumnSpan="3"
+						  Grid.Row="10"
+						  ColumnDefinitions="2*, 1*">
+						<Button Classes="EditActionButton"
+								Content="Отменить изменения"
+								Command="{Binding CancelInfoEditCommand}"/>
+						<Button	Classes="EditActionButton DeleteButton"
+								Classes.DeleteEnabled="{Binding !ProductHost.ProductModelCollection.Count}"
+								Content="Удалить"
+								Command="{Binding DeleteWithAllReferenceCommand}"
+								Grid.Column="1"
+								Margin="1 0 0 0"/>
+					</Grid>
+				</Grid>
+			</ScrollViewer>
+
+			<Grid Grid.Column="1"
+				  RowDefinitions="auto, 1*, auto, auto"
+				  ColumnDefinitions="1*, auto">
+				<DockPanel Grid.ColumnSpan="2"
+						   VerticalAlignment="Center"
+						   HorizontalAlignment="Center">
+					<TextBlock Text="Детали в базе"
+							   Margin="5"
+							   FontSize="18"/>
+					<TextBlock Text="{Binding FilesHost.ComponentFileModelCollection.Count, StringFormat={}[найдено {0}]}"
+							   VerticalAlignment="Center"
+							   FontSize="12"/>
+				</DockPanel>
+
+				<ListBox Grid.ColumnSpan="2"
+						 Grid.Row="1"
+						 Margin="10 0"
+						 BorderThickness="0 1"
+						 ItemsSource="{Binding FilesHost.ComponentFileModelCollection}"
+						 Classes="FilesCollectionStyle">
+					<ListBox.DataTemplates>
+						<DataTemplate DataType="{x:Type model:ComponentFileModel}">
+							<Grid ColumnDefinitions="1*, auto, 40, 40">
+								<TextBlock Text="{Binding FileInfo}"
+										   VerticalAlignment="Center"
+										   TextTrimming="CharacterEllipsis"
+										   ToolTip.Tip="{Binding $self.Text}"/>
+
+								<Button Grid.Column="2"
+										Margin="0 0 5 0"
+										Classes="FileActionButton"
+										CommandParameter="{Binding}"
+										Command="{Binding $parent[UserControl].DataContext.ShowSelectedFileInExplorerCommand}">
+									<Path Data="{StaticResource folder_open_vertical_regular}"
+										  Fill="Gray"
+										  Margin="-4 -2 0 0"/>
+								</Button>
+
+								<Button Grid.Column="3"
+										Classes="FileActionButton"
+										CommandParameter="{Binding}"
+										Command="{Binding $parent[UserControl].DataContext.DeleteReferencedFileCommand}">
+									<Path Data="{StaticResource dismiss_regular}"
+										  Fill="Gray"
+										  RenderTransform="scale(0.75)"
+										  Margin="-6 -6 0 0"/>
+								</Button>
+							</Grid>
+						</DataTemplate>
+					</ListBox.DataTemplates>
+				</ListBox>
+
+				<Button Classes="EditActionButton"
+						Grid.Row="3"
+						Grid.ColumnSpan="2"
+						Margin="1 0"
+						Content="Добавить в сборку"
+						Command="{Binding OpenFileExplorerCommand}"/>
+			</Grid>
+
+			<Grid Grid.Column="2"
+				  RowDefinitions="auto, 1*, auto">
+				<DockPanel Grid.ColumnSpan="2"
+						   VerticalAlignment="Center"
+						   HorizontalAlignment="Center"
+						   Margin="5">
+					<TextBlock Text="Детали в сборке "
+							   FontSize="18"/>
+					<TextBlock Text="{Binding ProductHost.ProductModelCollection.Count, StringFormat={}[найдено {0}]}"
+							   FontSize="12"
+							   VerticalAlignment="Center"/>
+				</DockPanel>
+
+				<ListBox Grid.Row="1"
+						 Margin="10 0 10 10"
+						 BorderThickness="0 1"
+						 Classes="FilesCollectionStyle"
+						 ItemsSource="{Binding ProductHost.ProductModelCollection}">
+					<ListBox.DataTemplates>
+						<DataTemplate DataType="{x:Type model:ProductModel}">
+							<Grid ColumnDefinitions="auto, 1*, auto, auto">
+								<TextBlock Text="{Binding Name}" Margin="0 0 10 0"
+										   TextTrimming="CharacterEllipsis"
+										   HorizontalAlignment="Left"
+										   VerticalAlignment="Center"/>
+								<TextBlock Text="{Binding FamilyName, StringFormat={}[{0}]}"
+										   TextTrimming="CharacterEllipsis"
+										   HorizontalAlignment="Right"
+										   VerticalAlignment="Center"
+										   Margin="0 0 5 0"
+										   Grid.Column="2"/>
+
+								<Button Grid.Column="3"
+										Classes="FileActionButton"
+										CommandParameter="{Binding}"
+										Command="{Binding $parent[UserControl].DataContext.DeleteReferencedProductCommand}">
+									<Path Data="{StaticResource dismiss_regular}"
+										  Fill="Gray"
+										  RenderTransform="scale(0.75)"
+										  Margin="-6 -6 0 0"/>
+								</Button>
+							</Grid>
+						</DataTemplate>
+					</ListBox.DataTemplates>
+				</ListBox>
+
+				<Button Classes="EditActionButton"
+						Grid.Row="2"
+						Content="Удалить из сборки"
+						Command="{Binding BackgroundProductOpenCommand}"/>
+			</Grid>
+		</Grid>
+	</Grid>
+</UserControl>

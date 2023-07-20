@@ -1,7 +1,7 @@
 ﻿<Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 	<Design.PreviewWith>
-		<Border Padding="20" MinWidth="110">
+		<Border Padding="20">
 			<ComboBox Classes="ComboBoxModernStyle">
 				<ComboBoxItem Content="Item 1"/>
 				<ComboBoxItem Content="Item 2"/>

@@ -56,6 +56,9 @@ public partial class App : Application
                 services.AddSingleton<SettingsControl>();
                 services.AddSingleton<ComponentDetails>();
                 services.AddSingleton<ComponentAddNew>();
+                services.AddSingleton<FamilyDetailsControl>();
+                services.AddSingleton<FamilyAddNewControl>();
+                services.AddSingleton<ProductDetailsControl>();
             })
             .Build();
 

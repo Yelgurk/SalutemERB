@@ -9,10 +9,11 @@ End
 Go
 
 Create View [dbo].VFamilyList As
-Select		Product.family,
-			Count(*) as 'count'
+Select		Family.name,
+			Count(Product.family) as 'count'
 From		Product
-Group by	Product.family;
+Right Join	Family on Family.name = Product.family
+Group by	Family.name;
 Go
 
 Create View [dbo].VProductList As

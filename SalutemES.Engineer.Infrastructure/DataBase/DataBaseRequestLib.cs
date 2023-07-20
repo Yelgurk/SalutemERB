@@ -21,13 +21,14 @@ public record DataBaseRequest
 public static class DBRequests
 {
     public static DataBaseRequest GetFamilies => new("Select * From [dbo].VFamilyList;");
-    public static DataBaseRequest GetFamiliesByName => new("Select * From [dbo].VFamilyList Where family = '{0}';");
+    public static DataBaseRequest GetFamiliesByName => new("Select * From [dbo].VFamilyList Where VFamilyList.name = '{0}';");
     public static DataBaseRequest GetProductsListByComponent => new("Exec [dbo].GetProductsListByComponent '{0}';");
     public static DataBaseRequest GetProductsListByFamily => new("Exec [dbo].GetProductsListByFamily '{0}';");
     public static DataBaseRequest GetComponentsList => new("Select * From [dbo].VComponentUsageList;");
     public static DataBaseRequest GetComponentsListByProduct => new("Exec [dbo].GetComponentsListByProduct '{0}';");
     public static DataBaseRequest GetComponentsDetailsByNameCode => new("Exec [dbo].GetComponentsDetails '{0}', '{1}';");
     public static DataBaseRequest GetFilesListByComponent => new("Exec [dbo].GetFilesListByComponent '{0}';");
+    public static DataBaseRequest GetProductComponentsFullInfo => new("Exec [dbo].[GetProductComponentsFullInfo] '{0}';");
 
     public static DataBaseRequest RenameFamily => new("Exec [dbo].RenameFamily '{0}', '{1}';");
     public static DataBaseRequest RenameProduct => new("Exec [dbo].RenameProduct '{0}', '{1}';");
@@ -46,8 +47,10 @@ public static class DBRequests
     public static DataBaseRequest DeleteProductComponent => new("Exec [dbo].DeleteProductComponent '{0}', '{1}';");
 
     public static DataBaseRequest EditComponent => new("Exec [dbo].EditComponent '{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', '{8}', '{9}';");
+    public static DataBaseRequest EditFamily => new("Exec [dbo].EditFamily '{0}', '{1}';");
 
-    public static DataBaseRequest CheckComponentExists => new("Exec [dbo].IsComponentExists '{0}', '{1}';");
+    public static DataBaseRequest CheckComponentExists => new("Exec [dbo].CheckComponentExists '{0}', '{1}';");
+    public static DataBaseRequest CheckFamilyExists => new("Exec [dbo].CheckFamilyExists '{0}';");
 }
 
 public record DataBaseTableTypeArgName(string Name);
