@@ -6,5 +6,4 @@ namespace SalutemES.Engineer.Core;
 [ModelBySourceProperties(typeof(ComponentBase))]
 public partial class ComponentModel
 {
-    
 }

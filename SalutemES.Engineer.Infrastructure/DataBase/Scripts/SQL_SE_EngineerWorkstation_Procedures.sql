@@ -4,7 +4,7 @@ Go
 Create Procedure [dbo].[GetExportTable]
 	@ProductsList export_product readonly
 As Begin
-	Select Component.name,
+	Select	Component.name,
 			Component.code,
 			sum(Structure.count * TT.count) as 'count',
 			Component.grade,
@@ -74,6 +74,15 @@ As Begin
 End
 Go
 
+Create Procedure [dbo].GetProductByName
+	@Name string_short
+As Begin
+	Select	*
+	From	VProductList
+	Where	VProductList.name = @Name
+End
+Go
+
 Create Procedure [dbo].GetComponentsListByProduct
 	@Product string_short
 As Begin
@@ -102,36 +111,6 @@ As Begin
 	Select	*
 	From	Component_File
 	Where	Component_File.component = @Component
-End
-Go
-
-Create Procedure [dbo].RenameFamily
-	@Fiamily string_short,
-	@NewName string_short
-As Begin
-	Update	Family
-	Set		Family.name = @NewName
-	Where	Family.name = @Fiamily
-End
-Go
-
-Create Procedure [dbo].RenameProduct
-	@Product string_short,
-	@NewName string_short
-As Begin
-	Update	Product
-	Set		Product.name = @NewName
-	Where	Product.name = @Product
-End
-Go
-
-Create Procedure [dbo].RenameComponent
-	@Component string_short,
-	@NewName string_short
-As Begin
-	Update	Component
-	Set		Component.name = @NewName
-	Where	Component.name = @Component
 End
 Go
 
@@ -284,6 +263,26 @@ As Begin
 	Update	Family
 	Set		Family.name = @NewName
 	Where	Family.name = @Name;
+End
+Go
+
+Create Procedure [dbo].EditProductName
+	@Name string_short,
+	@NewName string_short
+As Begin
+	Update	Product
+	Set		Product.name = @NewName
+	Where	Product.name = @Name;
+End
+Go
+
+Create Procedure [dbo].EditProductFamily
+	@Product string_short,
+	@NewFamily string_short
+As Begin
+	Update	Product
+	Set		Product.family = @NewFamily
+	Where	Product.name = @Product;
 End
 Go
 

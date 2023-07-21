@@ -41,3 +41,26 @@ From		Component
 Left join	Structure on Structure.component = Component.name
 Group by	Component.name, Component.code;
 Go
+
+Create View [dbo].VComponentListFullInfo As 
+	Select	Component.name,
+			Component.code,
+			IsNull(sum(Structure.count), 0) as 'count',
+			Component.grade,
+			Component.thickness,
+			Replace(Component.folds, 0, '') as 'folds',
+			Component.weightKG,
+			IsNull(sum(Component.weightKG * Structure.count), 0) as 'totalKG',
+			Component.note,
+			Component.material
+	From	Component
+	Left Join	Structure on Structure.component = Component.name
+	Group by	Component.name,
+				Component.code,
+				Component.grade,
+				Component.thickness,
+				Component.folds,
+				Component.weightKG,
+				Component.note,
+				Component.material;
+Go

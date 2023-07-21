@@ -11,4 +11,5 @@ namespace SalutemES.Engineer.Core;
 [ModelBySourceProperties(typeof(ExportExcelBase))]
 public partial class ExportComponentModel
 {
+    public ComponentFileViewModel FilesCollection { get; } = new ComponentFileViewModel();
 }

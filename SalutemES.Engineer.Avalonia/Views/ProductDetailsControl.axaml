@@ -18,7 +18,6 @@
 		</Style>
 
 		<Style Selector="Grid.TextBoxesContainer TextBox">
-			<Setter Property="DataContext" Value="{Binding ComponentHost.ComponentModelSelected}"/>
 			<Setter Property="Margin" Value="0 5 0 0"/>
 			<Setter Property="Padding" Value="2 0"/>
 			<Setter Property="Text" Value="Test test test"/>
@@ -54,20 +53,67 @@
 			<Setter Property="Foreground" Value="White"/>
 			<Setter Property="FontWeight" Value="DemiBold"/>
 			<Setter Property="IsEnabled" Value="False"/>
-			<Setter Property="ToolTip.Tip" Value="Для удаления необходимо 0 использований в сборках"/>
+			<Setter Property="ToolTip.Tip" Value="Удалит данную сборку со всеми привязками к деталям. Уверены?"/>
 		</Style>
 
 		<Style Selector="Button.DeleteEnabled">
 			<Setter Property="IsEnabled" Value="True"/>
 		</Style>
 
-		<Style Selector="ListBox.FilesCollectionStyle ListBoxItem">
-			<Setter Property="Padding" Value="8 3 3 3"/>
+		<Style Selector="ListBox.ProductComponentList > ListBoxItem">
+			<Setter Property="Template">
+				<ControlTemplate>
+					<Grid Background="Transparent">
+						<Grid ColumnDefinitions="auto, 1*, auto"
+							  RowDefinitions="auto, auto"
+							  Margin="5">
+							<TextBlock Text="{Binding Name}"/>
+							<TextBlock Text="{Binding Code}" Grid.Column="2"/>
+							
+							<ContentPresenter Content="{TemplateBinding Content}"
+											  Grid.ColumnSpan="3"
+											  Grid.Row="1"
+											  Margin="0 10 0 0"
+											  IsVisible="{TemplateBinding IsSelected}"/>
+						</Grid>
+					</Grid>
+				</ControlTemplate>
+			</Setter>
 		</Style>
 
-		<!--Style Selector="Grid.TextBoxesContainer TextBox:focus">
-			<Setter Property="DataContext" Value="{Binding NewComponent}"/>
-		</Style-->
+		<Style Selector="ListBox.ProductComponentList
+			   ListBoxItem:pointerover > Grid">
+			<Setter Property="Background" Value="LightGray"/>
+		</Style>
+
+		<Style Selector="ListBox.ProductComponentList
+			   ListBoxItem:selected > Grid">
+			<Setter Property="Background" Value="{StaticResource AccentLowColor}"/>
+		</Style>
+
+		<Style Selector="ListBox.ProductComponentList
+			   ListBoxItem:selected:pointerover > Grid">
+			<Setter Property="Background" Value="{StaticResource AccentMediumColor}"/>
+		</Style>
+
+		<Style Selector="ListBox.ProductComponentList
+			   ListBoxItem:selected:pointerover:pressed > Grid">
+			<Setter Property="Background" Value="{StaticResource AccentHighColor}"/>
+		</Style>
+
+		<Style Selector="ListBox.ProductComponentFileList ListBoxItem">
+			<Setter Property="Padding" Value="0"/>
+		</Style>
+
+		<Style Selector="Button.FileActionButton">
+			<Setter Property="CornerRadius" Value="0"/>
+			<Setter Property="BorderThickness" Value="0"/>
+			<Setter Property="Padding" Value="8"/>
+			<Setter Property="Width" Value="36"/>
+			<Setter Property="Height" Value="{Binding $self.Bounds.Width}"/>
+			<Setter Property="VerticalContentAlignment" Value="Center"/>
+			<Setter Property="HorizontalContentAlignment" Value="Center"/>
+		</Style>
 	</UserControl.Styles>
 
 	<Grid ColumnDefinitions="1*, 1*, 4*"
@@ -95,7 +141,7 @@
 				Command="{Binding SaveInfoCommand}"/>
 
 		<Label  Grid.Column="2"
-				Content="Редактор детали"
+				Content="Редактор сборки (продукта)"
 				HorizontalContentAlignment="Center"
 				VerticalContentAlignment="Center"
 				FontSize="16"
@@ -121,11 +167,11 @@
 								FontSize="18"/>
 
 					<TextBlock Grid.Column="0"	Grid.Row="1" Text="Продукт:"/>
-					<TextBox Grid.Column="1"	Grid.Row="1" Text="{Binding Name}"/>
+					<TextBox Grid.Column="1"	Grid.Row="1" Text="{Binding ProductHost.ProductModelSelected.Name}"/>
 					<TextBlock Grid.Column="2"	Grid.Row="1" Text=""/>
 
-					<TextBlock Grid.Column="0"	Grid.Row="2" Text="Каталог:"/>
-					<TextBlock Grid.Column="1"	Grid.Row="2" Text="{Binding Code}" Margin="0 5"/>
+					<TextBlock Grid.Column="0"	Grid.Row="2" Text="Категория:"/>
+					<TextBlock Grid.Column="1"	Grid.Row="2" Text="{Binding ProductHost.ProductModelSelected.FamilyName}" Margin="0 5"/>
 					<TextBlock Grid.Column="2"	Grid.Row="2" Text=""/>
 
 					<TextBlock Text="Выбор новой категории:"
@@ -138,15 +184,24 @@
 						  ColumnDefinitions="1*, 40">
 						<ComboBox Classes="ComboBoxModernStyle"
 								  HorizontalAlignment="Stretch"
-								  Margin="0 0 5 0"/>
+								  Margin="0 0 5 0"
+								  ItemsSource="{Binding FamilyHost.FamilyModelCollection}"
+								  SelectedItem="{Binding FamilyHost.FamilyModelSelected}">
+							<ComboBox.DataTemplates>
+								<DataTemplate DataType="{x:Type model:FamilyModel}">
+									<TextBlock Text="{Binding Name}"/>
+								</DataTemplate>
+							</ComboBox.DataTemplates>
+						</ComboBox>
 						<Button Grid.Column="1"
 								CornerRadius="0"
 								BorderThickness="0"
 								VerticalAlignment="Stretch"
-								Width="{Binding $self.Bounds.Height}">
+								Width="{Binding $self.Bounds.Height}"
+								Command="{Binding EditFamilyCommand}">
 							<Path Data="{StaticResource save_regular}"
 								  Fill="Gray"
-								  Margin="-4 -2 0 0"/>
+								  Margin="-3 -1 0 0"/>
 						</Button>
 					</Grid>
 					
@@ -156,8 +211,8 @@
 						<Button Classes="EditActionButton"
 								Content="Отменить изменения"
 								Command="{Binding CancelInfoEditCommand}"/>
-						<Button	Classes="EditActionButton DeleteButton"
-								Classes.DeleteEnabled="{Binding !ProductHost.ProductModelCollection.Count}"
+						
+						<Button	Classes="EditActionButton DeleteButton DeleteEnabled"
 								Content="Удалить"
 								Command="{Binding DeleteWithAllReferenceCommand}"
 								Grid.Column="1"
@@ -175,7 +230,7 @@
 					<TextBlock Text="Детали в базе"
 							   Margin="5"
 							   FontSize="18"/>
-					<TextBlock Text="{Binding FilesHost.ComponentFileModelCollection.Count, StringFormat={}[найдено {0}]}"
+					<TextBlock Text="{Binding ComponentInDataBase.ExportComponentModelCollection.Count, StringFormat={}[найдено {0}]}"
 							   VerticalAlignment="Center"
 							   FontSize="12"/>
 				</DockPanel>
@@ -184,35 +239,60 @@
 						 Grid.Row="1"
 						 Margin="10 0"
 						 BorderThickness="0 1"
-						 ItemsSource="{Binding FilesHost.ComponentFileModelCollection}"
-						 Classes="FilesCollectionStyle">
+						 ItemsSource="{Binding ComponentInDataBase.ExportComponentModelCollection}"
+						 SelectedItem="{Binding ComponentInDataBase.ExportComponentModelSelected}"
+						 Classes="ProductComponentList">
 					<ListBox.DataTemplates>
-						<DataTemplate DataType="{x:Type model:ComponentFileModel}">
-							<Grid ColumnDefinitions="1*, auto, 40, 40">
-								<TextBlock Text="{Binding FileInfo}"
-										   VerticalAlignment="Center"
-										   TextTrimming="CharacterEllipsis"
-										   ToolTip.Tip="{Binding $self.Text}"/>
+						<DataTemplate DataType="{x:Type model:ExportComponentModel}">
+							<Grid ColumnDefinitions="auto, 1*"
+								  RowDefinitions="auto, auto, auto, auto, auto, auto, auto, 1*">
+								<TextBlock Text="Металл: " Grid.Column="0" Grid.Row="0"/>
+								<TextBlock Text="{Binding Grade}" Grid.Column="1" Grid.Row="0"/>
 
-								<Button Grid.Column="2"
-										Margin="0 0 5 0"
-										Classes="FileActionButton"
-										CommandParameter="{Binding}"
-										Command="{Binding $parent[UserControl].DataContext.ShowSelectedFileInExplorerCommand}">
-									<Path Data="{StaticResource folder_open_vertical_regular}"
-										  Fill="Gray"
-										  Margin="-4 -2 0 0"/>
-								</Button>
+								<TextBlock Text="Толщина: " Grid.Column="0" Grid.Row="1"/>
+								<TextBlock Text="{Binding Thickness, StringFormat={}{0} мм.}" Grid.Column="1" Grid.Row="1"/>
 
-								<Button Grid.Column="3"
-										Classes="FileActionButton"
-										CommandParameter="{Binding}"
-										Command="{Binding $parent[UserControl].DataContext.DeleteReferencedFileCommand}">
-									<Path Data="{StaticResource dismiss_regular}"
-										  Fill="Gray"
-										  RenderTransform="scale(0.75)"
-										  Margin="-6 -6 0 0"/>
-								</Button>
+								<TextBlock Text="Сгибы: " Grid.Column="0" Grid.Row="2"/>
+								<TextBlock Text="{Binding Folds}" Grid.Column="1" Grid.Row="2"/>
+
+								<TextBlock Text="Вес шт.: " Grid.Column="0" Grid.Row="3"/>
+								<TextBlock Text="{Binding WeightKG, StringFormat={}{0} кг}" Grid.Column="1" Grid.Row="3"/>
+
+								<TextBlock Text="Примеч.: " Grid.Column="0" Grid.Row="4"/>
+								<TextBlock Text="{Binding Note}" Grid.Column="1" Grid.Row="4"/>
+
+								<TextBlock Text="Материал: " Grid.Column="0" Grid.Row="5"/>
+								<TextBlock Text="{Binding Material}" Grid.Column="1" Grid.Row="5"/>
+
+								<TextBlock Text="Файлов: " Grid.Column="0" Grid.Row="6"/>
+								<TextBlock Text="{Binding FilesCollection.ComponentFileModelCollection.Count, StringFormat={}{0} шт.}" Grid.Column="1" Grid.Row="6"/>
+								
+								<ListBox ItemsSource="{Binding FilesCollection.ComponentFileModelCollection}"
+										 Grid.ColumnSpan="2"
+										 Grid.Row="7"
+										 Classes="ProductComponentFileList">
+									<ListBox.DataTemplates>
+										<DataTemplate DataType="{x:Type model:ComponentFileModel}">
+											<Grid ColumnDefinitions="1*, auto, 40">
+												<TextBlock Text="{Binding FileInfo}"
+														   TextTrimming="CharacterEllipsis"
+														   ToolTip.Tip="{Binding $self.Text}"
+														   VerticalAlignment="Center"
+														   Margin="5 0"/>
+
+												<Button Grid.Column="2"
+														Margin="0"
+														Classes="FileActionButton"
+														CommandParameter="{Binding}"
+														Command="{Binding $parent[UserControl].DataContext.ShowSelectedFileInExplorerCommand}">
+													<Path Data="{StaticResource folder_open_vertical_regular}"
+														  Fill="Gray"
+														  Margin="-4 -2 0 0"/>
+												</Button>
+											</Grid>
+										</DataTemplate>
+									</ListBox.DataTemplates>
+								</ListBox>
 							</Grid>
 						</DataTemplate>
 					</ListBox.DataTemplates>
@@ -221,9 +301,9 @@
 				<Button Classes="EditActionButton"
 						Grid.Row="3"
 						Grid.ColumnSpan="2"
-						Margin="1 0"
+						Margin="1 8 1 0"
 						Content="Добавить в сборку"
-						Command="{Binding OpenFileExplorerCommand}"/>
+						Command="{Binding AddComponentReferenceCommand}"/>
 			</Grid>
 
 			<Grid Grid.Column="2"
@@ -234,7 +314,7 @@
 						   Margin="5">
 					<TextBlock Text="Детали в сборке "
 							   FontSize="18"/>
-					<TextBlock Text="{Binding ProductHost.ProductModelCollection.Count, StringFormat={}[найдено {0}]}"
+					<TextBlock Text="{Binding ComponentUsedInProd.ExportComponentModelCollection.Count, StringFormat={}[найдено {0}]}"
 							   FontSize="12"
 							   VerticalAlignment="Center"/>
 				</DockPanel>
@@ -242,31 +322,88 @@
 				<ListBox Grid.Row="1"
 						 Margin="10 0 10 10"
 						 BorderThickness="0 1"
-						 Classes="FilesCollectionStyle"
-						 ItemsSource="{Binding ProductHost.ProductModelCollection}">
+						 Classes="ProductComponentList"
+						 ItemsSource="{Binding ComponentUsedInProd.ExportComponentModelCollection}"
+						 SelectedItem="{Binding ComponentUsedInProd.ExportComponentModelSelected}">
 					<ListBox.DataTemplates>
-						<DataTemplate DataType="{x:Type model:ProductModel}">
-							<Grid ColumnDefinitions="auto, 1*, auto, auto">
-								<TextBlock Text="{Binding Name}" Margin="0 0 10 0"
-										   TextTrimming="CharacterEllipsis"
-										   HorizontalAlignment="Left"
-										   VerticalAlignment="Center"/>
-								<TextBlock Text="{Binding FamilyName, StringFormat={}[{0}]}"
-										   TextTrimming="CharacterEllipsis"
-										   HorizontalAlignment="Right"
-										   VerticalAlignment="Center"
-										   Margin="0 0 5 0"
-										   Grid.Column="2"/>
+						<DataTemplate DataType="{x:Type model:ExportComponentModel}">
+							<Grid ColumnDefinitions="auto, 1*"
+								  RowDefinitions="auto, auto, auto, auto, auto, auto, auto, auto, 1*">
+								<Grid Grid.ColumnSpan="2"
+									  ColumnDefinitions="1*, auto, 1*, auto, 1*">
+									<Button Grid.Column="1"
+											Width="40" Height="30" Padding="0" Margin="0"
+											CornerRadius="0" BorderThickness="0"
+											Content="-"
+											VerticalContentAlignment="Center"
+											HorizontalContentAlignment="Center"
+											CommandParameter="{Binding}"
+											Command="{Binding $parent[UserControl].DataContext.DecrementComponentCountCommand}"/>
 
-								<Button Grid.Column="3"
-										Classes="FileActionButton"
-										CommandParameter="{Binding}"
-										Command="{Binding $parent[UserControl].DataContext.DeleteReferencedProductCommand}">
-									<Path Data="{StaticResource dismiss_regular}"
-										  Fill="Gray"
-										  RenderTransform="scale(0.75)"
-										  Margin="-6 -6 0 0"/>
-								</Button>
+
+									<TextBox Text="{Binding Count}"
+											 Grid.Column="2"
+											 HorizontalContentAlignment="Center"
+											 Margin="5 0"
+											 Height="30"/>
+
+									<Button Grid.Column="3"
+											Width="40" Height="30" Padding="0" Margin="0"
+											CornerRadius="0" BorderThickness="0"
+											Content="+"
+											VerticalContentAlignment="Center"
+											HorizontalContentAlignment="Center"
+											CommandParameter="{Binding}"
+											Command="{Binding $parent[UserControl].DataContext.IncrementComponentCountCommand}"/>
+								</Grid>
+
+								<TextBlock Text="Металл: " Grid.Column="0" Grid.Row="1"/>
+								<TextBlock Text="{Binding Grade}" Grid.Column="1" Grid.Row="1"/>
+
+								<TextBlock Text="Толщина: " Grid.Column="0" Grid.Row="2"/>
+								<TextBlock Text="{Binding Thickness, StringFormat={}{0} мм.}" Grid.Column="1" Grid.Row="2"/>
+
+								<TextBlock Text="Сгибы: " Grid.Column="0" Grid.Row="3"/>
+								<TextBlock Text="{Binding Folds}" Grid.Column="1" Grid.Row="3"/>
+
+								<TextBlock Text="Вес шт.: " Grid.Column="0" Grid.Row="4"/>
+								<TextBlock Text="{Binding WeightKG, StringFormat={}{0} кг}" Grid.Column="1" Grid.Row="4"/>
+
+								<TextBlock Text="Примеч.: " Grid.Column="0" Grid.Row="5"/>
+								<TextBlock Text="{Binding Note}" Grid.Column="1" Grid.Row="5"/>
+
+								<TextBlock Text="Материал: " Grid.Column="0" Grid.Row="6"/>
+								<TextBlock Text="{Binding Material}" Grid.Column="1" Grid.Row="6"/>
+
+								<TextBlock Text="Файлов: " Grid.Column="0" Grid.Row="7"/>
+								<TextBlock Text="{Binding FilesCollection.ComponentFileModelCollection.Count, StringFormat={}{0} шт.}" Grid.Column="1" Grid.Row="7"/>
+
+								<ListBox ItemsSource="{Binding FilesCollection.ComponentFileModelCollection}"
+										 Grid.ColumnSpan="2"
+										 Grid.Row="8"
+										 Classes="ProductComponentFileList">
+									<ListBox.DataTemplates>
+										<DataTemplate DataType="{x:Type model:ComponentFileModel}">
+											<Grid ColumnDefinitions="1*, auto, 40">
+												<TextBlock Text="{Binding FileInfo}"
+														   TextTrimming="CharacterEllipsis"
+														   ToolTip.Tip="{Binding $self.Text}"
+														   VerticalAlignment="Center"
+														   Margin="5 0"/>
+
+												<Button Grid.Column="2"
+														Margin="0"
+														Classes="FileActionButton"
+														CommandParameter="{Binding}"
+														Command="{Binding $parent[UserControl].DataContext.ShowSelectedFileInExplorerCommand}">
+													<Path Data="{StaticResource folder_open_vertical_regular}"
+														  Fill="Gray"
+														  Margin="-4 -2 0 0"/>
+												</Button>
+											</Grid>
+										</DataTemplate>
+									</ListBox.DataTemplates>
+								</ListBox>
 							</Grid>
 						</DataTemplate>
 					</ListBox.DataTemplates>
@@ -275,7 +412,7 @@
 				<Button Classes="EditActionButton"
 						Grid.Row="2"
 						Content="Удалить из сборки"
-						Command="{Binding BackgroundProductOpenCommand}"/>
+						Command="{Binding DeleteComponentReferenceCommand}"/>
 			</Grid>
 		</Grid>
 	</Grid>

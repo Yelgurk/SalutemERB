@@ -12,4 +12,5 @@ namespace SalutemES.Engineer.Core;
 public partial class ComponentFileViewModel
 {
     public void FillCollection(ComponentModel Component) => FillCollection(DBRequests.GetFilesListByComponent, Component.Name);
+    public void FillCollection(ExportComponentModel Component) => FillCollection(DBRequests.GetFilesListByComponent, Component.Name);
 }

@@ -12,4 +12,7 @@ namespace SalutemES.Engineer.Core;
 public partial class ExportComponentViewModel
 {
     public void FillCollection(ProductWithFullComponentsModel Product) => FillCollection(DBRequests.GetProductComponentsFullInfo, Product.Name);
+    public void FillCollection(ProductModel Product) => FillCollection(DBRequests.GetProductComponentsFullInfo, Product.Name);
+    public void FillCollection() => FillCollection(DBRequests.GetProductsListFullInfo);
+    
 }

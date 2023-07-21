@@ -31,6 +31,8 @@ public partial class ProductEditorViewModel : ViewModelBase
             .FillCollection(ProductHost.ProductWithFullComponentsModelSelected);
     }
 
+    public void UpdateProductList() => ProductHost.FillCollection(FamilyHost.FamilyModelSelected!);
+
     [RelayCommand]
     public void OpenAddFamilyControl() => App.Host!.Services.GetRequiredService<MainWindow>()
         .ViewModel
@@ -48,8 +50,8 @@ public partial class ProductEditorViewModel : ViewModelBase
     [RelayCommand]
     public void OpenEditProductControl(ProductWithFullComponentsModel Product) => App.Host!.Services.GetRequiredService<MainWindow>()
         .ViewModel
-        .DisplayPopupControl(App.Host!.Services.GetRequiredService<ProductDetailsControl>());
-        //.Do(pc => { pc.ViewModel.SetProduct(Product); return pc; }));
+        .DisplayPopupControl(App.Host!.Services.GetRequiredService<ProductDetailsControl>()
+        .Do(pc => { pc.ViewModel.SetProduct(Product); return pc; }));
 
     [RelayCommand]
     public void OpenEditComponentControl() { Debug.WriteLine("Some 4"); }

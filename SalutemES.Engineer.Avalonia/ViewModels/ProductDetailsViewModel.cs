@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,126 +17,135 @@ namespace SalutemES.Engineer.Avalonia.ViewModels;
 
 public partial class ProductDetailsViewModel : ViewModelBase
 {
-    public ComponentViewModel ComponentHost { get; } = new ComponentViewModel();
-    public ProductViewModel ProductHost { get; } = new ProductViewModel();
-    public ComponentFileViewModel FilesHost { get; } = new ComponentFileViewModel();
+    public ProductViewModel ProductHost { get; } = new();
+    public ExportComponentViewModel ComponentUsedInProd { get; } = new();
+    public ExportComponentViewModel ComponentInDataBase { get; } = new();
+    public FamilyViewModel FamilyHost { get; } = new();
 
-    [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(FileInfo))]
-    private string _newFileLocalPath = "";
-
-    public string FileInfo => $"{NewFileLocalPath.Split("\\").Last()} [{NewFileLocalPath}]";
-
-    public ProductDetailsViewModel() =>
-        ComponentHost.OnFillCollection = () =>
+    public ProductDetailsViewModel() => this
+        .Do(_ => ComponentUsedInProd.OnSelectedModelChanged = () =>
         {
-            if (ComponentHost.ComponentModelCollection.Count > 0)
-                ComponentHost.ComponentModelSelected = ComponentHost.ComponentModelCollection[0];
+            ComponentUsedInProd.ExportComponentModelSelected
+                ?.Do(model => model.NumericCountRegex = true)
+                .Do(model => model!.FilesCollection.FillCollection(ComponentUsedInProd.ExportComponentModelSelected!));                
+        })
+        .Do(_ => ComponentInDataBase.OnSelectedModelChanged = () =>
+        {
+            ComponentInDataBase.ExportComponentModelSelected?
+                .FilesCollection.FillCollection(ComponentInDataBase.ExportComponentModelSelected!);
+        });
 
-            ComponentHost.ComponentModelSelected!.NumericThicknessRegex = true;
-            ComponentHost.ComponentModelSelected!.NumericFoldsRegex = true;
-            ComponentHost.ComponentModelSelected!.NumericWeightKGRegex = true;
-            ComponentHost.ComponentModelSelected!.ResetByBase();
-        };
+    public void SetProduct(ProductWithFullComponentsModel Product) => this
+        .Do(_ => this.FillCollection(Product.Name))
+        .Do(_ => FamilyHost.FillCollection());
 
-    public void SetComponent(ComponentModel Component) => FillCollection(Component.Name, Component.Code);
-    public void SetComponent(ComponentUsageModel Component) => FillCollection(Component.Name, Component.Code);
+    public void SetProduct(ProductModel Product) => this
+        .Do(_ => this.FillCollection(Product.Name))
+        .Do(_ => FamilyHost.FillCollection());
 
-    public void FillCollection(string Name, string Code)
-    {
-        ComponentHost.FillCollection(DBRequests.GetComponentsDetailsByNameCode, Name, Code);
-        ProductHost.FillCollection(ComponentHost.ComponentModelSelected!);
-        FilesHost.FillCollection(ComponentHost.ComponentModelSelected!);
-    }
+    public void FillCollection(string ProductName) => this
+        .Do(_ => ProductHost.FillCollection(ProductName))
+        .Do(_ => ProductHost.ProductModelSelected = ProductHost.ProductModelCollection.FirstOrDefault())
+        .Do(_ => this.FillCollection());
+
+    private void FillCollection() => this
+        .Do(_ => ComponentUsedInProd.FillCollection(ProductHost.ProductModelSelected!))
+        .Do(_ => ComponentInDataBase.FillCollection());
 
     [RelayCommand]
     public void ClosePopup() => App.Host!.Services.GetRequiredService<MainWindow>().ViewModel.ClosePopupControl();
 
     [RelayCommand]
-    public void SaveInfo() => ComponentHost.ComponentModelSelected!
-        .DoIf(c => DataBaseApi.RequestWithBoolResponse(
-            DBRequests.EditComponent,
+    public void SaveInfo() => ProductHost.ProductModelSelected!
+        .DoIf(p => DataBaseApi.RequestWithBoolResponse(
+            DBRequests.EditProductName,
             onErr => Logger.WriteLine(onErr),
-            c.Base!.Name!,
-            c.Base!.Code!,
-            c.Name,
-            c.Code,
-            c.Grade,
-            c.Thickness,
-            c.Folds,
-            c.WeightKG,
-            c.Note,
-            c.Material
-            ), error => Logger.WriteLine("Save error")
+            p.Base!.Name!,
+            p.Name
+            ), error => Logger.WriteLine("+ Save new product(solution) name error")
         )
-        ?.DoInst(success => Logger.WriteLine("Save successfully"))
-        .Do(c => this.SetComponent(c))
-        .Do(c => App.Host!.Services.GetRequiredService<ComponentsEditorControl>().ViewModel.ComponentUsageHost.FillCollection());
+        ?.DoInst(success => Logger.WriteLine("Save product(solution) name success"))
+        .Do(p => ComponentUsedInProd.ExportComponentModelCollection.ToList().ForEach(c => {
+            c.DoIf(_ => DataBaseApi.RequestWithBoolResponse(
+                DBRequests.AddProductComponent,
+                onErr => Logger.WriteLine(onErr),
+                p.Name,
+                c.Name,
+                c.Count
+                ), error => Logger.WriteLine("+ Can't add cortage in db"))
+            ?.Do(log => Logger.WriteLine($"Success update info for [{p.Name}] about [{c.Name}]"));
+        }))
+        .Do(p => this.SetProduct(p))
+        .Do(_ => ClosePopup());
 
     [RelayCommand]
-    public void CancelInfoEdit() => ComponentHost.ComponentModelSelected!.ResetByBase();
+    public void EditFamily() => ProductHost.ProductModelSelected!
+        .DoIf(p => DataBaseApi.RequestWithBoolResponse(
+            DBRequests.EditProductFamily,
+            onErr => Logger.WriteLine(onErr),
+            p.Base!.Name!,
+            FamilyHost.FamilyModelSelected!.Name
+            ), error => Logger.WriteLine("+ Save new product(solution) family error")
+        )
+        ?.DoInst(success => Logger.WriteLine("Save product(solution) family success"))
+        .Do(p => p.FamilyName = FamilyHost.FamilyModelSelected!.Name)
+        .Do(_ => App.Host!.Services.GetRequiredService<ProductsEditorControl>().ViewModel)
+        .Do(vm => vm.FamilyHost.FillCollection())
+        .Do(vm => vm.UpdateProductList());
 
     [RelayCommand]
-    public void DeleteWithAllReference() => ComponentHost.ComponentModelSelected!
+    public void CancelInfoEdit() => ProductHost.ProductModelSelected!.ResetByBase();
+
+    [RelayCommand]
+    public void DeleteWithAllReference() => ProductHost.ProductModelSelected!
         .DoIf(c => DataBaseApi.RequestWithBoolResponse(
-            DBRequests.DeleteComponent,
+            DBRequests.DeleteProduct,
             onErr => Logger.WriteLine(onErr),
-            c.Name,
-            c.Code
-            ), error => Logger.WriteLine("Delete component error")
-        )?.Do(success => Logger.WriteLine("Delete component successfully"))
-        .Do(c => App.Host!.Services.GetRequiredService<ComponentsEditorControl>().ViewModel.ComponentUsageHost.FillCollection())
-        .Do(c => this.ClosePopup());
-
-    [RelayCommand]
-    public void DeleteReferencedFile(ComponentFileModel SelectedFile) => ComponentHost.ComponentModelSelected!
-        .DoIf(c => DataBaseApi.RequestWithBoolResponse(
-            DBRequests.DeleteComponentFile,
-            onErr => Logger.WriteLine(onErr),
-            c.Name,
-            SelectedFile.LocalFilePath
-            ), error => Logger.WriteLine("Delete file error")
-        )?.DoInst(success => Logger.WriteLine("Delete file successfully"))
-        .Do(c => this.SetComponent(c))
-        .Do(c => App.Host!.Services.GetRequiredService<ComponentsEditorControl>().ViewModel.ComponentUsageHost.FillCollection());
-
-    [RelayCommand]
-    [Obsolete]
-    public async Task OpenFileExplorer()
-    {
-        string[]? paths = await new OpenFileDialog().ShowAsync(App.Host!.Services.GetRequiredService<MainWindow>());
-        NewFileLocalPath = (paths?.Length ?? 0) > 0 ? paths![0] : "";
-    }
-
-    [RelayCommand]
-    public void AddSelectedFileIntoRef() => NewFileLocalPath
-        .DoIf(filePath => filePath.Length > 0, error => Logger.WriteLine("Can't add file path, because file not selected"))
-        ?.Do(filePath => ComponentHost.ComponentModelSelected)
-        ?.DoIf(c => DataBaseApi.RequestWithBoolResponse(
-            DBRequests.AddComponentFile,
-            onErr => Logger.WriteLine(onErr),
-            c.Name,
-            NewFileLocalPath
-            ), error => Logger.WriteLine("Add file error")
-        )?.DoInst(success => Logger.WriteLine("Add file successfully"))
-        .Do(c => this.SetComponent(c))
-        .Do(c => App.Host!.Services.GetRequiredService<ComponentsEditorControl>().ViewModel.ComponentUsageHost.FillCollection());
+            c.Name
+            ), error => Logger.WriteLine("Delete product error")
+        )?.Do(success => Logger.WriteLine("Delete product successfully"))
+        .Do(_ => App.Host!.Services.GetRequiredService<ProductsEditorControl>().ViewModel)
+        .Do(vm => vm.FamilyHost.FillCollection())
+        .Do(vm => vm.UpdateProductList())
+        .Do(_ => this.ClosePopup());
 
     [RelayCommand]
     public void ShowSelectedFileInExplorer(ComponentFileModel SelectedFile) => ExplorerProvider.OpenFolderAndSelectItem(SelectedFile.LocalFilePath);
 
     [RelayCommand]
-    public void DeleteReferencedProduct(ProductModel Product) => ComponentHost.ComponentModelSelected!
-        .DoIf(c => DataBaseApi.RequestWithBoolResponse(
-            DBRequests.DeleteProductComponent,
+    public void AddComponentReference() => ProductHost.ProductModelSelected!
+        .DoIf(_ => ComponentInDataBase.ExportComponentModelSelected is not null)
+        ?.DoIf(p => DataBaseApi.RequestWithBoolResponse(
+            DBRequests.AddProductComponent,
             onErr => Logger.WriteLine(onErr),
-            c.Name,
-            Product.Name
-            ), error => Logger.WriteLine("Delete prdouct ref error")
-        )?.DoInst(success => Logger.WriteLine("Delete prdouct ref successfully"))
-        .Do(c => this.SetComponent(c))
-        .Do(c => App.Host!.Services.GetRequiredService<ComponentsEditorControl>().ViewModel.ComponentUsageHost.FillCollection());
+            p.Name,
+            ComponentInDataBase.ExportComponentModelSelected!.Name,
+            ComponentInDataBase.ExportComponentModelSelected!.Count
+            ), error => Logger.WriteLine("Add component ref to product error")
+        )?.DoInst(success => Logger.WriteLine("Add component ref to product successfully"))
+        .Do(p => this.SetProduct(p));
 
     [RelayCommand]
-    public void BackgroundProductOpen() { Logger.WriteLine("Try goto selected product"); }
+    public void DeleteComponentReference() => ProductHost.ProductModelSelected!
+        .DoIf(_ => ComponentUsedInProd.ExportComponentModelSelected is not null)
+        ?.DoIf(p => DataBaseApi.RequestWithBoolResponse(
+            DBRequests.DeleteProductComponent,
+            onErr => Logger.WriteLine(onErr),
+            ComponentUsedInProd.ExportComponentModelSelected!.Name,
+            p.Name
+            ), error => Logger.WriteLine("Delete product ref to component error")
+        )?.DoInst(success => Logger.WriteLine("Delete product ref to component successfully"))
+        .Do(p => this.SetProduct(p));
+
+    [RelayCommand]
+    public void IncrementComponentCount(ExportComponentModel Component) => Component
+        .Do(_ => Convert.ToInt32(double.Parse(Component.Count, CultureInfo.InvariantCulture)) + 1)
+        .Do(x => x < 0 ? 0 : x)
+        .Do(x => Component.Count = x.ToString());
+
+    [RelayCommand]
+    public void DecrementComponentCount(ExportComponentModel Component) => Component
+        .Do(_ => Convert.ToInt32(double.Parse(Component.Count, CultureInfo.InvariantCulture)) - 1)
+        .Do(x => x < 0 ? 0 : x)
+        .Do(x => Component.Count = x.ToString());
 }
