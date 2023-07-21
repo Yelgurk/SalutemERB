@@ -51,6 +51,7 @@ public static class DBRequests
 
     public static DataBaseRequest CheckComponentExists => new("Exec [dbo].CheckComponentExists '{0}', '{1}';");
     public static DataBaseRequest CheckFamilyExists => new("Exec [dbo].CheckFamilyExists '{0}';");
+    public static DataBaseRequest CheckProductExists => new("Exec [dbo].CheckProductExists '{0}';");
 }
 
 public record DataBaseTableTypeArgName(string Name);

@@ -158,7 +158,9 @@
 													<DataTemplate DataType="{x:Type core:ComponentModel}">
 														<Grid ColumnDefinitions="2*, 1*, 1*, 1*">
 															<DockPanel>
-																<Button Classes="Edit"/>
+																<Button Classes="Edit"
+																		CommandParameter="{Binding}"
+																		Command="{Binding $parent[UserControl].DataContext.OpenEditComponentControlX2Command}"/>
 																<TextBlock Text="{Binding Name}" Classes="Left"/>
 															</DockPanel>
 

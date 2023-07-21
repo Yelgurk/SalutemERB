@@ -310,3 +310,10 @@ As Begin
 	Select Count(*) From Family Where Family.name = @Name;
 End
 Go
+
+Create Procedure [dbo].CheckProductExists
+	@Name string_short
+As Begin
+	Select Count(*) From Product Where Product.name = @Name;
+End
+Go

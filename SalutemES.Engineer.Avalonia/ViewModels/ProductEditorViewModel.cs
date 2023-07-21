@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using Avalonia.Controls;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.DependencyInjection;
 using SalutemES.Engineer.Avalonia.Views;
@@ -45,7 +46,9 @@ public partial class ProductEditorViewModel : ViewModelBase
         .Do(fd => { fd.ViewModel.SetFamily(Family); return fd; }));
 
     [RelayCommand]
-    public void OpenAddProductControl() { Debug.WriteLine("Some 2"); }
+    public void OpenAddProductControl() => App.Host!.Services.GetRequiredService<ProductAddControl>()
+        .Do(control => App.Host!.Services.GetRequiredService<MainWindow>().ViewModel.DisplayPopupControl(control))
+        .Do(control => control.ViewModel.RefreshFilesAndModels());
 
     [RelayCommand]
     public void OpenEditProductControl(ProductWithFullComponentsModel Product) => App.Host!.Services.GetRequiredService<MainWindow>()
@@ -54,5 +57,7 @@ public partial class ProductEditorViewModel : ViewModelBase
         .Do(pc => { pc.ViewModel.SetProduct(Product); return pc; }));
 
     [RelayCommand]
-    public void OpenEditComponentControl() { Debug.WriteLine("Some 4"); }
+    public void OpenEditComponentControl(ExportComponentModel Component) => App.Host!.Services.GetRequiredService<ComponentDetails>()
+        .Do(cd => App.Host!.Services.GetRequiredService<MainWindow>().ViewModel.DisplayPopupControl(cd))
+        .Do(cd => cd.ViewModel.SetComponent(Component));
 }

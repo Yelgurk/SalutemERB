@@ -1,0 +1,430 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:SalutemES.Engineer.Avalonia.ViewModels"
+			 xmlns:model="using:SalutemES.Engineer.Core"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="SalutemES.Engineer.Avalonia.Views.ProductAddControl">
+	<UserControl.DataContext>
+		<vm:ProductAddViewModel/>
+	</UserControl.DataContext>
+
+	<UserControl.Styles>
+		<Style Selector="Grid.TextBoxesContainer TextBlock">
+			<Setter Property="VerticalAlignment" Value="Center"/>
+			<Setter Property="Margin" Value="5 0"/>
+			<Setter Property="FontSize" Value="14"/>
+		</Style>
+
+		<Style Selector="Grid.TextBoxesContainer TextBox">
+			<Setter Property="Margin" Value="0 5 0 0"/>
+			<Setter Property="Padding" Value="2 0"/>
+			<Setter Property="Text" Value="Test test test"/>
+			<Setter Property="VerticalContentAlignment" Value="Center"/>
+			<Setter Property="CornerRadius" Value="0"/>
+			<Setter Property="BorderThickness" Value="0 0 0 1"/>
+			<Setter Property="Background" Value="WhiteSmoke"/>
+			<Setter Property="Height" Value="20"/>
+		</Style>
+
+		<Style Selector="Button.EditActionButton">
+			<Setter Property="HorizontalContentAlignment" Value="Center"/>
+			<Setter Property="VerticalContentAlignment" Value="Center"/>
+			<Setter Property="HorizontalAlignment" Value="Stretch"/>
+			<Setter Property="Padding" Value="8"/>
+			<Setter Property="BorderThickness" Value="0"/>
+			<Setter Property="CornerRadius" Value="0"/>
+			<Setter Property="Height" Value="36"/>
+		</Style>
+
+		<Style Selector="Button.FileActionButton">
+			<Setter Property="CornerRadius" Value="0"/>
+			<Setter Property="BorderThickness" Value="0"/>
+			<Setter Property="Padding" Value="8"/>
+			<Setter Property="Width" Value="36"/>
+			<Setter Property="Height" Value="{Binding $self.Bounds.Width}"/>
+			<Setter Property="VerticalContentAlignment" Value="Center"/>
+			<Setter Property="HorizontalContentAlignment" Value="Center"/>
+		</Style>
+
+		<Style Selector="Button.DeleteButton">
+			<Setter Property="Background" Value="#E32636"/>
+			<Setter Property="Foreground" Value="White"/>
+			<Setter Property="FontWeight" Value="DemiBold"/>
+			<Setter Property="IsEnabled" Value="False"/>
+			<Setter Property="ToolTip.Tip" Value="Удалит данную сборку со всеми привязками к деталям. Уверены?"/>
+		</Style>
+
+		<Style Selector="Button.DeleteEnabled">
+			<Setter Property="IsEnabled" Value="True"/>
+		</Style>
+
+		<Style Selector="ListBox.ProductComponentList > ListBoxItem">
+			<Setter Property="Template">
+				<ControlTemplate>
+					<Grid Background="Transparent">
+						<Grid ColumnDefinitions="auto, 1*, auto"
+							  RowDefinitions="auto, auto"
+							  Margin="5">
+							<TextBlock Text="{Binding Name}"/>
+							<TextBlock Text="{Binding Code}" Grid.Column="2"/>
+
+							<ContentPresenter Content="{TemplateBinding Content}"
+											  Grid.ColumnSpan="3"
+											  Grid.Row="1"
+											  Margin="0 10 0 0"
+											  IsVisible="{TemplateBinding IsSelected}"/>
+						</Grid>
+					</Grid>
+				</ControlTemplate>
+			</Setter>
+		</Style>
+
+		<Style Selector="ListBox.ProductComponentList
+			   ListBoxItem:pointerover > Grid">
+			<Setter Property="Background" Value="LightGray"/>
+		</Style>
+
+		<Style Selector="ListBox.ProductComponentList
+			   ListBoxItem:selected > Grid">
+			<Setter Property="Background" Value="{StaticResource AccentLowColor}"/>
+		</Style>
+
+		<Style Selector="ListBox.ProductComponentList
+			   ListBoxItem:selected:pointerover > Grid">
+			<Setter Property="Background" Value="{StaticResource AccentMediumColor}"/>
+		</Style>
+
+		<Style Selector="ListBox.ProductComponentList
+			   ListBoxItem:selected:pointerover:pressed > Grid">
+			<Setter Property="Background" Value="{StaticResource AccentHighColor}"/>
+		</Style>
+
+		<Style Selector="ListBox.ProductComponentFileList ListBoxItem">
+			<Setter Property="Padding" Value="0"/>
+		</Style>
+
+		<Style Selector="Button.FileActionButton">
+			<Setter Property="CornerRadius" Value="0"/>
+			<Setter Property="BorderThickness" Value="0"/>
+			<Setter Property="Padding" Value="8"/>
+			<Setter Property="Width" Value="36"/>
+			<Setter Property="Height" Value="{Binding $self.Bounds.Width}"/>
+			<Setter Property="VerticalContentAlignment" Value="Center"/>
+			<Setter Property="HorizontalContentAlignment" Value="Center"/>
+		</Style>
+
+		<Style Selector="TextBlock.ComponentMatchIndicator">
+			<Setter Property="Text" Value="[имя доступно]"/>
+			<Setter Property="VerticalAlignment" Value="Center"/>
+			<Setter Property="FontSize" Value="12"/>
+			<Setter Property="Foreground" Value="Black"/>
+		</Style>
+
+		<Style Selector="TextBlock.ComponentMatchIndicator.IsUsed">
+			<Setter Property="Text" Value="[имя занято]"/>
+			<Setter Property="Foreground" Value="Firebrick"/>
+			<Setter Property="FontWeight" Value="DemiBold"/>
+		</Style>
+	</UserControl.Styles>
+
+	<Grid ColumnDefinitions="1*, 1*, 4*"
+		  RowDefinitions="auto, 1*"
+		  Background="White">
+		<Button CornerRadius="0"
+				BorderThickness="0"
+				Padding="8"
+				Content="Назад"
+				FontSize="16"
+				HorizontalAlignment="Stretch"
+				HorizontalContentAlignment="Center"
+				Command="{Binding ClosePopupCommand}"/>
+
+		<Button Grid.Column="1"
+				CornerRadius="0"
+				BorderThickness="0"
+				Padding="8"
+				Margin="1 0"
+				Content="Сохранить"
+				FontWeight="DemiBold"
+				FontSize="16"
+				HorizontalAlignment="Stretch"
+				HorizontalContentAlignment="Center"
+				Command="{Binding SaveInfoCommand}"/>
+
+		<Label  Grid.Column="2"
+				Content="Редактор сборки (продукта)"
+				HorizontalContentAlignment="Center"
+				VerticalContentAlignment="Center"
+				FontSize="16"
+				FontWeight="DemiBold"
+				Foreground="White"
+				Background="{DynamicResource AccentMainBrush}"/>
+
+		<Grid Grid.ColumnSpan="3"
+			  Grid.Row="1"
+			  ColumnDefinitions="1*, 1*, 1*">
+			<Grid Grid.Column="1"
+				  Background="WhiteSmoke"/>
+
+			<ScrollViewer Grid.Column="0">
+				<Grid ColumnDefinitions="auto, 1*, auto"
+					  RowDefinitions="auto, auto, auto, auto, auto, auto, auto, auto, auto, 1*, auto"
+					  Classes="TextBoxesContainer">
+					<DockPanel	Margin="5"
+								Grid.ColumnSpan="3"
+								VerticalAlignment="Center"
+								HorizontalAlignment="Center">
+						<TextBlock	Text="Информация"
+									FontSize="18"/>
+						<TextBlock Classes="ComponentMatchIndicator"
+								   Classes.IsUsed="{Binding !!ComponentMatch}"/>
+					</DockPanel>
+
+					<TextBlock Grid.Column="0"	Grid.Row="1" Text="Продукт:"/>
+					<TextBox Grid.Column="1"	Grid.Row="1" Text="{Binding Product.Name}"/>
+					<TextBlock Grid.Column="2"	Grid.Row="1" Text=""/>
+
+					<TextBlock Grid.Column="0"	Grid.Row="2" Text="Категория:"/>
+					<TextBlock Grid.Column="1"	Grid.Row="2" Text="{Binding Product.FamilyName}" Margin="0 5"/>
+					<TextBlock Grid.Column="2"	Grid.Row="2" Text=""/>
+
+					<TextBlock Text="Выбор новой категории:"
+							   Grid.ColumnSpan="3"
+							   Grid.Row="3"
+							   Margin="5 10 0 0"/>
+					<Grid Grid.ColumnSpan="4"
+						  Grid.Row="4"
+						  Margin="5 5 2 5"
+						  ColumnDefinitions="1*, 40">
+						<ComboBox Classes="ComboBoxModernStyle"
+								  HorizontalAlignment="Stretch"
+								  Margin="0 0 5 0"
+								  ItemsSource="{Binding FamilyHost.FamilyModelCollection}"
+								  SelectedItem="{Binding FamilyHost.FamilyModelSelected}">
+							<ComboBox.DataTemplates>
+								<DataTemplate DataType="{x:Type model:FamilyModel}">
+									<TextBlock Text="{Binding Name}"/>
+								</DataTemplate>
+							</ComboBox.DataTemplates>
+						</ComboBox>
+						<Button Grid.Column="1"
+								CornerRadius="0"
+								BorderThickness="0"
+								VerticalAlignment="Stretch"
+								Width="{Binding $self.Bounds.Height}"
+								Command="{Binding EditFamilyCommand}">
+							<Path Data="{StaticResource save_regular}"
+								  Fill="Gray"
+								  Margin="-3 -1 0 0"/>
+						</Button>
+					</Grid>
+
+					<Grid Grid.ColumnSpan="3"
+						  Grid.Row="10"
+						  ColumnDefinitions="2*, 1*">
+						<Button Classes="EditActionButton"
+								Content="Отменить изменения"
+								Command="{Binding CancelInfoEditCommand}"
+								Grid.ColumnSpan="2"/>
+					</Grid>
+				</Grid>
+			</ScrollViewer>
+
+			<Grid Grid.Column="1"
+				  RowDefinitions="auto, 1*, auto, auto"
+				  ColumnDefinitions="1*, auto">
+				<DockPanel Grid.ColumnSpan="2"
+						   VerticalAlignment="Center"
+						   HorizontalAlignment="Center">
+					<TextBlock Text="Детали в базе"
+							   Margin="5"
+							   FontSize="18"/>
+					<TextBlock Text="{Binding ComponentInDataBase.ExportComponentModelCollection.Count, StringFormat={}[найдено {0}]}"
+							   VerticalAlignment="Center"
+							   FontSize="12"/>
+				</DockPanel>
+
+				<ListBox Grid.ColumnSpan="2"
+						 Grid.Row="1"
+						 Margin="10 0"
+						 BorderThickness="0 1"
+						 ItemsSource="{Binding ComponentInDataBase.ExportComponentModelCollection}"
+						 SelectedItem="{Binding ComponentInDataBase.ExportComponentModelSelected}"
+						 Classes="ProductComponentList">
+					<ListBox.DataTemplates>
+						<DataTemplate DataType="{x:Type model:ExportComponentModel}">
+							<Grid ColumnDefinitions="auto, 1*"
+								  RowDefinitions="auto, auto, auto, auto, auto, auto, auto, 1*">
+								<TextBlock Text="Металл: " Grid.Column="0" Grid.Row="0"/>
+								<TextBlock Text="{Binding Grade}" Grid.Column="1" Grid.Row="0"/>
+
+								<TextBlock Text="Толщина: " Grid.Column="0" Grid.Row="1"/>
+								<TextBlock Text="{Binding Thickness, StringFormat={}{0} мм.}" Grid.Column="1" Grid.Row="1"/>
+
+								<TextBlock Text="Сгибы: " Grid.Column="0" Grid.Row="2"/>
+								<TextBlock Text="{Binding Folds}" Grid.Column="1" Grid.Row="2"/>
+
+								<TextBlock Text="Вес шт.: " Grid.Column="0" Grid.Row="3"/>
+								<TextBlock Text="{Binding WeightKG, StringFormat={}{0} кг}" Grid.Column="1" Grid.Row="3"/>
+
+								<TextBlock Text="Примеч.: " Grid.Column="0" Grid.Row="4"/>
+								<TextBlock Text="{Binding Note}" Grid.Column="1" Grid.Row="4"/>
+
+								<TextBlock Text="Материал: " Grid.Column="0" Grid.Row="5"/>
+								<TextBlock Text="{Binding Material}" Grid.Column="1" Grid.Row="5"/>
+
+								<TextBlock Text="Файлов: " Grid.Column="0" Grid.Row="6"/>
+								<TextBlock Text="{Binding FilesCollection.ComponentFileModelCollection.Count, StringFormat={}{0} шт.}" Grid.Column="1" Grid.Row="6"/>
+
+								<ListBox ItemsSource="{Binding FilesCollection.ComponentFileModelCollection}"
+										 Grid.ColumnSpan="2"
+										 Grid.Row="7"
+										 Classes="ProductComponentFileList">
+									<ListBox.DataTemplates>
+										<DataTemplate DataType="{x:Type model:ComponentFileModel}">
+											<Grid ColumnDefinitions="1*, auto, 40">
+												<TextBlock Text="{Binding FileInfo}"
+														   TextTrimming="CharacterEllipsis"
+														   ToolTip.Tip="{Binding $self.Text}"
+														   VerticalAlignment="Center"
+														   Margin="5 0"/>
+
+												<Button Grid.Column="2"
+														Margin="0"
+														Classes="FileActionButton"
+														CommandParameter="{Binding}"
+														Command="{Binding $parent[UserControl].DataContext.ShowSelectedFileInExplorerCommand}">
+													<Path Data="{StaticResource folder_open_vertical_regular}"
+														  Fill="Gray"
+														  Margin="-4 -2 0 0"/>
+												</Button>
+											</Grid>
+										</DataTemplate>
+									</ListBox.DataTemplates>
+								</ListBox>
+							</Grid>
+						</DataTemplate>
+					</ListBox.DataTemplates>
+				</ListBox>
+
+				<Button Classes="EditActionButton"
+						Grid.Row="3"
+						Grid.ColumnSpan="2"
+						Margin="1 8 1 0"
+						Content="Добавить в сборку"
+						Command="{Binding AddComponentReferenceCommand}"/>
+			</Grid>
+
+			<Grid Grid.Column="2"
+				  RowDefinitions="auto, 1*, auto">
+				<DockPanel Grid.ColumnSpan="2"
+						   VerticalAlignment="Center"
+						   HorizontalAlignment="Center"
+						   Margin="5">
+					<TextBlock Text="Детали в сборке "
+							   FontSize="18"/>
+					<TextBlock Text="{Binding ComponentUsedInProd.ExportComponentModelCollection.Count, StringFormat={}[найдено {0}]}"
+							   FontSize="12"
+							   VerticalAlignment="Center"/>
+				</DockPanel>
+
+				<ListBox Grid.Row="1"
+						 Margin="10 0 10 10"
+						 BorderThickness="0 1"
+						 Classes="ProductComponentList"
+						 ItemsSource="{Binding ComponentUsedInProd.ExportComponentModelCollection}"
+						 SelectedItem="{Binding ComponentUsedInProd.ExportComponentModelSelected}">
+					<ListBox.DataTemplates>
+						<DataTemplate DataType="{x:Type model:ExportComponentModel}">
+							<Grid ColumnDefinitions="auto, 1*"
+								  RowDefinitions="auto, auto, auto, auto, auto, auto, auto, auto, 1*">
+								<Grid Grid.ColumnSpan="2"
+									  ColumnDefinitions="1*, auto, 1*, auto, 1*">
+									<Button Grid.Column="1"
+											Width="40" Height="30" Padding="0" Margin="0"
+											CornerRadius="0" BorderThickness="0"
+											Content="-"
+											VerticalContentAlignment="Center"
+											HorizontalContentAlignment="Center"
+											CommandParameter="{Binding}"
+											Command="{Binding $parent[UserControl].DataContext.DecrementComponentCountCommand}"/>
+
+
+									<TextBox Text="{Binding Count}"
+											 Grid.Column="2"
+											 HorizontalContentAlignment="Center"
+											 Margin="5 0"
+											 Height="30"/>
+
+									<Button Grid.Column="3"
+											Width="40" Height="30" Padding="0" Margin="0"
+											CornerRadius="0" BorderThickness="0"
+											Content="+"
+											VerticalContentAlignment="Center"
+											HorizontalContentAlignment="Center"
+											CommandParameter="{Binding}"
+											Command="{Binding $parent[UserControl].DataContext.IncrementComponentCountCommand}"/>
+								</Grid>
+
+								<TextBlock Text="Металл: " Grid.Column="0" Grid.Row="1"/>
+								<TextBlock Text="{Binding Grade}" Grid.Column="1" Grid.Row="1"/>
+
+								<TextBlock Text="Толщина: " Grid.Column="0" Grid.Row="2"/>
+								<TextBlock Text="{Binding Thickness, StringFormat={}{0} мм.}" Grid.Column="1" Grid.Row="2"/>
+
+								<TextBlock Text="Сгибы: " Grid.Column="0" Grid.Row="3"/>
+								<TextBlock Text="{Binding Folds}" Grid.Column="1" Grid.Row="3"/>
+
+								<TextBlock Text="Вес шт.: " Grid.Column="0" Grid.Row="4"/>
+								<TextBlock Text="{Binding WeightKG, StringFormat={}{0} кг}" Grid.Column="1" Grid.Row="4"/>
+
+								<TextBlock Text="Примеч.: " Grid.Column="0" Grid.Row="5"/>
+								<TextBlock Text="{Binding Note}" Grid.Column="1" Grid.Row="5"/>
+
+								<TextBlock Text="Материал: " Grid.Column="0" Grid.Row="6"/>
+								<TextBlock Text="{Binding Material}" Grid.Column="1" Grid.Row="6"/>
+
+								<TextBlock Text="Файлов: " Grid.Column="0" Grid.Row="7"/>
+								<TextBlock Text="{Binding FilesCollection.ComponentFileModelCollection.Count, StringFormat={}{0} шт.}" Grid.Column="1" Grid.Row="7"/>
+
+								<ListBox ItemsSource="{Binding FilesCollection.ComponentFileModelCollection}"
+										 Grid.ColumnSpan="2"
+										 Grid.Row="8"
+										 Classes="ProductComponentFileList">
+									<ListBox.DataTemplates>
+										<DataTemplate DataType="{x:Type model:ComponentFileModel}">
+											<Grid ColumnDefinitions="1*, auto, 40">
+												<TextBlock Text="{Binding FileInfo}"
+														   TextTrimming="CharacterEllipsis"
+														   ToolTip.Tip="{Binding $self.Text}"
+														   VerticalAlignment="Center"
+														   Margin="5 0"/>
+
+												<Button Grid.Column="2"
+														Margin="0"
+														Classes="FileActionButton"
+														CommandParameter="{Binding}"
+														Command="{Binding $parent[UserControl].DataContext.ShowSelectedFileInExplorerCommand}">
+													<Path Data="{StaticResource folder_open_vertical_regular}"
+														  Fill="Gray"
+														  Margin="-4 -2 0 0"/>
+												</Button>
+											</Grid>
+										</DataTemplate>
+									</ListBox.DataTemplates>
+								</ListBox>
+							</Grid>
+						</DataTemplate>
+					</ListBox.DataTemplates>
+				</ListBox>
+
+				<Button Classes="EditActionButton"
+						Grid.Row="2"
+						Content="Удалить из сборки"
+						Command="{Binding DeleteComponentReferenceCommand}"/>
+			</Grid>
+		</Grid>
+	</Grid>
+</UserControl>

@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Avalonia.Controls;
 using CommunityToolkit.Mvvm.ComponentModel;
+using System.Globalization;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.DependencyInjection;
 using SalutemES.Engineer.Avalonia.Views;
@@ -36,6 +36,10 @@ public partial class ProductDetailsViewModel : ViewModelBase
         });
 
     public void SetProduct(ProductWithFullComponentsModel Product) => this
+        .Do(_ => this.FillCollection(Product.Name))
+        .Do(_ => FamilyHost.FillCollection());
+
+    public void SetProduct(ProductWithComponentsModel Product) => this
         .Do(_ => this.FillCollection(Product.Name))
         .Do(_ => FamilyHost.FillCollection());
 

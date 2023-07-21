@@ -21,7 +21,7 @@ public class Logger
     public static Logger? CheckLoggerFileExists()
     {
         if (!File.Exists(FileFullPath!))
-            File.Create(FileFullPath!);
+            File.Create(FileFullPath!).Close();
 
         return File.Exists(FileFullPath) ? new Logger() : null;
     }

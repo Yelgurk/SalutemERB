@@ -40,6 +40,7 @@ public partial class ComponentDetailsViewModel : ViewModelBase
 
     public void SetComponent(ComponentModel Component) => FillCollection(Component.Name, Component.Code);
     public void SetComponent(ComponentUsageModel Component) => FillCollection(Component.Name, Component.Code);
+    public void SetComponent(ExportComponentModel Component) => FillCollection(Component.Name, Component.Code);
 
     public void FillCollection(string Name, string Code)
     {

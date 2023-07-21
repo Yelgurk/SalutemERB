@@ -39,12 +39,7 @@ public partial class ComponentEditorViewModel : ViewModelBase
         ComponentUsageHost.OnSelectedModelChanged = () => this
             .DoIf(state => !state.ProductListOpened, closed => this.ProductHost.FillCollection(ComponentUsageHost.ComponentUsageModelSelected!))
             ?.DoIf(vm => !PopupLock)
-            ?.Do(vm => {
-                App.Host!.Services.GetRequiredService<MainWindow>()
-                .ViewModel
-                .DisplayPopupControl(App.Host!.Services.GetRequiredService<ComponentDetails>()
-                .Do(cd => { cd.ViewModel.SetComponent(ComponentUsageHost.ComponentUsageModelSelected!); return cd; }));
-            });
+            ?.Do(_ => OpenEditComponentControl());
 
         ProductHost.OnSelectedModelChanged = () => ProductHost
             .ProductWithComponentsModelSelected?
@@ -52,11 +47,23 @@ public partial class ComponentEditorViewModel : ViewModelBase
             .FillCollection(ProductHost.ProductWithComponentsModelSelected);
     }
 
+    public void OpenEditComponentControl() => App.Host!.Services.GetRequiredService<ComponentDetails>()
+        .Do(cd => App.Host!.Services.GetRequiredService<MainWindow>().ViewModel.DisplayPopupControl(cd))
+        .Do(cd => cd.ViewModel.SetComponent(ComponentUsageHost.ComponentUsageModelSelected!));
+
     [RelayCommand]
     public void OpenAddComponentControl() => App.Host!.Services.GetRequiredService<MainWindow>()
         .ViewModel
         .DisplayPopupControl(App.Host!.Services.GetRequiredService<ComponentAddNew>());
 
     [RelayCommand]
-    public void OpenEditProductControl() { Debug.WriteLine("Some 3"); }
+    public void OpenEditProductControl(ProductWithComponentsModel Product) => App.Host!.Services.GetRequiredService<MainWindow>()
+        .ViewModel
+        .DisplayPopupControl(App.Host!.Services.GetRequiredService<ProductDetailsControl>()
+        .Do(pc => { pc.ViewModel.SetProduct(Product); return pc; }));
+
+    [RelayCommand]
+    public void OpenEditComponentControlX2(ComponentModel Component) => App.Host!.Services.GetRequiredService<ComponentDetails>()
+        .Do(cd => App.Host!.Services.GetRequiredService<MainWindow>().ViewModel.DisplayPopupControl(cd))
+        .Do(cd => cd.ViewModel.SetComponent(Component));
 }

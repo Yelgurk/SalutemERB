@@ -46,7 +46,10 @@
 
 					<Button Classes="Edit"
 							Grid.RowSpan="2"
-							Grid.Column="0"/>
+							Grid.Column="0"
+							IsVisible="False"
+							CommandParameter="{Binding}"
+							Command="{Binding $parent[UserControl].DataContext.OpenEditComponentControlCommand}"/>
 
 					<CheckBox Classes="UpDown"
 							  Grid.RowSpan="2"

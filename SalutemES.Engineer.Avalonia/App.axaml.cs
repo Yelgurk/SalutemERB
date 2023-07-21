@@ -12,6 +12,7 @@ using Point = Avalonia.Point;
 using SalutemES.Engineer.Infrastructure.DataBase;
 using SalutemES.Engineer.Infrastructure;
 using SalutemES.Engineer.Core;
+using System.Diagnostics;
 
 namespace SalutemES.Engineer.Avalonia;
 
@@ -59,13 +60,28 @@ public partial class App : Application
                 services.AddSingleton<FamilyDetailsControl>();
                 services.AddSingleton<FamilyAddNewControl>();
                 services.AddSingleton<ProductDetailsControl>();
+                services.AddSingleton<ProductAddControl>();
             })
             .Build();
 
         Logger.SetLoggerPath(Environment.CurrentDirectory);
 
+        /* fast + temp solution : BEGIN */
+        //string userSign = "DESKTOP-STD16R1";
+        string userSign = "DESKTOP-STD16R1";
+
+        string currentConfPath = $"{Environment.CurrentDirectory}\\config.txt";
+
+        if (!File.Exists(currentConfPath!))
+            File.Create(currentConfPath!).Close();
+        else
+            userSign = File.ReadAllText(currentConfPath);
+
+        Debug.WriteLine(userSign);
+        /* fast + temp solution : END */
+
         DataBaseApi
-            .SetConnection("DESKTOP-STD16R1", "DB_SE_EngineerWS")
+            .SetConnection(userSign, "DB_SE_EngineerWS")
             .DoIf(conn => conn.Do(x => { Logger.WriteLine("Попытка подключения к БД..."); return x; }).IsSuccess,
                   error => Logger.WriteLine(error.Exception.message))
             ?.Do(ok => Logger.WriteLine("Успешное подключение к БД!"));
