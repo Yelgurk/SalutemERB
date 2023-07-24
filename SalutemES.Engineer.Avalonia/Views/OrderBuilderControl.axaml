@@ -2,8 +2,268 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:SalutemES.Engineer.Avalonia.ViewModels"
+			 xmlns:model="using:SalutemES.Engineer.Core"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="SalutemES.Engineer.Avalonia.Views.OrderBuilderControl"
-			 Background="Red">
-  Welcome to Avalonia!
+             x:Class="SalutemES.Engineer.Avalonia.Views.OrderBuilderControl">
+	<UserControl.DataContext>
+		<vm:OrderBuilderViewModel/>
+	</UserControl.DataContext>
+
+	<UserControl.Styles>
+		<Style Selector="Button.ClearOrderActiveButton">
+			<Setter Property="HorizontalAlignment" Value="Stretch"/>
+			<Setter Property="VerticalAlignment" Value="Stretch"/>
+			<Setter Property="Margin" Value="1 0"/>
+			<Setter Property="Template">
+				<ControlTemplate>
+					<Grid Background="Transparent"
+						  ColumnDefinitions="40, 1*, 1*, 40">
+						<Grid.Styles>
+							<Style Selector="Button.ClearOrderActiveButton Label#TPartC">
+								<Setter Property="Width" Value="{Binding #TemplateSizeMax.Bounds.Width}"/>
+							</Style>
+							<Style Selector="Button.ClearOrderActiveButton Label#TPartP">
+								<Setter Property="Width" Value="{Binding #TemplateSizeMin.Bounds.Width}"/>
+							</Style>
+							<Style Selector="Button.ClearOrderActiveButton Label#TPartD">
+								<Setter Property="Width" Value="{Binding #TemplateSizeHalf.Bounds.Width}"/>
+							</Style>
+
+							<Style Selector="Button.ClearOrderActiveButton /template/ Grid > Label">
+								<Setter Property="HorizontalContentAlignment" Value="Center"/>
+								<Setter Property="VerticalContentAlignment" Value="Center"/>
+								<Setter Property="VerticalAlignment" Value="Stretch"/>
+								<Setter Property="Grid.ColumnSpan" Value="4"/>
+								<Setter Property="FontSize" Value="18"/>
+								<Setter Property="FontWeight" Value="DemiBold"/>
+								<Setter Property="Transitions">
+									<Transitions>
+										<DoubleTransition Property="Width" Duration="0:0:0.20" Easing="CircularEaseOut"/>
+										<BrushTransition Property="Background" Duration="0:0:0.20" Easing="CircularEaseOut"/>
+									</Transitions>
+								</Setter>
+							</Style>
+
+							<Style Selector="Button.ClearOrderActiveButton:pointerover Label#TPartC">
+								<Setter Property="Width" Value="{Binding #TemplateSizeHalf.Bounds.Width}"/>
+							</Style>
+
+							<Style Selector="Button.ClearOrderActiveButton:pressed Label#TPartD">
+								<Setter Property="Width" Value="{Binding #TemplateSizeFull.Bounds.Width}"/>
+								<Setter Property="Background" Value="IndianRed"/>
+								<Setter Property="Foreground" Value="White"/>
+								<Setter Property="Content" Value="Очистка..."/>
+							</Style>
+							<Style Selector="Button.ClearOrderActiveButton:pressed Label#TPartC">
+								<Setter Property="Width" Value="0"/>
+							</Style>
+							<Style Selector="Button.ClearOrderActiveButton:pressed Label#TPartP">
+								<Setter Property="Width" Value="0"/>
+								<Setter Property="Background" Value="IndianRed"/>
+							</Style>
+						</Grid.Styles>
+						
+						<Grid Grid.Column="0" Name="TemplateSizeMin"/>
+						<Grid Grid.ColumnSpan="2" Name="TemplateSizeHalf"/>
+						<Grid Grid.ColumnSpan="3" Name="TemplateSizeMax"/>
+						<Grid Grid.ColumnSpan="4" Name="TemplateSizeFull"/>
+
+						<Label Content="Очистить"
+							   Background="LightGray"
+							   Foreground="Gray"
+							   HorizontalAlignment="Right"
+							   Name="TPartD"/>
+
+						<Label Content="{TemplateBinding Content}"
+							   Background="{DynamicResource AccentMainBrush}"
+							   Foreground="White"
+							   HorizontalAlignment="Left"
+							   Name="TPartC"/>
+
+						<Label Background="LightGray"
+							   Foreground="White"
+							   HorizontalAlignment="Right"
+							   Name="TPartP">
+							<Path Data="{StaticResource dismiss_regular}"
+								  Fill="{Binding #TPartD.Foreground}"
+								  Margin="0 0 3 2"
+								  HorizontalAlignment="Center"/>
+						</Label>
+					</Grid>
+				</ControlTemplate>
+			</Setter>
+		</Style>
+
+		<Style Selector="Button.NavigationButton">
+			<Setter Property="BorderThickness" Value="0"/>
+			<Setter Property="CornerRadius" Value="0"/>
+			<Setter Property="VerticalAlignment" Value="Stretch"/>
+			<Setter Property="HorizontalAlignment" Value="Stretch"/>
+			<Setter Property="VerticalContentAlignment" Value="Center"/>
+			<Setter Property="HorizontalContentAlignment" Value="Center"/>
+			<Setter Property="FontSize" Value="18"/>
+		</Style>
+	</UserControl.Styles>
+	
+	<Grid ColumnDefinitions="1*, 1, 1*"
+		  RowDefinitions="40, 1*">
+		<Label Background="Gray"
+			   Grid.Column="1"
+			   Grid.Row="1"/>
+
+		<Grid Grid.ColumnSpan="3"
+			  ColumnDefinitions="1*, 1*">
+			<Button Grid.Column="0"
+					Classes="ClearOrderActiveButton"
+					Content="Составление заявки"
+					Command="{Binding ClearOrderCommand}"/>
+
+			<Button Grid.Column="1"
+					Classes="NavigationButton"
+					Content="Выполнить экспорт"
+					Command="{Binding ExportOrderCommand}"/>
+		</Grid>
+		
+		<Grid Grid.Column="0"
+			  Grid.Row="1"
+			  ColumnDefinitions="auto, 1*"
+			  RowDefinitions="40, 40, 1*, 40">
+			
+			<TextBlock Grid.ColumnSpan="2"
+					   Text="В базе даных"
+					   FontSize="18"
+					   VerticalAlignment="Center"
+					   HorizontalAlignment="Center"/>
+			
+			<TextBlock Text="Категория:"
+					   Grid.Row="1"
+					   Margin="5 0"
+					   VerticalAlignment="Center"/>
+			<ComboBox Classes="ComboBoxModernStyle"
+					  Grid.Row="1"
+					  Grid.Column="1"
+				      Margin="0 0 5 0"
+					  VerticalAlignment="Center"
+					  HorizontalAlignment="Stretch"
+					  ItemsSource="{Binding FamilyHost.FamilyModelCollection}"
+					  SelectedItem="{Binding FamilyHost.FamilyModelSelected}">
+				<ComboBox.DataTemplates>
+					<DataTemplate DataType="{x:Type model:FamilyModel}">
+						<TextBlock Text="{Binding Name}"/>
+					</DataTemplate>
+				</ComboBox.DataTemplates>
+			</ComboBox>
+
+			<ListBox Grid.ColumnSpan="2"
+					 Grid.Row="2"
+					 Margin="0 0 0 1"
+					 ItemsSource="{Binding ProductInDataBase.ProductWithFullComponentsModelCollection}"
+					 SelectedItem="{Binding ProductInDataBase.ProductWithFullComponentsModelSelected}">
+				<ListBox.DataTemplates>
+					<DataTemplate DataType="{x:Type model:ProductWithFullComponentsModel}">
+						<StackPanel>
+							<TextBlock Text="{Binding Name}"/>
+							<ListBox IsVisible="{Binding $parent[ListBoxItem].IsSelected}"
+								     ItemsSource="{Binding Components.ExportComponentModelCollection}"
+									 Margin="0 10 0 0">
+								<ListBox.DataTemplates>
+									<DataTemplate DataType="{x:Type model:ExportComponentModel}">
+										<StackPanel>
+											<TextBlock Text="{Binding Name, StringFormat={}деталь: {0}}"/>
+											<TextBlock Text="{Binding Code, StringFormat={}код: {0}}"/>
+											<TextBlock Text="{Binding Count, StringFormat={}кол-во: {0} шт.}"/>
+										</StackPanel>
+									</DataTemplate>
+								</ListBox.DataTemplates>
+							</ListBox>
+						</StackPanel>
+					</DataTemplate>
+				</ListBox.DataTemplates>				
+			</ListBox>
+			
+			<Button Grid.ColumnSpan="2"
+					Grid.Row="3"
+					Classes="NavigationButton"
+					Content="Добавить в заявку"
+					Command="{Binding AddInOrderCommand}"/>
+		</Grid>
+
+		<Grid Grid.Column="2"
+			  Grid.Row="1"
+			  RowDefinitions="40, 1*, 40">
+			
+			<TextBlock Grid.ColumnSpan="2"
+					   Text="В заявке [на экспорт]"
+					   FontSize="18"
+					   VerticalAlignment="Center"
+					   HorizontalAlignment="Center"/>
+
+			<ListBox Grid.ColumnSpan="2"
+					 Grid.Row="1"
+					 Margin="0 0 0 1"
+					 ItemsSource="{Binding ProductInOrder.ProductWithFullComponentsModelCollection}"
+					 SelectedItem="{Binding ProductInOrder.ProductWithFullComponentsModelSelected}">
+				<ListBox.DataTemplates>
+					<DataTemplate DataType="{x:Type model:ProductWithFullComponentsModel}">
+						<StackPanel>
+							<Grid ColumnDefinitions="auto, 1*, auto">
+								<TextBlock Text="{Binding Name}"/>
+								<TextBlock Text="{Binding Count, StringFormat={}кол-во: {0} ед.}"
+										   IsVisible="{Binding !$parent[ListBoxItem].IsSelected}"
+										   Grid.Column="2"/>
+							</Grid>
+
+							<Grid IsVisible="{Binding $parent[ListBoxItem].IsSelected}"
+								  ColumnDefinitions="1*, auto, 1*, auto, 1*">
+								<Button Grid.Column="1"
+										Width="40" Height="30" Padding="0" Margin="0"
+										CornerRadius="0" BorderThickness="0"
+										Content="-"
+										VerticalContentAlignment="Center"
+										HorizontalContentAlignment="Center"
+										CommandParameter="{Binding}"
+										Command="{Binding $parent[UserControl].DataContext.DecrementProdCountCommand}"/>
+
+								<TextBox Text="{Binding Count}"
+										 Grid.Column="2"
+										 HorizontalContentAlignment="Center"
+										 Margin="5 0"
+										 Height="30"/>
+
+								<Button Grid.Column="3"
+										Width="40" Height="30" Padding="0" Margin="0"
+										CornerRadius="0" BorderThickness="0"
+										Content="+"
+										VerticalContentAlignment="Center"
+										HorizontalContentAlignment="Center"
+										CommandParameter="{Binding}"
+										Command="{Binding $parent[UserControl].DataContext.IncrementProdCountCommand}"/>
+							</Grid>
+
+							<ListBox IsVisible="{Binding $parent[ListBoxItem].IsSelected}"
+								     ItemsSource="{Binding Components.ExportComponentModelCollection}"
+									 Margin="0 10 0 0">
+								<ListBox.DataTemplates>
+									<DataTemplate DataType="{x:Type model:ExportComponentModel}">
+										<StackPanel>
+											<TextBlock Text="{Binding Name, StringFormat={}деталь: {0}}"/>
+											<TextBlock Text="{Binding Code, StringFormat={}код: {0}}"/>
+											<TextBlock Text="{Binding Count, StringFormat={}кол-во: {0} шт.}"/>
+										</StackPanel>
+									</DataTemplate>
+								</ListBox.DataTemplates>
+							</ListBox>
+						</StackPanel>
+					</DataTemplate>
+				</ListBox.DataTemplates>
+			</ListBox>
+
+			<Button Grid.ColumnSpan="2"
+					Grid.Row="2"
+					Classes="NavigationButton"
+					Content="Убрать из заявки"
+					Command="{Binding RemoveFromOrderCommand}"/>
+		</Grid>
+	</Grid>
 </UserControl>

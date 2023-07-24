@@ -45,6 +45,7 @@ public partial class FamilyAddNewViewModel :ViewModelBase
         ?.DoIf(c => DataBaseApi.RequestWithBoolResponse(DBRequests.AddFamily,onErr => Logger.WriteLine(onErr),c.Name), error => Logger.WriteLine("Add new component error"))
         ?.DoInst(success => Logger.WriteLine("Add new component successfully"))
         .Do(c => App.Host!.Services.GetRequiredService<ProductsEditorControl>().ViewModel.FamilyHost.FillCollection())
+        .Do(c => App.Host!.Services.GetRequiredService<OrderBuilderControl>().ViewModel.FamilyHost.FillCollection())
         .Do(c => c.ResetByBase())
         .Do(control => ClosePopup());
 }

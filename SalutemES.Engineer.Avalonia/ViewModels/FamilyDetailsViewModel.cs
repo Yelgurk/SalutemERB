@@ -49,6 +49,7 @@ public partial class FamilyDetailsViewModel : ViewModelBase
         ?.DoInst(success => Logger.WriteLine("Save new fimaly info success"))
         .Do(f => this.SetFamily(f))
         .Do(f => App.Host!.Services.GetRequiredService<ProductsEditorControl>().ViewModel.FamilyHost.FillCollection())
+        .Do(f => App.Host!.Services.GetRequiredService<OrderBuilderControl>().ViewModel.FamilyHost.FillCollection())
         .Do(f => ClosePopup());
 
     [RelayCommand]

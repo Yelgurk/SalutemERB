@@ -1,4 +1,5 @@
 ﻿using Avalonia.Controls;
+using Avalonia.Controls.Documents;
 using Avalonia.Media;
 using System;
 using System.Collections.Generic;
@@ -14,4 +15,5 @@ public class MenuItemModel
     public required StreamGeometry Icon { get; set; }
     public required UserControl Control { get; set; }
     public required bool IsSelectable { get; set; }
+    public bool IsFloat { get; set; } = false;
 }

@@ -82,6 +82,7 @@ public partial class ComponentAddNewViewModel : ViewModelBase
         )
         ?.DoInst(success => Logger.WriteLine("Add new component successfully"))
         .Do(c => App.Host!.Services.GetRequiredService<ComponentsEditorControl>().ViewModel.ComponentUsageHost.FillCollection())
+        .Do(c => App.Host!.Services.GetRequiredService<OrderBuilderControl>().ViewModel.RefreshProductInDataBase())
         .DoInst(c => FilesHost.ComponentFileModelCollection.Do(arr => arr
         .ToList()
         .ForEach(file => DataBaseApi.RequestWithBoolResponse(
@@ -114,7 +115,7 @@ public partial class ComponentAddNewViewModel : ViewModelBase
     public void AddSelectedFileIntoRef() => NewFileLocalPath
         .DoIf(filePath => filePath.Length > 0, error => Logger.WriteLine("Can't add file path, because file not selected"))
         ?.DoIf(details => IsFree, error => Logger.WriteLine("Can't add file path into already existed component while creating new one"))
-        ?.DoIf(file => FilesHost.ComponentFileModelCollection.Select(x => x.LocalFilePath == file).Count() == 0, error => Logger.WriteLine("Can't add file, because u already add this one into component"))
+        ?.DoIf(file => !FilesHost.ComponentFileModelCollection.Select(x => x.LocalFilePath == file).Contains(true), error => Logger.WriteLine("Can't add file, because u already add this one into component"))
         ?.Do(file => FilesHost.ComponentFileModelCollection.Add(new() { LocalFilePath = file }));
 
     [RelayCommand]

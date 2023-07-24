@@ -45,7 +45,7 @@ Go
 Create View [dbo].VComponentListFullInfo As 
 	Select	Component.name,
 			Component.code,
-			IsNull(sum(Structure.count), 0) as 'count',
+			(Select '1') as 'count',
 			Component.grade,
 			Component.thickness,
 			Replace(Component.folds, 0, '') as 'folds',
