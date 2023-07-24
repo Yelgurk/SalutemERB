@@ -14,5 +14,19 @@ public partial class ExportComponentViewModel
     public void FillCollection(ProductWithFullComponentsModel Product) => FillCollection(DBRequests.GetProductComponentsFullInfo, Product.Name);
     public void FillCollection(ProductModel Product) => FillCollection(DBRequests.GetProductComponentsFullInfo, Product.Name);
     public void FillCollection() => FillCollection(DBRequests.GetProductsListFullInfo);
-    
+    public ExportComponentViewModel FillCollection<T>(List<T> DataBaseArg)
+    {
+        ExportComponentModelCollection.Clear();
+        DataBaseApi.RequestWithTableAsArg(DBProceduresWithTableArg.GetFullExportTable, DBTableTypeNames.ExportRequestTableType, DataBaseArg)
+            ?.ForEach(cortage =>
+            {
+                ExportComponentModelCollection.Add(new ExportComponentModel(cortage));
+                if (ExportComponentModelSelected!.Equals(ExportComponentModelCollection.Last()))
+                    ExportComponentModelSelected = ExportComponentModelCollection.Last();
+            });
+
+        OnFillCollection?.Invoke();
+
+        return this;
+    }
 }

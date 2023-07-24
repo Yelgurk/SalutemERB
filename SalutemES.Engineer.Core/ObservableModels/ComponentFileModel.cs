@@ -7,4 +7,5 @@ namespace SalutemES.Engineer.Core;
 public partial class ComponentFileModel
 {
     public string FileInfo => $"{this.LocalFilePath.Split("\\").Last()} [{this.LocalFilePath}]";
+    public string FileName => $"{this.LocalFilePath.Split("\\").Last()}";
 }

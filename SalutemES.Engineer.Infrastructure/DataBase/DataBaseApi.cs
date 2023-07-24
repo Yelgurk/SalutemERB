@@ -74,7 +74,7 @@ public sealed class DataBaseApi
         return Command is null ? new SQLCommandNotReady() : new DataBaseApi();
     }
 
-    public DataBaseApiOr<SQLCommandNotReady> PrepareCommand<T>(DataBaseTableArgProcedure Procedure, List<T> StructuredToTableArgs, DataBaseTableTypeArgName TableArgName)
+    public DataBaseApiOr<SQLCommandNotReady> PrepareCommand<T>(DataBaseTableArgProcedure Procedure, DataBaseTableTypeArgName TableArgName, List<T> StructuredToTableArgs)
     {
         Command?.Dispose();
 
@@ -221,6 +221,17 @@ public sealed class DataBaseApi
             ?.Api.ExecuteCommand()
             .DoIf(exec => exec.IsT0)
             ?.IsSuccess ?? false;
+    }
+
+    public static List<string[]>? RequestWithTableAsArg<T>(DataBaseTableArgProcedure Procedure, DataBaseTableTypeArgName TableArgName, List<T> StructuredToTableArgs, Action<string>? OnException = null)
+    {
+        return ConnectionAvailable()
+            .DoIf(conn => conn.IsSuccess, error => OnException?.Invoke(error.Exception.message))
+            ?.Api.PrepareCommand(Procedure, TableArgName, StructuredToTableArgs)
+            .DoIf(prep => prep.IsSuccess, error => OnException?.Invoke(error.Exception.message))
+            ?.Api.ExecuteCommand<List<string[]>>()
+            .DoIf(exec => exec.IsT0)
+            ?.Api.DataBaseResponse<List<string[]>>();
     }
 
     private static DataTable ConvertListToDataTable<T>(List<T> ModelsCollection)
