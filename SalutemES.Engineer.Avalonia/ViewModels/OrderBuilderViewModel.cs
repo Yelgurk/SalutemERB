@@ -45,7 +45,6 @@ public partial class OrderBuilderViewModel : ViewModelBase
     [RelayCommand]
     public void AddInOrder() => ProductInDataBase.ProductWithFullComponentsModelSelected
         ?.DoIf(prod => ProductInDataBase.ProductWithFullComponentsModelCollection.Contains(prod))
-        .Do(x => Debug.WriteLine(x!.Name))
         ?.DoIf(prod => !ProductInOrder.ProductWithFullComponentsModelCollection.Select(x => x.Name == prod.Name).Contains(true), error => Debug.WriteLine("Prod already in order list for export"))
         ?.Do(prod => ProductInOrder.ProductWithFullComponentsModelCollection.Add(prod));
 
@@ -114,7 +113,9 @@ public partial class OrderBuilderViewModel : ViewModelBase
                     list.Select(p => new ExportRequestTableAsArgBase() { product = p.Name, count = Convert.ToInt32(p.Count) }).ToList()
                     ));
                 ExcelOrderFileExport(ReportMergeFolderPath, $"{ReportTime}_Заявка", OrderComponents.ExportComponentModelCollection.ToList());
-            });
+            })
+            .Do(_ => ExplorerProvider.OpenFolderAndSelectItem(ReportGeneralFolderPath, ""))
+            .Do(_ => ClearOrder());
     }
 
     private void ExcelOrderFileExport(string ExportFolderPath, string ExportFileName, List<ExportComponentModel> ExcelContentSource)
@@ -208,7 +209,7 @@ public partial class OrderBuilderViewModel : ViewModelBase
                 w.Cell($"J{cell + i}").Value = ExcelContentSource[i].Note;
                 w.Cell($"K{cell + i}").Value = ExcelContentSource[i].Material;
 
-                w.Range($"A{cell + i}:K{cell + i}").Style.Border.BottomBorder = XLBorderStyleValues.DashDot;
+                w.Range($"A{cell + i}:K{cell + i}").Style.Border.BottomBorder = XLBorderStyleValues.Dotted;
                 w.Range($"A{cell + i}").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
                 w.Range($"D{cell + i}").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
                 w.Range($"E{cell + i}:K{cell + i}").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Right;
@@ -225,8 +226,10 @@ public partial class OrderBuilderViewModel : ViewModelBase
             w.Range($"D{footerStart + 0}").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
             w.Range($"E{footerStart + 0}:K{footerStart + 0}").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Right;
 
-            w.Cell($"A{footerStart + 2}").Value = "Исполнитель";
+            w.Range($"A{footerStart + 2}:B{footerStart + 2}").Merge();
+            w.Range($"A{footerStart + 4}:B{footerStart + 4}").Merge();
 
+            w.Cell($"A{footerStart + 2}").Value = "Исполнитель";
             w.Cell($"A{footerStart + 4}").Value = "Проверил (принял)";
 
             w.Columns().AdjustToContents();
