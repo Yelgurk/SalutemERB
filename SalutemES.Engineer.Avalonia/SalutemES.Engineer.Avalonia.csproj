@@ -25,6 +25,7 @@
     <PackageReference Include="Avalonia.Themes.Fluent" Version="11.0.999-cibuild0037473-beta" />
     <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
     <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.0.999-cibuild0037473-beta" />
+    <PackageReference Include="ClosedXML" Version="0.102.0" />
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.0" />
     <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.4">
       <PrivateAssets>all</PrivateAssets>
