@@ -6,5 +6,5 @@ namespace SalutemES.Engineer.Core;
 [ViewModelContext(typeof(ProductWithComponentsModel))]
 public partial class ProductWithComponentViewModel
 {
-    public ProductWithComponentViewModel FillCollection(ComponentUsageModel Component) => FillCollection(DBRequests.GetProductsListByComponent, Component.Name);
+    public ProductWithComponentViewModel FillCollection(ComponentUsageModel Component) => FillCollection(DBRequests.GetProductsListByComponent, Component.Code);
 }

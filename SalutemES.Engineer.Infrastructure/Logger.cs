@@ -9,7 +9,7 @@ namespace SalutemES.Engineer.Infrastructure;
 public class Logger
 {
     private static string FileName => "log.txt";
-    public static string? FilePath { private get; set; }
+    public static string? FilePath { get; set; }
     private static string? FileFullPath { get => FilePath is null ? null : $"{FilePath}\\{FileName}"; }
 
     public static Logger SetLoggerPath(string FilePath)

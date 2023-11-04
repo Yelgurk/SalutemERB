@@ -1,0 +1,27 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:SalutemES.Engineer.Avalonia.ViewModels"
+			 xmlns:model="using:SalutemES.Engineer.Core"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="SalutemES.Engineer.Avalonia.Views.FileErrorControl">
+	<UserControl.DataContext>
+		<vm:FileErrorViewModel/>
+	</UserControl.DataContext>
+
+	<Grid ColumnDefinitions="1*, 3*"
+		  RowDefinitions="40, 1*">
+		<Button BorderThickness="0"
+				CornerRadius="0"
+				HorizontalAlignment="Stretch"
+				VerticalAlignment="Stretch"
+				HorizontalContentAlignment="Center"
+				VerticalContentAlignment="Center"
+				Content="Назад"
+				FontSize="18"/>
+		
+		<Label Grid.Column="1"/>
+		
+	</Grid>
+</UserControl>

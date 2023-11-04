@@ -74,7 +74,7 @@ public partial class ProductDetailsViewModel : ViewModelBase
                 DBRequests.AddProductComponent,
                 onErr => Logger.WriteLine(onErr),
                 p.Name,
-                c.Name,
+                c.Code,
                 c.Count
                 ), error => Logger.WriteLine("+ Can't add cortage in db"))
             ?.Do(log => Logger.WriteLine($"Success update info for [{p.Name}] about [{c.Name}]"));
@@ -123,7 +123,7 @@ public partial class ProductDetailsViewModel : ViewModelBase
             DBRequests.AddProductComponent,
             onErr => Logger.WriteLine(onErr),
             p.Name,
-            ComponentInDataBase.ExportComponentModelSelected!.Name,
+            ComponentInDataBase.ExportComponentModelSelected!.Code,
             ComponentInDataBase.ExportComponentModelSelected!.Count
             ), error => Logger.WriteLine("Add component ref to product error")
         )?.DoInst(success => Logger.WriteLine("Add component ref to product successfully"))
@@ -135,7 +135,7 @@ public partial class ProductDetailsViewModel : ViewModelBase
         ?.DoIf(p => DataBaseApi.RequestWithBoolResponse(
             DBRequests.DeleteProductComponent,
             onErr => Logger.WriteLine(onErr),
-            ComponentUsedInProd.ExportComponentModelSelected!.Name,
+            ComponentUsedInProd.ExportComponentModelSelected!.Code,
             p.Name
             ), error => Logger.WriteLine("Delete product ref to component error")
         )?.DoInst(success => Logger.WriteLine("Delete product ref to component successfully"))

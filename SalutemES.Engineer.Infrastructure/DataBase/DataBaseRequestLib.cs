@@ -49,7 +49,7 @@ public static class DBRequests
     public static DataBaseRequest EditProductName => new("Exec [dbo].EditProductName '{0}', '{1}';");
     public static DataBaseRequest EditProductFamily => new("Exec [dbo].EditProductFamily '{0}', '{1}';");
 
-    public static DataBaseRequest CheckComponentExists => new("Exec [dbo].CheckComponentExists '{0}', '{1}';");
+    public static DataBaseRequest CheckComponentExists => new("Exec [dbo].CheckComponentExists '{0}';");
     public static DataBaseRequest CheckFamilyExists => new("Exec [dbo].CheckFamilyExists '{0}';");
     public static DataBaseRequest CheckProductExists => new("Exec [dbo].CheckProductExists '{0}';");
 }

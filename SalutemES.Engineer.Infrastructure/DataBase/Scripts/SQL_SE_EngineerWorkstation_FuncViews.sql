@@ -1,10 +1,10 @@
 Use DB_SE_EngineerWS;
 Go
 
-Create Function [dbo].GetComponentFilesCount(@Component_name string_short)
+Create Function [dbo].GetComponentFilesCount(@Component_code string_short)
 Returns int
 As Begin
-	Return (Select Count(*) From Component_File Where Component_File.component = @Component_name)
+	Return (Select Count(*) From Component_File Where Component_File.component = @Component_code)
 End
 Go
 
@@ -29,16 +29,16 @@ Select		Structure.product,
 			Component.*,
 			[dbo].GetComponentFilesCount(Component.name) as 'files_count'
 From		Component
-Inner join	Structure on Structure.component = Component.name
+Inner join	Structure on Structure.component = Component.code
 Go
 
 Create View [dbo].VComponentUsageList As
 Select		Component.name,
 			Component.code,
-			[dbo].GetComponentFilesCount(Component.name) as 'files_count',
+			[dbo].GetComponentFilesCount(Component.code) as 'files_count',
 			Count(Structure.product) as 'used_count'
 From		Component
-Left join	Structure on Structure.component = Component.name
+Left join	Structure on Structure.component = Component.code
 Group by	Component.name, Component.code;
 Go
 
@@ -54,9 +54,9 @@ Create View [dbo].VComponentListFullInfo As
 			Component.note,
 			Component.material
 	From	Component
-	Left Join	Structure on Structure.component = Component.name
-	Group by	Component.name,
-				Component.code,
+	Left Join	Structure on Structure.component = Component.code
+	Group by	Component.code,
+				Component.name,
 				Component.grade,
 				Component.thickness,
 				Component.folds,

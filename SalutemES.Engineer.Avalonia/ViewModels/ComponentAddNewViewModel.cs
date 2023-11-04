@@ -32,12 +32,11 @@ public partial class ComponentAddNewViewModel : ViewModelBase
     private int _componentMatch = 0;
 
     public bool IsFree { get => ComponentMatch == 0; }
-    public bool IsNameUsed { get => ComponentMatch == 1; }
-    public bool IsCodeUsed { get => ComponentMatch == 2; }
-    public bool IsFullyUsed { get => ComponentMatch == 3; }
+    public bool IsNameUsed { get => false; } // ComponentMatch == 1; }
+    public bool IsCodeUsed { get => ComponentMatch > 0; }
+    public bool IsFullyUsed { get => false; } // ComponentMatch == 3; }
 
     public ComponentAddNewViewModel() => ComponentModel
-        .DoInst(c => c.OnNameChangedAction = () => SearchMatchInDataBase(c))
         .DoInst(c => c.OnCodeChangedAction = () => SearchMatchInDataBase(c))
         .DoInst(c => c.NumericThicknessRegex = true)
         .DoInst(c => c.NumericFoldsRegex = true)
@@ -51,14 +50,14 @@ public partial class ComponentAddNewViewModel : ViewModelBase
         ComponentMatch = DataBaseApi.RequestWithStringResponse(
                 DBRequests.CheckComponentExists,
                 onErr => Logger.WriteLine(onErr),
-                Component.Name,
                 Component.Code
             )
-            ?.Do(stringNum => Convert.ToInt32(stringNum))
+            ?.Do(Convert.ToInt32)
             ?? 0;
 
-        Component.DoIf(c => ComponentMatch == 3, noMatches => FilesHost.ComponentFileModelCollection.DoIf(state => !flag && flag != (ComponentMatch == 0))?.Clear())
-            ?.Do(c => FilesHost.FillCollection(c));
+        Component
+            .DoIf(c => ComponentMatch != 0, noMatches => FilesHost.ComponentFileModelCollection.DoIf(state => !flag && flag != (ComponentMatch == 0))?.Clear())
+            ?.Do(FilesHost.FillCollection);
     }
 
     [RelayCommand]
@@ -88,7 +87,7 @@ public partial class ComponentAddNewViewModel : ViewModelBase
         .ForEach(file => DataBaseApi.RequestWithBoolResponse(
             DBRequests.AddComponentFile,
             onErr => Logger.WriteLine(onErr),
-            ComponentModel.Name,
+            ComponentModel.Code,
             file.LocalFilePath
             ))
         ))

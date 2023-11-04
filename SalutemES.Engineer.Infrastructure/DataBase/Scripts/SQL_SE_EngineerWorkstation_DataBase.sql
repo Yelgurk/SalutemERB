@@ -64,7 +64,7 @@ Create Table [dbo].Product (
 Go
 
 Create Table [dbo].Component (
-	name			string_short NOT NULL unique,
+	name			string_short NOT NULL,
 	code			string_short NOT NULL unique,
 	grade			string_short NOT NULL,
 	thickness		decimal(3, 1) NOT NULL,
@@ -75,7 +75,7 @@ Create Table [dbo].Component (
 	Check (len(name) > 0 and len(code) > 0 and len(grade) > 0),
 	Check (thickness > 0 and weightKG > 0),
 	Check (len(material) > 0),
-	Constraint PK_Component_name Primary key (name)
+	Constraint PK_Component_code Primary key (code)
 );
 Go
 
@@ -88,7 +88,7 @@ Create Table [dbo].Structure (
 	Constraint FK_Structure_to_Product Foreign key (product) References Product (name)
 		On delete cascade
 		On update cascade,
-	Constraint FK_Structure_to_Component Foreign key (component) References Component (name)
+	Constraint FK_Structure_to_Component Foreign key (component) References Component (code)
 		On delete cascade
 		On update cascade
 );
@@ -99,7 +99,7 @@ Create Table [dbo].Component_File (
 	component		string_short NULL,
 	localFilePath	string_long NOT NULL default(''),
 	Constraint PK_Component_id Primary key (id),
-	Constraint FK_to_Component Foreign key (component) References Component (name)
+	Constraint FK_to_Component Foreign key (component) References Component (code)
 		On delete set NULL
 		On update cascade
 );

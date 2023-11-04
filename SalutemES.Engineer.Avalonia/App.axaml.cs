@@ -61,6 +61,7 @@ public partial class App : Application
                 services.AddSingleton<FamilyAddNewControl>();
                 services.AddSingleton<ProductDetailsControl>();
                 services.AddSingleton<ProductAddControl>();
+                services.AddSingleton<FileErrorControl>();
             })
             .Build();
 

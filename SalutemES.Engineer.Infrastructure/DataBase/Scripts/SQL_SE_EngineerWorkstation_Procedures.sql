@@ -15,10 +15,11 @@ As Begin
 			Component.note,
 			Component.material
 	From	Component
-	Inner Join	Structure on Structure.component = Component.name
+	Inner Join	Structure on Structure.component = Component.code
 	Inner Join	@ProductsList as TT on TT.product = Structure.product
-	Group by	Component.name,
+	Group by	
 			Component.code,
+			Component.name,
 			Component.grade,
 			Component.thickness,
 			Component.folds,
@@ -42,10 +43,10 @@ As Begin
 			Component.note,
 			Component.material
 	From	Component
-	Inner Join	Structure on Structure.component = Component.name
+	Inner Join	Structure on Structure.component = Component.code
 	Where		Structure.product = @Product
-	Group by	Component.name,
-				Component.code,
+	Group by	Component.code,
+				Component.name,
 				Component.grade,
 				Component.thickness,
 				Component.folds,
@@ -61,7 +62,7 @@ As Begin
 	Select	VProductList.*
 	From	VProductList
 	Inner Join VProductComponentsList on VProductComponentsList.product = VProductList.name
-	Where	VProductComponentsList.name = @Component
+	Where	VProductComponentsList.code = @Component
 End
 Go
 
@@ -98,10 +99,10 @@ Create Procedure [dbo].GetComponentsDetails
 As Begin
 	Select	'' as 'doesntMatter',
 		    Component.*,
-			[dbo].GetComponentFilesCount(Component.name) as 'files_count'
+			[dbo].GetComponentFilesCount(Component.code) as 'files_count'
 	From	Component
-	Where	Component.name = @Name And
-			Component.code = @Code
+	Where	Component.code = @Code And
+			Component.name = @Name
 End
 Go
 
@@ -287,20 +288,9 @@ End
 Go
 
 Create Procedure [dbo].CheckComponentExists
-	@Name string_short,
 	@Code string_short
 As Begin
-	Declare @Counter int = 0;
-
-	If ((Select Count(*) From Component Where Component.name = @Name) > 0) Begin
-		Set @Counter = @Counter + 1;
-	End
-	
-	If ((Select Count(*) From Component Where Component.code = @Code) > 0) Begin
-		Set @Counter = @Counter + 2;
-	End
-
-	Select @Counter;
+	Select Count(*) From Component Where Component.code = @Code;
 End
 Go
 

@@ -81,7 +81,7 @@ public partial class ProductAddViewModel : ViewModelBase
                 DBRequests.AddProductComponent,
                 onErr => Logger.WriteLine(onErr),
                 p.Name,
-                c.Name,
+                c.Code,
                 c.Count
                 ), error => Logger.WriteLine("Can't add cortage in db"))
             ?.Do(log => Logger.WriteLine($"Success add [{c.Name}] in [{p.Name}]"));

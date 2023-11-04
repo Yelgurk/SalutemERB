@@ -67,6 +67,8 @@ public partial class OrderBuilderViewModel : ViewModelBase
     [RelayCommand]
     public void ExportOrder()
     {
+        bool FileNotExists = false;
+
         string ReportTime = DateTime.Now.ToString("yyyy'_'MM'_'dd'_'HH'_'mm'_'ss");
 
         string ReportsContainerPath = $"{Environment.CurrentDirectory}\\Reports";
@@ -101,8 +103,18 @@ public partial class OrderBuilderViewModel : ViewModelBase
                     .Do(arr => arr.ForEach(comp => comp.FilesCollection.FillCollection(comp)))
                     .SelectMany(comp => comp.FilesCollection.ComponentFileModelCollection)
                     .ToList()
+                    .Do(list => list.ForEach(file => file
+                        .DoIf(exists => File.Exists(exists.LocalFilePath), not => { FileNotExists = true; Logger.WriteLine($"Отсутствует файл: {not.FileName} [{not.LocalFilePath}]"); })
+                        ?.Do(_ => File.Copy(file.LocalFilePath, GetProductReportFilePath(p, file), true))
+                        ))
+                    .Do(list => list.ForEach(file => file
+                        .DoIf(exists => File.Exists(exists.LocalFilePath), not => { FileNotExists = true; Logger.WriteLine($"Отсутствует файл: {not.FileName} [{not.LocalFilePath}]"); })
+                        ?.Do(_ => File.Copy(file.LocalFilePath, GetReportMergeFolderPath(file), true))
+                        ));
+                /*
                     .Do(list => list.ForEach(file => { if (!File.Exists(GetProductReportFilePath(p, file))) File.Copy(file.LocalFilePath, GetProductReportFilePath(p, file)); }))
                     .Do(list => list.ForEach(file => { if (!File.Exists(GetReportMergeFolderPath(file))) File.Copy(file.LocalFilePath, GetReportMergeFolderPath(file)); }));
+                */
             }))
             .Do(list => list.ForEach(p => {
                 OrderComponents.FillCollection(new List<ExportRequestTableAsArgBase>() { new ExportRequestTableAsArgBase() { product = p.Name, count = Convert.ToInt32(p.Count) } });
@@ -115,7 +127,9 @@ public partial class OrderBuilderViewModel : ViewModelBase
                 ExcelOrderFileExport(ReportMergeFolderPath, $"{ReportTime}_Заявка", OrderComponents.ExportComponentModelCollection.ToList());
             })
             .Do(_ => ExplorerProvider.OpenFolderAndSelectItem(ReportGeneralFolderPath, ""))
-            .Do(_ => ClearOrder());
+            .Do(_ => ClearOrder())
+            .DoIf(_ => FileNotExists && Logger.FilePath is not null)
+            ?.Do(_ => ExplorerProvider.OpenFolderAndSelectItem(Logger.FilePath!, "log.txt"));
     }
 
     private void ExcelOrderFileExport(string ExportFolderPath, string ExportFileName, List<ExportComponentModel> ExcelContentSource)
@@ -126,74 +140,59 @@ public partial class OrderBuilderViewModel : ViewModelBase
         {
             var w = workbook.Worksheets.Add("Заявка");
 
-            w.Cell("A5").Value = "Заказчик:";
-            w.Cell("A6").Value = "Материал:";
-            w.Cell("A7").Value = "Изделие:";
-            w.Cell("A8").Value = "Сроки отгрузки:";
-            w.Cell("A9").Value = "Дополнительная информация:";
-            w.Range("A5:B5").Merge();
-            w.Range("A6:B6").Merge();
-            w.Range("A7:B7").Merge();
-            w.Range("A8:B8").Merge();
-            w.Range("A9:B9").Merge();
-
-            w.Range("A5:B9").Style.Font.SetBold();
+            w.Cell("B2").Value = "ООО \"Салутем\"";
+            w.Cell("B2").Style
+                .DoInst(s => s.Font.SetItalic())
+                .DoInst(s => s.Font.SetFontSize(14));
 
             w.Cell("C1").Value = "Заявка";
-            w.Cell("C2").Value = "в производство";
-            w.Cell("C3").Value = "лазерная резка + гибка";
-            w.Cell("C6").Value = "собственный";
-            w.Cell("C8").Value = $"??.{DateTime.Now.ToString("MM.yyyy")}";
-
+            w.Cell("C2").Value = "в расчет";
             w.Range("C1:C2").Style
                 .DoInst(s => s.Border.OutsideBorder = XLBorderStyleValues.Thin)
                 .DoInst(s => s.Font.SetBold())
                 .DoInst(s => s.Font.SetFontSize(18))
                 .DoInst(s => s.Alignment.Horizontal = XLAlignmentHorizontalValues.Center);
+            w.Cell("C2").Style.Font.SetFontSize(14);
 
-            w.Range("C5:C9").Style.Border.InsideBorder = XLBorderStyleValues.Thin;
+            w.Cell("D2").Value = "№:";
+            w.Range("E2:G2").Merge();
 
-            w.Cell("D2").Value = "№";
-            w.Cell("D3").Value = "Дата:";
-            w.Cell("E3").Value = $"{DateTime.Now.ToString("dd.MM.yyyy")}";
-            w.Range("E3:G3").Merge();
-
-            w.Range("D2:G3").Style
+            w.Range("D2:G2").Style
                 .DoInst(s => s.Font.SetBold())
                 .DoInst(s => s.Alignment.Horizontal = XLAlignmentHorizontalValues.Center);
 
-            w.Cell("A10").Value = "№ п.п.";
-            w.Cell("B10").Value = "Наименование";
-            w.Cell("C10").Value = "Код изделия";
-            w.Cell("D10").Value = "Кол-во";
-            w.Cell("E10").Value = "Марка";
-            w.Cell("F10").Value =
+            w.Cell("A4").Value = "№ п.п.";
+            w.Cell("B4").Value = "Наименование";
+            w.Cell("C4").Value = "Код изделия";
+            w.Cell("D4").Value = "Кол-во";
+            w.Cell("E4").Value = "Марка";
+            w.Cell("F4").Value =
                 """
                 Толщ.,
                 мм
                 """;
-            w.Cell("G10").Value = "Гибы";
-            w.Cell("H10").Value =
+            w.Cell("G4").Value = "Гибы";
+            w.Cell("H4").Value =
                 """
                 Масса,
                 кг
                 """;
-            w.Cell("I10").Value =
+            w.Cell("I4").Value =
                 """
                 Масса
                 сумм, кг
                 """;
-            w.Cell("J10").Value = "Примечание";
-            w.Cell("K10").Value = "Материал";
+            w.Cell("J4").Value = "Примечание";
 
-            w.Range("A10:K10").Style
+            w.Range("A4:J4").Style
                 .DoInst(s => s.Border.OutsideBorder = XLBorderStyleValues.Thin)
                 .DoInst(s => s.Alignment.Horizontal = XLAlignmentHorizontalValues.Center)
                 .DoInst(s => s.Alignment.Vertical = XLAlignmentVerticalValues.Center);
 
-            int headerEndIndex = 10,
+            int headerEndIndex = 4,
                 componentsCount = ExcelContentSource.Count,
-                footerStart = headerEndIndex + componentsCount + 2;
+                footerAfterLine = 5,
+                footerStart = headerEndIndex + componentsCount + footerAfterLine;
 
             for (int i = 0, cell = headerEndIndex + 1; i < componentsCount; i++)
             {
@@ -207,30 +206,29 @@ public partial class OrderBuilderViewModel : ViewModelBase
                 w.Cell($"H{cell + i}").Value = ExcelContentSource[i].WeightKG;
                 w.Cell($"I{cell + i}").Value = ExcelContentSource[i].TotalKG;
                 w.Cell($"J{cell + i}").Value = ExcelContentSource[i].Note;
-                w.Cell($"K{cell + i}").Value = ExcelContentSource[i].Material;
 
-                w.Range($"A{cell + i}:K{cell + i}").Style.Border.BottomBorder = XLBorderStyleValues.Dotted;
+                w.Range($"A{cell + i}:J{cell + i}").Style.Border
+                    .DoInst(b => b.OutsideBorder = XLBorderStyleValues.Thin)
+                    .DoInst(b => b.InsideBorder = XLBorderStyleValues.Thin);
                 w.Range($"A{cell + i}").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
                 w.Range($"D{cell + i}").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
-                w.Range($"E{cell + i}:K{cell + i}").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Right;
+                w.Range($"E{cell + i}:J{cell + i}").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Right;
             }
+
+            if (footerAfterLine > 3)
+                w.Range($"A{footerStart - footerAfterLine + 1}:J{footerStart - 2}").Style
+                    .DoInst(s => s.Border.SetBottomBorder(XLBorderStyleValues.Dotted));
 
             w.Cell($"A{footerStart + 0}").Value = "Итог";
             w.Cell($"D{footerStart + 0}").Value = ExcelContentSource.Sum(comp => Convert.ToDouble(comp.Count));
             w.Cell($"I{footerStart + 0}").Value = ExcelContentSource.Sum(comp => Convert.ToDouble(comp.TotalKG));
 
-            w.Range($"A{footerStart + 0}:K{footerStart + 0}").Style.Border
+            w.Range($"A{footerStart + 0}:J{footerStart + 0}").Style.Border
                 .DoInst(b => b.TopBorder = XLBorderStyleValues.Thin)
                 .DoInst(b => b.BottomBorder = XLBorderStyleValues.Thin);
             w.Range($"A{footerStart + 0}").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
             w.Range($"D{footerStart + 0}").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
-            w.Range($"E{footerStart + 0}:K{footerStart + 0}").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Right;
-
-            w.Range($"A{footerStart + 2}:B{footerStart + 2}").Merge();
-            w.Range($"A{footerStart + 4}:B{footerStart + 4}").Merge();
-
-            w.Cell($"A{footerStart + 2}").Value = "Исполнитель";
-            w.Cell($"A{footerStart + 4}").Value = "Проверил (принял)";
+            w.Range($"E{footerStart + 0}:J{footerStart + 0}").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Right;
 
             w.Columns().AdjustToContents();
 
