@@ -27,9 +27,9 @@ namespace SalutemES.Engineer.Avalonia.Views
                 if (KeyLog[0] == Key.LeftCtrl && KeyLog[1] == Key.F)
                     KeyComb = KeyCombination.CTRL_F;
 
-                if (KeyComb > 0 && MainWindowContentPanel.Content is IHotKeyHandler)
+                if (KeyComb > 0 && MainWindowContentPanel.Content is IHotKeyHandler kh)
                 {
-                    (MainWindowContentPanel.Content as IHotKeyHandler)!.HotkeyWorked(KeyComb);
+                    kh.HotkeyWorked(KeyComb);
                     KeyComb = KeyCombination.NONE;
                 }
             };
