@@ -307,3 +307,12 @@ As Begin
 	Select Count(*) From Product Where Product.name = @Name;
 End
 Go
+
+Create Procedure [dbo].SearchComponent
+	@key string_medium
+As Begin
+	Select * From [dbo].VComponentUsageList
+	Where	name like Concat('%', @key, '%') or
+			code like Concat('%', @key, '%');
+End
+Go

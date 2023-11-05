@@ -87,6 +87,7 @@ public partial class ProductAddViewModel : ViewModelBase
             ?.Do(log => Logger.WriteLine($"Success add [{c.Name}] in [{p.Name}]"));
         }))
         //.Do(p => this.SetProduct(p))
+        .Do(_ => App.Host!.Services.GetRequiredService<ProductsEditorControl>().ViewModel.FamilyHost.FillCollection())
         .Do(_ => App.Host!.Services.GetRequiredService<OrderBuilderControl>().ViewModel.RefreshProductInDataBase())
         .Do(_ => ClosePopup());
 
