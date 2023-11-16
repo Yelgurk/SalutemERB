@@ -69,7 +69,7 @@ public partial class App : Application
 
         /* fast + temp solution : BEGIN */
         //string userSign = "DESKTOP-STD16R1";
-        string userSign = "DESKTOP-STD16R1";
+        string userSign = "";// = "DESKTOP-STD16R1";
 
         string currentConfPath = $"{Environment.CurrentDirectory}\\config.txt";
 
@@ -84,7 +84,7 @@ public partial class App : Application
         DataBaseApi
             .SetConnection(userSign, "DB_SE_EngineerWS")
             .DoIf(conn => conn.Do(x => { Logger.WriteLine("Попытка подключения к БД..."); return x; }).IsSuccess,
-                  error => Logger.WriteLine(error.Exception.message))
+                  error => { Logger.WriteLine(error.Exception.message); Environment.Exit(0); })
             ?.Do(ok => Logger.WriteLine("Успешное подключение к БД!"));
     }
 
